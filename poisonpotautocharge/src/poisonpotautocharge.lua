@@ -1,9 +1,7 @@
 local acutil = require('acutil');
+ui.SysMsg("Load poisonpot auto charge")
 
 function POISONPOTAUTOCHARGE_ON_INIT(addon, frame)
-    -- ui.SysMsg("Load poisonpot auto charge")
-    -- acutil.setupEvent(addon,"FPS_UPDATE","POISONPOT_AUTO_CHARGE")
-    -- acutil.slashCommand('/ppc',POISONPOT_AUTO_CHARGE);
     POISONPOT_AUTO_CHARGE()
 end
 
@@ -38,8 +36,6 @@ end
 function getPoisonAmount()
     local myEtc = GetMyEtcObject();
     local poisonAmount = myEtc['Wugushi_PoisonAmount'];
-    ui.SysMsg(poisonAmount)
-    -- local poisonMaxAmount = myEtc['Wugushi_PoisonMaxAmount'];
     if poisonAmount < 700 then
         return poisonAmount;
     end
