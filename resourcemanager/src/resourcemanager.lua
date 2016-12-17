@@ -27,15 +27,28 @@ g.table = {
         645605
     }
 }
+g.counter = 0;
 g.preset = 1;
 g.isShowed = 1
 g.posX = 1500;
 g.posY = 200;
-CHAT_SYSTEM("load Resource Manager");
 
+function RESOURCEMANAGER_COUNTER()
+    local g = _G['ADDONS']['RESOURCEMANAGER'];
+    if g.counter < 60 then
+        g.counter = g.counter + 1;
+        return
+    end
+    g.counter = 0;
+    setFrameText()
+end
+
+CHAT_SYSTEM("load Resource Manager");
 function RESOURCEMANAGER_ON_INIT(addon,frame)
     local acutil = require('acutil');
-     acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
+    acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
+    acutil.setupEvent(addon,"FPS_UPDATE","RESOURCEMANAGER_COUNTER")
+
     local g = _G['ADDONS']['RESOURCEMANAGER'];
     g.addnon = addnon;
     g.frame = frame;
