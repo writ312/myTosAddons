@@ -25,13 +25,19 @@ g.table = {
         645240,
         645604,
         645605
+    },{
+        -- rune
+        645750
+
     }
 }
 g.counter = 0;
 g.preset = 1;
 g.isShowed = 1
-g.posX = 1500;
+g.posX = ui.GetSceneWidth() + 170;
 g.posY = 200;
+
+CHAT_SYSTEM("load Resource Manager");
 
 function RESOURCEMANAGER_COUNTER()
     local g = _G['ADDONS']['RESOURCEMANAGER'];
@@ -40,10 +46,9 @@ function RESOURCEMANAGER_COUNTER()
         return
     end
     g.counter = 0;
-    setFrameText()
+    RESOURCEMANAGER_SET_TEXT()
 end
 
-CHAT_SYSTEM("load Resource Manager");
 function RESOURCEMANAGER_ON_INIT(addon,frame)
     local acutil = require('acutil');
     acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
@@ -52,7 +57,7 @@ function RESOURCEMANAGER_ON_INIT(addon,frame)
     local g = _G['ADDONS']['RESOURCEMANAGER'];
     g.addnon = addnon;
     g.frame = frame;
-    setFrameText()
+    RESOURCEMANAGER_SET_TEXT()
     frame:ShowWindow(g.isShowed);
 end
 
@@ -63,14 +68,14 @@ function RESOURCEMANAGER_COMMAND(command)
         RESOURCEMANAGER_TOGGLE()
         return
     end
-    if (cmd == '1' or cmd == '2' or cmd == '3') then
+    if (cmd == '1' or cmd == '2' or cmd == '3'or cmd=='4') then
         g.preset = tonumber(cmd);
-        setFrameText()
+        RESOURCEMANAGER_SET_TEXT()
         return
     end
-    CHAT_SYSTEM('this command can use 1 or 2 or 3')
+    CHAT_SYSTEM('this command can use 1 or 2 or 3 or 4')
     CHAT_SYSTEM('/rscm : toggle on or off')
-    CHAT_SYSTEM('/rscm number  1:flecher 2:dievdirbys 3:sapper')
+    CHAT_SYSTEM('/rscm number  1:Flecher 2:Dievdirbys 3:Sapper 4:RuneCaster')
 end
 
 function RESOURCEMANAGER_TOGGLE()
@@ -83,31 +88,6 @@ local g = _G['ADDONS']['RESOURCEMANAGER'];
         CHAT_SYSTEM('RESOURCEMANAGER IS ON')
     end
     g.frame:ShowWindow(g.isShowed);
-end
-
-function setFrameText()
-    local g = _G['ADDONS']['RESOURCEMANAGER'];
-    g.frame:SetPos(g.posX,g.posY)
-    deleteFrameText(g.frame)
-    local i = 1;
-    items = GET_ITEM_NAME_AND_COUNT(g.table[g.preset]);
-    for k,v in pairs(items) do
-           local text = g.frame:CreateOrGetControl("richtext","ID_"..i,10,i*25 ,100,20)
-            text:SetText(string.format("{#%s}{s20} %s : %d{/}{/}",getTextColor(v),k,v));
-       i = i + 1; 
-    end
-end
-
-function deleteFrameText(frame)
-    local num = frame:GetChildCount()
-    if num <= 1 then
-        return;end
-    for i = 2 ,num do
-        local text = GET_CHILD(frame,"ID_"..i,"ui::CRichText")
-        if text ~= nil then
-            text:SetText('')
-        end
-    end
 end
 
 function getTextColor(count)
@@ -124,6 +104,7 @@ end
 function GET_ITEM_NAME_AND_COUNT(table)
     local inventoryItems = session.GetInvItemList();
 	local items = {}
+    local sum = 0
 
 	if inventoryItems == nil then
         return nil;end
@@ -145,9 +126,10 @@ function GET_ITEM_NAME_AND_COUNT(table)
         
         for i, value in ipairs(table) do
             if (itemObj.ClassID == value) then
-                items[itemObj.Name] = inventoryItem.count
+                items[itemObj.Name] = inventoryItem
+                sum = sum + 1
             end
         end        
     end
-    return items;
+    return items,sum;
 end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<uiframe name="resourcemanager" x="0" y="0" width="400" height="150">
+<uiframe name="resourcemanager" x="0" y="0" width="380" height="175">
 	<frame fasthide="true" layout_gravity="left top"/>
 	<input hittest="true" movable="true" moveintitlebar="false" hittestframe="true"/>
     <layer layerlevel="31"/>
