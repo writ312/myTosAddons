@@ -6,15 +6,32 @@ local g = _G['ADDONS']['WRIT']['MONEYDIFF'];
 CHAT_SYSTEM("load money diff");
 
 function MONEYDIFF_ON_INIT(addon,frame)
+    MONEYDIFF_INIT()
+end
+
+function MONEYDIFF_INIT()
     local g = _G['ADDONS']['WRIT']['MONEYDIFF'];
-    if (g.money == nil or g.money == 0) then
+    local acutil = require("acutil")
+
+    g.money = g.money or GET_PC_MONEY()
+    g.name = g.name or GETMYPCNAME()
+    g.map = g.map or session.GetMapName()
+    
+    if not string.find(g.name,GETMYPCNAME()) then
         g.money = GET_PC_MONEY();
-    end
+        g.name = GETMYPCNAME()
+        g.map =  session.GetMapName()
+    return;end
+
+    if string.find(g.map ,session.GetMapName())then
+    return;end
 
     local nowMoney = GET_PC_MONEY();
     local diff = nowMoney - g.money;
     if diff > 10000 then
-        CHAT_SYSTEM(string.format("先程のマップでは %d silver 取得しました",diff))
+        local mapName = geMapTable.GetMapProp(g.map):GetName()
+        CHAT_SYSTEM(string.format("%sで%ssilver取得しました",mapName,acutil.addThousandsSeparator(diff)))
     end
     g.money = nowMoney;
+    g.map = session.GetMapName()
 end
