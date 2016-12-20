@@ -34,14 +34,14 @@ g.table = {
 g.counter = 0;
 g.preset = 1;
 g.isShowed = 1
-g.posX = ui.GetSceneWidth() + 170;
-g.posY = 200;
+g.posX = 1570
+g.posY = 200
 
 CHAT_SYSTEM("load Resource Manager");
 
 function RESOURCEMANAGER_COUNTER()
     local g = _G['ADDONS']['RESOURCEMANAGER'];
-    if g.counter < 60 then
+    if g.counter < 20 then
         g.counter = g.counter + 1;
         return
     end
@@ -59,6 +59,8 @@ function RESOURCEMANAGER_ON_INIT(addon,frame)
     g.frame = frame;
     RESOURCEMANAGER_SET_TEXT()
     frame:ShowWindow(g.isShowed);
+    g.frame:Resize(350,180)
+
 end
 
 function RESOURCEMANAGER_COMMAND(command)
@@ -90,6 +92,26 @@ local g = _G['ADDONS']['RESOURCEMANAGER'];
     g.frame:ShowWindow(g.isShowed);
 end
 
+
+function RESOURCEMANAGER_SET_TEXT()
+    local g = _G['ADDONS']['RESOURCEMANAGER'];
+    g.frame:SetPos(g.posX,g.posY)
+    g.frame:RemoveAllChild()
+    local i = 1;
+    local items ,itemSum = GET_ITEM_NAME_AND_COUNT(g.table[g.preset]);
+    if itemSum == 0 then
+        return;end
+    local size = 23
+    for k,v in pairs(items) do
+        local icon = g.frame:CreateOrGetControl("slot","icon_"..i,size,(i - 0.5)*(size+5),size,size)
+        SET_SLOT_ITEM_CLS(icon,GetIES(v:GetObject()))
+        local text = g.frame:CreateOrGetControl("richtext","txt_"..i,size*2,(i - 0.5)*(size+5) ,100,size)
+        text:SetText(string.format("{#%s}{s%d} %s:%d{/}{/}",getTextColor(v.count),size,k,v.count));
+       i = i + 1; 
+    end     
+end
+
+
 function getTextColor(count)
     local color = 'FFFFFF';
     if(count < 100) then
@@ -103,10 +125,10 @@ end
 
 function GET_ITEM_NAME_AND_COUNT(table)
     local inventoryItems = session.GetInvItemList();
-	local items = {}
+    local items = {}
     local sum = 0
 
-	if inventoryItems == nil then
+    if inventoryItems == nil then
         return nil;end
 
     local index = inventoryItems:Head();
