@@ -32,7 +32,7 @@ ___
 
 1. ☃hotkeyability.ipfをダウンロード
 2. ToSのdataフォルダの中に入れる
-3. addonsフォルダの中にhotkeyabilityフォルダを作成する
+3. Tosのaddonsフォルダの中にhotkeyabilityフォルダを作成する
 4. ToSを起動する
 
 ###　コマンド
@@ -53,6 +53,7 @@ ___
 * `/hotkey 28 401016`と入力すればよい
 * 削除したい場合は`/hotkey d 28`のように入力すればよい
 * マップを移動した後アイコンが削除される
+
 ___
 ## その他
 #### バグがあればissue又はtwitterで教えてくれると助かります。
