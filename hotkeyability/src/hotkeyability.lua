@@ -2,6 +2,7 @@ _G['ADDONS'] = _G['ADDONS'] or {};
 _G['ADDONS']['HOTKEYABILITY'] = _G['ADDONS']['HOTKEYABILITY'] or {};
 local g = _G['ADDONS']['HOTKEYABILITY'];
 
+g.user = nil;
 g.setting = {}
 g.settingPath = '../addons/hotkeyability/'
 CHAT_SYSTEM('on load hotkey')
@@ -10,8 +11,12 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
     local acutil = require('acutil')
     acutil.setupHook(QUICKSLOTNEXPBAR_EXECUTE_HOOK,'QUICKSLOTNEXPBAR_EXECUTE')
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
-    local g = _G['ADDONS']['HOTKEYABILITY'];    
-    g.setting ,e = acutil.loadJSON(g.settingPath..GETMYPCNAME()..'.json',g.setting)
+    local g = _G['ADDONS']['HOTKEYABILITY'];
+    if(g.user ~= GETMYPCNAME()) then
+        g.setting = {}
+        g.user = GETMYPCNAME()
+    end
+    g.setting ,e = acutil.loadJSON(g.settingPath..GETMYPCNAME()..'.json',nil)
     if(e) then
         g.setting = {}
     return;end
@@ -21,6 +26,7 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
         end
     end
 end
+
 function HOTKEYABILITY_COMMAND(command)
     local acutil = require('acutil')
     local g = _G['ADDONS']['HOTKEYABILITY'];
@@ -56,7 +62,10 @@ function QUICKSLOTNEXPBAR_EXECUTE_HOOK(number)
 end
 
 function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID,abilName)
-    local abilClass = GetIES(session.GetAbility(abilID):GetObject())
+    local abil =  session.GetAbility(abilID)
+    if not abil then
+    return;end
+    local abilClass = GetIES(abil:GetObject())
     local frame = ui.GetFrame('quickslotnexpbar')
     local slot = frame:GetChild('slot'..key)
     local icon = CreateIcon(slot);	
@@ -68,8 +77,12 @@ function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID,abilName)
     local fn = _G['TOGGLE_ABILITY_ACTIVE']
     fn(nil, nil,abilName,abilID)
 end
+
 function HOTKEYABILITY_SET_ICON(key,abilID)
-    local abilClass = GetIES(session.GetAbility(abilID):GetObject())
+    local abil =  session.GetAbility(abilID)
+    if not abil then
+    return;end
+    local abilClass = GetIES(abil:GetObject())
     local frame = ui.GetFrame('quickslotnexpbar')
     local slot = frame:GetChild('slot'..key)
     local icon = CreateIcon(slot);	
