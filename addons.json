@@ -6,7 +6,7 @@
 		"fileVersion" : "v1.1.0",
 		"releaseTag" : "poisonpot",
 		"unicode" : "⛄",
-		"description" : "An add-on that poisonpot charge auto.",
+		"description" : "ポイズンシューターの毒液を自動で補充する.",
 		"tags" : [
 			"wugushi"
 		]
@@ -18,19 +18,19 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
-		"description" : "An add-on that set ability in hotkey.",
+		"description" : "キーボードショートカットに特性をセットできる.",
 		"tags" : [
 			"ui"
 		]
 	},
 	{
-		"name" : "acquisition amount of silver",
+		"name" : "money diff",
 		"file" : "moneydiff",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "moneydiff",
 		"unicode" : "⛄",
-		"description" : "An add-on that show acquisition amount of silver.",
+		"description" : "マップで獲得したシルバーの合計を表示する.",
 		"tags" : [
 			"ui"
 		]
