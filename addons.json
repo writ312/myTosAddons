@@ -8,7 +8,7 @@
 		"unicode" : "⛄",
 		"description" : "An add-on that poisonpot charge auto.",
 		"tags" : [
-			"wagushi"
+			"wugushi"
 		]
 	},
 	{
@@ -18,7 +18,7 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
-		"description" : "An add-on that set ability on hotkey.",
+		"description" : "An add-on that set ability in hotkey.",
 		"tags" : [
 			"ui"
 		]
