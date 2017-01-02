@@ -3,8 +3,8 @@
 		"name" : "Poison Auto Charge",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
-		"releaseTag" : "poisonpotautocharge",
+		"fileVersion" : "v1.1.0",
+		"releaseTag" : "poisonpot",
 		"unicode" : "⛄",
 		"description" : "An add-on that poisonpot charge auto.",
 		"tags" : [
