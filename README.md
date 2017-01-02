@@ -12,10 +12,10 @@ extend friend list contextmenu
 
 ___
 ## 2.poisonpot auto charge
-1. have Bagworm Poison(wugushi master sell)
-2.  poisonpot amount under 700
-3.  change map or channel
-4. poisonpot chaege auto
+1. have a Bagworm Poison(wugushi master sell)
+2. poisonpot amount is lower than 700
+3. changing map or channel
+4. poisonpot auto charge
 
 
 ## 2.poisonpot auto charge
