@@ -30,7 +30,7 @@ function MONEYDIFF_INIT()
     local diff = nowMoney - g.money;
     if diff > 10000 then
         local mapName = geMapTable.GetMapProp(g.map):GetName()
-        CHAT_SYSTEM(string.format("%sで%ssilver取得しました",mapName,acutil.addThousandsSeparator(diff)))
+        CHAT_SYSTEM(string.format("%s：%ss Get",mapName,acutil.addThousandsSeparator(diff)))
     end
     g.money = nowMoney;
     g.map = session.GetMapName()
