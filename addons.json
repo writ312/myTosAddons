@@ -1,6 +1,6 @@
 [
 	{
-		"name" : "Poison Auto Charge",
+		"name" : "毒壺自動補充(Poison Auto Charge)",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
 		"fileVersion" : "v1.1.0",
@@ -12,7 +12,7 @@
 		]
 	},
 	{
-		"name" : "HotKey Ability",
+		"name" : "特性のショートカット登録(HotKey Ability)",
 		"file" : "hotkeyability",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
@@ -24,7 +24,7 @@
 		]
 	},
 	{
-		"name" : "money diff",
+		"name" : "獲得総額の表示(money diff)",
 		"file" : "moneydiff",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
