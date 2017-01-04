@@ -1,6 +1,6 @@
 [
 	{
-		"name" : "毒壺自動補充(Poison Auto Charge)",
+		"name" : "Poison Auto Charge",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
 		"fileVersion" : "v1.1.0",
@@ -12,7 +12,7 @@
 		]
 	},
 	{
-		"name" : "特性のショートカット登録(HotKey Ability)",
+		"name" : "HotKey Ability",
 		"file" : "hotkeyability",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
@@ -24,13 +24,24 @@
 		]
 	},
 	{
-		"name" : "獲得総額の表示(money diff)",
+		"name" : "money diff",
 		"file" : "moneydiff",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "moneydiff",
 		"unicode" : "⛄",
 		"description" : "マップで獲得したシルバーの合計を表示する.",
+		"tags" : [
+			"ui"
+		]
+	},{
+		"name" : "Resource Manager",
+		"file" : "resourcemanagerlite",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "resourcemanager",
+		"unicode" : "⛄",
+		"description" : "フレッチャー、ティルトルビー、サッパー、ルーンキャスターのアイテムの残数を表示する.",
 		"tags" : [
 			"ui"
 		]
