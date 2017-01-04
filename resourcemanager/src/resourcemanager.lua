@@ -31,36 +31,23 @@ g.table = {
 
     }
 }
-g.counter = 0;
 g.preset = 1;
-g.isShowed = 1
 g.posX = 1570
 g.posY = 200
-
+g.frameName = 'resourcemanager'
+g.frameVisual = 1
 CHAT_SYSTEM("load Resource Manager");
 
-function RESOURCEMANAGER_COUNTER()
-    local g = _G['ADDONS']['RESOURCEMANAGER'];
-    if g.counter < 20 then
-        g.counter = g.counter + 1;
-        return
-    end
-    g.counter = 0;
-    RESOURCEMANAGER_SET_TEXT()
-end
-
 function RESOURCEMANAGER_ON_INIT(addon,frame)
-    local acutil = require('acutil');
-    acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
-    acutil.setupEvent(addon,"FPS_UPDATE","RESOURCEMANAGER_COUNTER")
-
     local g = _G['ADDONS']['RESOURCEMANAGER'];
     g.addnon = addnon;
     g.frame = frame;
-    RESOURCEMANAGER_SET_TEXT()
-    frame:ShowWindow(g.isShowed);
-    g.frame:Resize(350,180)
-
+    frame:SetGravity(ui.LEFT, ui.TOP)
+    frame:ShowWindow(g.frameVisual)
+    local acutil = require('acutil');
+    RESOURCEMANAGER_SET_ICON()
+    acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
+    acutil.setupEvent(addon,"FPS_UPDATE","RESOURCEMANAGER_UPDATE_TXT")
 end
 
 function RESOURCEMANAGER_COMMAND(command)
@@ -72,7 +59,7 @@ function RESOURCEMANAGER_COMMAND(command)
     end
     if (cmd == '1' or cmd == '2' or cmd == '3'or cmd=='4') then
         g.preset = tonumber(cmd);
-        RESOURCEMANAGER_SET_TEXT()
+        RESOURCEMANAGER_SET_ICON()
         return
     end
     CHAT_SYSTEM('this command can use 1 or 2 or 3 or 4')
@@ -81,77 +68,67 @@ function RESOURCEMANAGER_COMMAND(command)
 end
 
 function RESOURCEMANAGER_TOGGLE()
-local g = _G['ADDONS']['RESOURCEMANAGER'];
-    if g.isShowed == 1 then
-        g.isShowed = 0;
-        CHAT_SYSTEM('RESOURCEMANAGER IS OFF')
-    else
-        g.isShowed = 1;
-        CHAT_SYSTEM('RESOURCEMANAGER IS ON')
-    end
-    g.frame:ShowWindow(g.isShowed);
-end
-
-
-function RESOURCEMANAGER_SET_TEXT()
     local g = _G['ADDONS']['RESOURCEMANAGER'];
-    g.frame:SetPos(g.posX,g.posY)
-    g.frame:RemoveAllChild()
-    local i = 1;
-    local items ,itemSum = GET_ITEM_NAME_AND_COUNT(g.table[g.preset]);
-    if itemSum == 0 then
-        return;end
-    local size = 23
-    for k,v in pairs(items) do
-        local icon = g.frame:CreateOrGetControl("slot","icon_"..i,size,(i - 0.5)*(size+5),size,size)
-        SET_SLOT_ITEM_CLS(icon,GetIES(v:GetObject()))
-        local text = g.frame:CreateOrGetControl("richtext","txt_"..i,size*2,(i - 0.5)*(size+5) ,100,size)
-        text:SetText(string.format("{#%s}{s%d} %s:%d{/}{/}",getTextColor(v.count),size,k,v.count));
-       i = i + 1; 
-    end     
+    ui.ToggleFrame(g.frameName)    
+    g.frameVisual = ui.IsFrameVisible(g.frameName)
+
+    local msg = (g.frameVisual == 1) and 'ON' or 'OFF'
+    CHAT_SYSTEM(g.frameName..' is '..msg)
 end
 
+function RESOURCEMANAGER_SET_ICON()
+    local g = _G['ADDONS']['RESOURCEMANAGER'];
+    local frame = ui.GetFrame('resourcemanager')
+    frame:SetPos(g.posX,g.posY)
+    frame:RemoveAllChild()
+    local i = 0;
+    local items = GET_ITEM_COUNT(g.table[g.preset]);
+    for k,v in pairs(items) do
+        if v ~= 0 then
+            local item = GetClassByType('Item',k)
+            local slot = frame:CreateOrGetControl("slot","slot"..i,45*i + 5,10,45,45)
+            tolua.cast(slot, 'ui::CSlot')
+
+            local icon = CreateIcon(slot);
+            icon:SetImage(item.Icon)
+
+            local text = slot:CreateOrGetControl("richtext","txt"..k,0,0,60,20)
+            tolua.cast(text, 'ui::CRichText')
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColor(v),22,v));
+            text:SetGravity(ui.RIGHT,ui.BOTTOM)
+            i = i + 1;
+        end
+    end
+    frame:Resize(45 * i + 10 ,60)
+end
+function RESOURCEMANAGER_UPDATE_TXT()
+    local frame = ui.GetFrame('resourcemanager')
+    local g = _G['ADDONS']['RESOURCEMANAGER'];
+    local items = GET_ITEM_COUNT(g.table[g.preset]);
+    for k,v in pairs(items) do
+        local text = GET_CHILD_RECURSIVELY(frame, "txt"..k, "ui::CRichText");
+        if text then
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColor(v),22,v));
+        end
+    end
+end
 
 function getTextColor(count)
-    local color = 'FFFFFF';
-    if(count < 100) then
-        color = 'FF4500'
-    end
-    if(count < 50) then
-        color = 'FF0000'
-    end
-    return color
+    local color = (count < 100) and 'FF4500';
+    color = (count < 50) and 'FF0000' or color
+    return color or 'FFFFFF'
 end
 
-function GET_ITEM_NAME_AND_COUNT(table)
-    local inventoryItems = session.GetInvItemList();
-    local items = {}
-    local sum = 0
-
-    if inventoryItems == nil then
-        return nil;end
-
-    local index = inventoryItems:Head();
-    local itemCount = session.GetInvItemList():Count();
-
-    for i = 0, itemCount - 1 do
-        local inventoryItem = inventoryItems:Element(index);
-        index = inventoryItems:Next(index);
-        
-        if inventoryItem == nil then
-            break;end
-        
-        local itemObj = GetIES(inventoryItem:GetObject());
-        if itemObj == nil then
-            break;end
-
-        
-        for i, value in ipairs(table) do
-            if (itemObj.ClassID == value) then
-                items[itemObj.Name] = inventoryItem
-                sum = sum + 1
-            end
-        end        
+function GET_ITEM_COUNT(list)
+       local items = {}
+    for i,value in ipairs(list) do
+        local item = GetClassByType('Item',value)
+        item = session.GetInvItemByName(item.ClassName)    
+        if item ~= nil then
+            items[value] = item.count
+        else 
+            items[value] = 0;
+        end
     end
-    return items,sum;
+    return items
 end
