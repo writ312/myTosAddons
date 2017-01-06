@@ -46,6 +46,17 @@
 			"ui"
 		]
 	},{
+		"name" : "Map Fog Viewer Ex",
+		"file" : "mapfogviewerex",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "mapfogviewer",
+		"unicode" : "⛄",
+		"description" : "Map Fog viewer + Mini Map Extra 干渉するので両方共消してください",
+		"tags" : [
+			"ui"
+		]
+	},{
 		"name" : "1 Addon Manager Update 2.1.JP",
 		"file" : "aaa",
 		"extension" : "ipf",
