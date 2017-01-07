@@ -102,8 +102,8 @@ function HOTKEYABILITY_SET_ICON(key,abilID)
    
     icon:SetTooltipType('ability');
 	icon:SetTooltipStrArg(abilClass.Name);
-	icon:SetTooltipNumArg(abilClass.ClassID);
-	local abilIES = GetAbilityIESObject(pc, abilClass.ClassName);
+	icon:SetTooltipNumArg(abilID);
+	local abilIES = GetAbilityIESObject(pc, abilName);
 	icon:SetTooltipIESID(GetIESGuid(abilIES));
 
     local status = abilClass.ActiveState
