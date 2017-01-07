@@ -56,16 +56,5 @@
 		"tags" : [
 			"ui"
 		]
-	},{
-		"name" : "1 Addon Manager Update 2.1.JP",
-		"file" : "aaa",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
-		"releaseTag" : "aaa",
-		"unicode" : "⛄",
-		"description" : "Addon Manager 2.1.JP 公開(1/4) 2.0.JPの機能が制限される為アップデートの方をお願いします。https://github.com/JTosAddon/Tree-of-Savior-Addon-Manager/releases/tag/v2.1",
-		"tags" : [
-			"ui"
-		]
 	}
 ]
