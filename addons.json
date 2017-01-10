@@ -38,7 +38,7 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
+		"fileVersion" : "v1.0.3",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
 		"description" : "フレッチャー、ティルトルビー、サッパー、ルーンキャスターのアイテムの残数を表示する.",
