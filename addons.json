@@ -56,5 +56,16 @@
 		"tags" : [
 			"ui"
 		]
+	},{
+		"name" : "Skill Scroll Icon",
+		"file" : "skillscrollicon",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "skillscrollicon",
+		"unicode" : "⛄",
+		"description" : "クイックスロットに登録されている、スキルスクロールに小さくスキルアイコンを追加する",
+		"tags" : [
+			"ui","quiqslot","skill"
+		]
 	}
 ]
