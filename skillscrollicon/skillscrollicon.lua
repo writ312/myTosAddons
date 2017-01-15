@@ -20,9 +20,14 @@ end
 
 function getScrollSlot(category, classID)
     local scrolls = {}
-    local frame = ui.GetFrame('quickslotnexpbar')
+    local frame
+    if(IsJoyStickMode() == 0) then
+        frame = ui.GetFrame('quickslotnexpbar')
+    else
+        frame = ui.GetFrame('joystickquickslot')
+    end
 	for i = 0, MAX_QUICKSLOT_CNT - 1 do
-		local slot = GET_CHILD(frame, "slot"..i+1, "ui::CSlot");
+		local slot = GET_CHILD_RECURSIVELY(frame, "slot"..(i+1), "ui::CSlot");
 		local iconPt = slot:GetIcon();
 		if iconPt  ~=  nil then
 			local icon = tolua.cast(iconPt, 'ui::CIcon');
