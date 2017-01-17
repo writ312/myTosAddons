@@ -16,12 +16,13 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
     g.addon = addon
     g.frame = frame
     frame:ShowWindow(1)
-    if(g.user ~= GETMYPCNAME()) then
+    local user = GETMYPCNAME()
+    if(g.user ~= user) then
         g.setting = {}
-        g.user = GETMYPCNAME()
+        g.user = user
     end
   
-    g.setting ,e = acutil.loadJSON(g.settingPath..GETMYPCNAME()..'.json',nil)
+    g.setting ,e = acutil.loadJSON(g.settingPath..user..'.json',nil)
   
     if(e) then
         g.setting = {}
@@ -47,7 +48,7 @@ function HOTKEYABILITY_COMMAND(command)
     if(key == 'list') then
         for k,v in pairs(g.setting) do
             local abilID,abilName,abilClass = GetAbilityData(v[1])
-            CHAT_SYSTEM(string.foramt('%s : %s',k,abilClass.Name))
+            CHAT_SYSTEM(string.format("%s : %s",k,abilClass.Name))
         end
         return
     end
@@ -99,7 +100,10 @@ function HOTKEYABILITY_SET_ICON(key,abilID)
     local slot = frame:GetChild('slot'..key)
     local icon = CreateIcon(slot);	
     icon:SetImage(abilClass.Icon);
-   
+    
+    local cid = info.GetCID(session.GetMyHandle())
+    local pc = GetPCObjectByCID(cid)
+    
     icon:SetTooltipType('ability');
 	icon:SetTooltipStrArg(abilClass.Name);
 	icon:SetTooltipNumArg(abilID);

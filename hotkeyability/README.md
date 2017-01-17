@@ -40,3 +40,9 @@
 * `/hotkey 28 401016`と入力すればよい
 * それを削除したい場合は`/hotkey d 28`のように入力すればよい
 * マップを移動した後アイコンが削除される
+
+## コマンド
+* `/hotkey list` 現在設定されているキーと特性名を表示
+* `/hotkey d KeyNumber` key numberの設定を削除する
+* `/hotkey KeyNumber abilityID` KeyNumberにabilityIDの特性を設定する
+ 
