@@ -4,9 +4,9 @@ function JOYSTICKEXTENDER_ON_INIT(addon,frame)
 	acutil.setupHook(UPDATE_JOYSTICK_INPUT_HOOK, "UPDATE_JOYSTICK_INPUT");
 	acutil.setupHook(JOYSTICK_QUICKSLOT_SWAP_HOOK, "JOYSTICK_QUICKSLOT_SWAP");
 	acutil.setupHook(QUICKSLOT_INIT_HOOK, "QUICKSLOT_INIT");
-	
 	frame = ui.GetFrame('joystickquickslot')
 	frame:Resize(1920,270)
+	frame:SetOffset(0,810)
 	frame:GetChild("Set2"):SetOffset(0,120)
 	frame:GetChild("Set1"):ShowWindow(1)
 	frame:GetChild("Set2"):ShowWindow(1)
@@ -197,15 +197,5 @@ function JOYSTICK_QUICKSLOT_SWAP_HOOK(test)
 end
 
 function QUICKSLOT_INIT_HOOK(frame, msg, argStr, argNum)
-	local quickFrame = ui.GetFrame('joystickquickslot')
-	local Set1 = GET_CHILD_RECURSIVELY(quickFrame,'Set1','ui::CGroupBox');
-	local Set2 = GET_CHILD_RECURSIVELY(quickFrame,'Set2','ui::CGroupBox');
 
-	if Set1:IsGrayStyle() == 0 then
-		Set1:SetGrayStyle(0);
-		Set2:SetGrayStyle(1);
-	else
-		Set1:SetGrayStyle(1);
-		Set2:SetGrayStyle(0);
-	end
 end

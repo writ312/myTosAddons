@@ -71,7 +71,7 @@
 		"name" : "Joystick Extend",
 		"file" : "joystickextender",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
+		"fileVersion" : "v1.0.1",
 		"releaseTag" : "joystickextender",
 		"unicode" : "⛄",
 		"description" : "ジョイスティックのクイックスロットを分割表示する",
