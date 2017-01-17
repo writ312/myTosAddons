@@ -15,7 +15,7 @@
 		"name" : "HotKey Ability",
 		"file" : "hotkeyability",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
+		"fileVersion" : "v1.0.1",
 		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
 		"description" : "キーボードショートカットに特性をセットできる.",
@@ -66,6 +66,17 @@
 		"description" : "クイックスロットに登録されている、スキルスクロールに小さくスキルアイコンを追加する",
 		"tags" : [
 			"ui","quiqslot","skill"
+		]
+	},{
+		"name" : "Joystick Extend",
+		"file" : "joystickextender",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "joystickextender",
+		"unicode" : "⛄",
+		"description" : "ジョイスティックのクイックスロットを分割表示する",
+		"tags" : [
+			"ui","quiqslot"
 		]
 	}
 ]
