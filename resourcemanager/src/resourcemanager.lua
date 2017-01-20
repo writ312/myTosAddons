@@ -197,7 +197,8 @@ function RESOURCEMANAGER_UPDATE_TXT()
         return
     end
         
-    local frame = ui.GetFrame('resourcemanager')    
+    local frame = ui.GetFrame('resourcemanager')  
+    frame:ShowWindow(g.frameVisual)      
     _RESOURCEMANAGER_UPDATE_TXT(frame, GET_ITEM_COUNT(g.presetTable[1]));
     if #g.presetTable == 2 then
         _RESOURCEMANAGER_UPDATE_TXT(frame, GET_ITEM_COUNT(g.presetTable[2]));

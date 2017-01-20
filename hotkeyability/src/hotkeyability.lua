@@ -1,22 +1,22 @@
 _G['ADDONS'] = _G['ADDONS'] or {};
 _G['ADDONS']['HOTKEYABILITY'] = _G['ADDONS']['HOTKEYABILITY'] or {};
 local g = _G['ADDONS']['HOTKEYABILITY'];
+local acutil = require('acutil')
 
 g.user = nil;
 g.setting = {}
 g.settingPath = '../addons/hotkeyability/'
 
-CHAT_SYSTEM('on load hotkey')
+CHAT_SYSTEM('on load hotkey')   
 
 function HOTKEYABILITY_ON_INIT(addon,frame)
-    local acutil = require('acutil')
     acutil.setupHook(QUICKSLOTNEXPBAR_EXECUTE_HOOK,'QUICKSLOTNEXPBAR_EXECUTE')
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
-    local g = _G['ADDONS']['HOTKEYABILITY'];
+    
     g.addon = addon
     g.frame = frame
     frame:ShowWindow(1)
-    local user = GETMYPCNAME()
+    local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
         g.user = user
@@ -36,13 +36,11 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
 end
 
 function HOTKEYABILITY_COMMAND(command)
-    local acutil = require('acutil')
-    local g = _G['ADDONS']['HOTKEYABILITY'];
     local key = table.remove(command,1);
     
     if( key == 'd') then
         g.setting[table.remove(command,1)] = nil
-        acutil.saveJSON(g.settingPath..GETMYPCNAME()..'.json',g.setting)
+        acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
     end
     
     if(key == 'list') then
@@ -61,12 +59,11 @@ function HOTKEYABILITY_COMMAND(command)
         return;
     end
     g.setting[key] = {abilID}
-    acutil.saveJSON(g.settingPath..GETMYPCNAME()..'.json',g.setting)
+    acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
     HOTKEYABILITY_SET_ICON(key,abilID)
 end
 
 function QUICKSLOTNEXPBAR_EXECUTE_HOOK(number)
-    local g = _G['ADDONS']['HOTKEYABILITY']
     local key = tostring(number + 1)
     local abil = g.setting[key]
     if abil then
@@ -82,7 +79,7 @@ function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID)
 
     local status = abilClass.ActiveState
 
-    local icon  = GetIcon(ui.GetFrame('quickslotnexpbar'):GetChild('slot'..key))
+    local icon  = ui.GetFrame('quickslotnexpbar'):GetChild('slot'..key):GetIcon()
     icon:SetGrayStyle(status)
 
     local topFrame = ui.GetFrame('skilltree');

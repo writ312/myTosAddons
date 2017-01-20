@@ -16,7 +16,10 @@ function JOYSTICKEXTENDER_ON_INIT(addon,frame)
 	setButton_onSkin = frame:GetUserConfig("SET_BUTTON_ONSKIN")
 	setButton_offSkin = frame:GetUserConfig("SET_BUTTON_OFFSKIN")
 
-	JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT()
+	addon:RegisterMsg('GAME_START_3SEC','JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT')
+	addon:RegisterMsg('GAME_START_3SEC','UPDATE_JOYSTICK_INPUT_HOOK')
+    JOYSTICK_QUICKSLOT_SWAP_HOOK(1)
+    JOYSTICK_QUICKSLOT_SWAP_HOOK(1)
 end
 
 function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
@@ -35,7 +38,7 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 	end
 
 	if Set2:IsGrayStyle() == 1 then
-			slotIndex = slotIndex + 20
+		slotIndex = slotIndex + 20
 	end
 	
 	if input_L1 == 1 and input_R1 == 1 then
@@ -49,9 +52,7 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 			elseif	slotIndex == 3  or slotIndex == 15 then
 				slotIndex = 11
 			end
-		end	
-
-		if Set2:IsGrayStyle() == 1 then
+		else
 			if	slotIndex == 22  or slotIndex == 34 then
 				slotIndex = 30
 			elseif	slotIndex == 20  or slotIndex == 32 then
@@ -112,7 +113,7 @@ function UPDATE_JOYSTICK_INPUT_HOOK(frame)
 		setIndex = 1;
 		set1_Button:SetSkinName(setButton_onSkin);
 		set2_Button:SetSkinName(setButton_offSkin);
-	elseif set2:IsGrayStyle() == 1 then
+	else
 		setIndex = 2;
 		set1_Button:SetSkinName(setButton_offSkin);
 		set2_Button:SetSkinName(setButton_onSkin);
