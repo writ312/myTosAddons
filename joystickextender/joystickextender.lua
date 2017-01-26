@@ -4,22 +4,7 @@ function JOYSTICKEXTENDER_ON_INIT(addon,frame)
 	acutil.setupHook(UPDATE_JOYSTICK_INPUT_HOOK, "UPDATE_JOYSTICK_INPUT");
 	acutil.setupHook(JOYSTICK_QUICKSLOT_SWAP_HOOK, "JOYSTICK_QUICKSLOT_SWAP");
 	acutil.setupHook(QUICKSLOT_INIT_HOOK, "QUICKSLOT_INIT");
-	frame = ui.GetFrame('joystickquickslot')
-	frame:Resize(1920,270)
-	frame:SetOffset(0,810)
-	frame:GetChild("Set2"):SetOffset(0,120)
-	frame:GetChild("Set1"):ShowWindow(1)
-	frame:GetChild("Set2"):ShowWindow(1)
-
-	padslot_onskin = frame:GetUserConfig("PADSLOT_ONSKIN")
-	padslot_offskin = frame:GetUserConfig("PADSLOT_OFFSKIN")
-	setButton_onSkin = frame:GetUserConfig("SET_BUTTON_ONSKIN")
-	setButton_offSkin = frame:GetUserConfig("SET_BUTTON_OFFSKIN")
-
-	addon:RegisterMsg('GAME_START_3SEC','JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT')
-	addon:RegisterMsg('GAME_START_3SEC','UPDATE_JOYSTICK_INPUT_HOOK')
-    JOYSTICK_QUICKSLOT_SWAP_HOOK(1)
-    JOYSTICK_QUICKSLOT_SWAP_HOOK(1)
+	addon:RegisterMsg('GAME_START_3SEC','JOYSTICKEXTENDER_INIT')    
 end
 
 function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
@@ -42,7 +27,7 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 	end
 	
 	if input_L1 == 1 and input_R1 == 1 then
-		if Set1:IsGrayStyle() == 1 then
+		if Set2:IsGrayStyle() == 0 then
 			if	slotIndex == 2  or slotIndex == 14 then
 				slotIndex = 10
 			elseif	slotIndex == 0  or slotIndex == 12 then
@@ -73,7 +58,6 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 
 end
 function UPDATE_JOYSTICK_INPUT_HOOK(frame)
-
 	if IsJoyStickMode() == 0 then
 		return;
 	end
@@ -109,7 +93,7 @@ function UPDATE_JOYSTICK_INPUT_HOOK(frame)
 	
 	local setIndex = 0;
 
-	if set1:IsGrayStyle() == 1 then
+	if set2:IsGrayStyle() == 0 then
 		setIndex = 1;
 		set1_Button:SetSkinName(setButton_onSkin);
 		set2_Button:SetSkinName(setButton_offSkin);
@@ -180,7 +164,7 @@ function JOYSTICK_QUICKSLOT_SWAP_HOOK(test)
 	local Set1 = GET_CHILD_RECURSIVELY(quickFrame,'Set1','ui::CGroupBox');
 	local Set2 = GET_CHILD_RECURSIVELY(quickFrame,'Set2','ui::CGroupBox');
 	local setIndex
-	if Set1:IsGrayStyle() == 1 then
+	if Set2:IsGrayStyle() == 0 then
 		Set1:SetGrayStyle(0);
 		Set2:SetGrayStyle(1);
 		setIndex = 1
@@ -199,4 +183,26 @@ end
 
 function QUICKSLOT_INIT_HOOK(frame, msg, argStr, argNum)
 
+	qframe = ui.GetFrame('joystickquickslot')
+	qframe:Resize(1920,270)
+	qframe:SetOffset(0,810)
+	qframe:GetChild("Set2"):SetOffset(0,120)
+	qframe:GetChild("Set1"):ShowWindow(1)
+	qframe:GetChild("Set2"):ShowWindow(1)
+
+	 qframe:GetChild("Set1"):SetGrayStyle(1);
+
+	local set1_Button = qframe:GetChildRecursively("L2R2_Set1");
+	local set2_Button = qframe:GetChildRecursively("L2R2_Set2");
+
+    set1_Button:SetSkinName(setButton_onSkin);
+    set2_Button:SetSkinName(setButton_offSkin);
+	UPDATE_JOYSTICK_INPUT_HOOK(qframe)
+	JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT()
 end
+
+function JOYSTICKEXTENDER_INIT()
+	QUICKSLOT_INIT_HOOK()
+	JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT()
+end
+CHAT_SYSTEM('load Joystick Extend')
