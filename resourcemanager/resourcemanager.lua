@@ -159,20 +159,22 @@ function _RESOURCEMANAGER_SET_ICON(frame,col,list)
      for k,v in pairs(items) do
         if v ~= 0 then
             local item = GetClassByType('Item',k)
-            local slot = frame:CreateOrGetControl("slot","slot"..k,50*i,-100 + 50*col,45,45)
+            local slot = frame:CreateOrGetControl("slot","slot"..k,50*i,-100 + 70*col,45,65)
             tolua.cast(slot, 'ui::CSlot')
             slot:SetSkinName('slot')
-            local icon = CreateIcon(slot);
-            icon:SetImage(item.Icon)
-            local text = slot:CreateOrGetControl("richtext","txt"..k,0,0,60,20)
+           
+		   	local slot2 = slot:CreateOrGetControl("slot","slot"..k,0,0,43,43)
+            tolua.cast(slot2, 'ui::CSlot')
+		    local icon = CreateIcon(slot2);
+			icon:SetImage(item.Icon)
+			local text = slot:CreateOrGetControl("richtext","txt"..k,0,0,60,20)
             tolua.cast(text, 'ui::CRichText')
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),20,v));
-            text:SetGravity(ui.RIGHT,ui.BOTTOM)
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),18,v));
+            text:SetGravity(2,1)
             i = i + 1;
         end
     end
 end
-
 function GET_ITEM_COUNT(list)
     local items = {}
     if not list then
@@ -214,7 +216,7 @@ function _RESOURCEMANAGER_UPDATE_TXT(frame,items)
     for k,v in pairs(items) do
         local text = GET_CHILD_RECURSIVELY(frame, "txt"..k, "ui::CRichText");
         if text then
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),20,v));
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),18,v));
         end
     end
 end
