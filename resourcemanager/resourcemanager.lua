@@ -40,9 +40,25 @@ g.table = {
         --Chronomancer
         645606
     },{
+        --Priest
         640069,
         640068,
         640031 
+    },{
+        --Alchemist
+        645533
+    },{
+        --Squire 
+        645534,
+        645525,
+        645570,
+        640044,
+        640125,
+        640254,
+        640124,
+        640251,
+        640123,
+        640253
     }
 }
 
@@ -116,6 +132,8 @@ function existPresetJobs()
     jobTable[4017] = 6 -- Daoshi
     jobTable[2008] = 7 -- Chronomancer
     jobTable[4002] = 8 -- Priest
+    jobTable[2005] = 9 -- Alchemist
+    jobTable[1011] = 10 --Squire
     local cid = info.GetCID(session.GetMyHandle())
     local pcSession = session.GetSessionByCID(cid);
     local pcJobInfo = pcSession.pcJobInfo;

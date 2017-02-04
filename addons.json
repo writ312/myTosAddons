@@ -38,10 +38,10 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.7",
+		"fileVersion" : "v1.0.8",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
-		"description" : "フレッチャー、ティルトルビー、サッパー、ルーンキャスター、タオイスト、インクイジターのアイテムの残数を表示する.",
+		"description" : "各職のスキルに必要なアイテムの残数を表示する.",
 		"tags" : [
 			"ui"
 		]
