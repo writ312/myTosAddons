@@ -81,6 +81,15 @@ g.tableMerge = function(t1,t2)
     return t1
 end
 
+
+g.tableSplit = function(t,n)
+    local t1 = {}
+    for i = 1, n do
+        table.insert(t1,table.remove(t,1))
+    end
+    return t1,t
+end
+
 local acutil = require('acutil');
 
 CHAT_SYSTEM("load Resource Manager");
@@ -148,12 +157,12 @@ function existPresetJobs()
         if jobTable[jobID] then
             g.presetTable[1] = g.presetTable[1] or {}
             local tempTable = g.table[jobTable[jobID]]
-            if (#tempTable == 1 ) or (#g.presetTable[1] == 1) and (n == 2) then
+            if (#tempTable == 1 ) or (#g.presetTable[1] == 1) and (n > 1) then
                 g.presetTable[1] = g.tableMerge(g.presetTable[1],tempTable)
             else
                 g.presetTable[n] = tempTable
+                n = n + 1;
             end
-            n = n + 1;
         end
     end
 end
@@ -165,33 +174,39 @@ function RESOURCEMANAGER_SET_ICON()
     local frame = g.frame
     frame:SetPos(g.settings.position.x ,g.settings.position.y)
     frame:RemoveAllChild()
-    _RESOURCEMANAGER_SET_ICON(frame,0,g.presetTable[1])
-    if #g.presetTable == 2 then
-        _RESOURCEMANAGER_SET_ICON(frame,1,g.presetTable[2])
+    local col = 0  
+    for i ,v in ipairs(g.presetTable) do
+        col = _RESOURCEMANAGER_SET_ICON(frame,col,v)
     end
 end
 
 function _RESOURCEMANAGER_SET_ICON(frame,col,list)
     local items = GET_ITEM_COUNT(list);
     local i = 0;
-     for k,v in pairs(items) do
+     for i,v in ipairs(items) do
         if v ~= 0 then
-            local item = GetClassByType('Item',k)
-            local slot = frame:CreateOrGetControl("slot","slot"..k,50*i,-100 + 70*col,45,65)
+            if i == 7 then
+                local t1,t2 = g.tableSplit(list,6)
+                return _RESOURCEMANAGER_SET_ICON(frame,col+1,t2)
+
+            end 
+            local item = GetClassByType('Item',v[1])
+            local slot = frame:CreateOrGetControl("slot","slot"..v[1],50*i,-100 + 70*col,45,65)
             tolua.cast(slot, 'ui::CSlot')
             slot:SetSkinName('slot')
            
-		   	local slot2 = slot:CreateOrGetControl("slot","slot"..k,0,0,43,43)
+		   	local slot2 = slot:CreateOrGetControl("slot","slot"..v[1],0,0,43,43)
             tolua.cast(slot2, 'ui::CSlot')
 		    local icon = CreateIcon(slot2);
 			icon:SetImage(item.Icon)
-			local text = slot:CreateOrGetControl("richtext","txt"..k,0,0,60,20)
+			local text = slot:CreateOrGetControl("richtext","txt"..v[1],0,0,60,20)
             tolua.cast(text, 'ui::CRichText')
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),18,v));
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
             text:SetGravity(2,1)
             i = i + 1;
         end
     end
+    return col + 1
 end
 function GET_ITEM_COUNT(list)
     local items = {}
@@ -202,9 +217,9 @@ function GET_ITEM_COUNT(list)
         local item = GetClassByType('Item',value)
         item = session.GetInvItemByName(item.ClassName)    
         if item ~= nil then
-            items[value] = item.count
+            table.insert(items,{value,item.count})
         else 
-            items[value] = 0;
+            table.insert(items,{value,0})
         end
     end
     return items
@@ -224,17 +239,17 @@ function RESOURCEMANAGER_UPDATE_TXT()
         
     local frame = ui.GetFrame('resourcemanager')  
     frame:ShowWindow(g.frameVisual)      
-    _RESOURCEMANAGER_UPDATE_TXT(frame, GET_ITEM_COUNT(g.presetTable[1]));
-    if #g.presetTable == 2 then
-        _RESOURCEMANAGER_UPDATE_TXT(frame, GET_ITEM_COUNT(g.presetTable[2]));
+    for i ,v in ipairs(g.presetTable) do
+        _RESOURCEMANAGER_UPDATE_TXT(frame,v);
     end
 end
 
-function _RESOURCEMANAGER_UPDATE_TXT(frame,items)
-    for k,v in pairs(items) do
-        local text = GET_CHILD_RECURSIVELY(frame, "txt"..k, "ui::CRichText");
+function _RESOURCEMANAGER_UPDATE_TXT(frame,list)
+    local items = GET_ITEM_COUNT(list)
+    for i,v in ipairs(items) do
+        local text = GET_CHILD_RECURSIVELY(frame, "txt"..v[1], "ui::CRichText");
         if text then
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v),18,v));
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
         end
     end
 end
