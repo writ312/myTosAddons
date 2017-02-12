@@ -15,24 +15,32 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
     acutil.setupHook(QUICKSLOTNEXPBAR_ON_DROP_HOOK,'QUICKSLOTNEXPBAR_ON_DROP')
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
-    g.addon = addon
-    g.frame = frame
-    frame:ShowWindow(1)
+    addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
+
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
         g.user = user
     end
   
-    g.setting ,e = acutil.loadJSON(g.settingPath..user..'.json',nil)
+    g.setting ,e = acutil.loadJSON(g.settingPath..user..'.json',g.setting)
   
     if(e) then
         g.setting = {}
-    return;end
+        return
+    end    
+end
 
+function HOTKEYABILITY_SET_ICON()
     if  g.setting then
+        local frame = ui.GetFrame('quickslotnexpbar')
         for k,v in pairs(g.setting) do
-            HOTKEYABILITY_SET_ICON(k,GetAbilityData(v[1]))
+            if v[2] == 'Pose' then
+                HOTKEYABILITY_SET_POSE_ICON(k,v[1])
+            else
+                HOTKEYABILITY_SET_ABIL_ICON(k,v[1])
+            end
+            frame:GetChild('slot'..k):SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
         end
     end
 end
@@ -42,7 +50,11 @@ function HOTKEYABILITY_COMMAND(command)
     
     if( key == 'd') then
         g.setting[table.remove(command,1)] = nil
-        acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
+        local slot = ui.GetFrame('quickslotnexpbar'):GetChild('slot'..k)
+        slot:ClearIcon()
+        CreateIcon(slot)
+        acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+        return
     end
     
     if(key == 'list') then
@@ -66,8 +78,8 @@ function HOTKEYABILITY_COMMAND(command)
         return;
     end
     g.setting[key] = {abilID}
-    acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
-    HOTKEYABILITY_SET_ICON(key,abilID)
+    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+    HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
 end
 
 function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID)
@@ -86,30 +98,38 @@ function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID)
 
 end
 
-function HOTKEYABILITY_SET_ICON(key,abilID)
+function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
     local abilID,abilName,abilClass = GetAbilityData(abilID)
     if not abilID then return end 
-
-    local frame = ui.GetFrame('quickslotnexpbar')
-    local slot = frame:GetChild('slot'..key)
-    local icon = CreateIcon(slot);	
+    
+    local icon = ui.GetFrame('quickslotnexpbar'):GetChild('slot'..key):GetIcon()
     icon:SetImage(abilClass.Icon);
+    local status = abilClass.ActiveState
+    icon:SetGrayStyle((status == 1) and 0 or 1)
     
+    -- insert tooltip
     local cid = info.GetCID(session.GetMyHandle())
-    local pc = GetPCObjectByCID(cid)
-    
+    local pc = GetPCObjectByCID(cid)    
     icon:SetTooltipType('ability');
 	icon:SetTooltipStrArg(abilClass.Name);
 	icon:SetTooltipNumArg(abilID);
 	local abilIES = GetAbilityIESObject(pc, abilName);
 	icon:SetTooltipIESID(GetIESGuid(abilIES));
 
-    local status = abilClass.ActiveState
-    icon:SetGrayStyle((status == 1) and 0 or 1)
-    return icon
 end
 
- function GetAbilityData(abilID)
+function HOTKEYABILITY_SET_POSE_ICON(k,poseID)
+    local icon = ui.GetFrame('quickslotnexpbar'):GetChild('slot'..k):GetIcon()
+    local cls = GetClassByType("Pose", poseID);
+    local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
+    if cls.Premium == "YES" and isPremiumTokenState == false then
+        g.setting[k] = nil
+        return
+    end
+    icon:SetImage(cls.Icon)
+end
+
+function GetAbilityData(abilID)
     local abil = session.GetAbility(abilID);
 	if not abil then
     return;end
@@ -141,7 +161,10 @@ function QUICKSLOTNEXPBAR_ON_DROP_HOOK(frame, control, argStr, argNum)
         g.setting[tostring(slot:GetSlotIndex()+1)] = {abilID,'Ability'}
     else
         QUICKSLOTNEXPBAR_ON_DROP_OLD(frame, control, argStr, argNum)
+        return
     end
+    slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');        
+    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
 end
 function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 
@@ -216,4 +239,15 @@ function QUICKSLOTNEXPBAR_EXECUTE_HOOK(number)
     else
         QUICKSLOTNEXPBAR_EXECUTE_OLD(number)
     end
+end
+
+function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
+    local slot 	= tolua.cast(control, 'ui::CSlot');
+    local index = slot:GetSlotIndex()
+    if g.setting[tostring(index + 1)] then
+        g.setting[tostring(index + 1)] = nil
+        slot:ClearIcon()
+        CreateIcon(slot)
+    end
+    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
 end

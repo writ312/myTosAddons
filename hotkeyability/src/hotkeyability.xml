@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<uiframe name="hotkeyability" x="10" y="10" width="100" height="100">
+<uiframe name="hotkeyability" x="10" y="10" width="150" height="150">
 	<frame fasthide="true" layout_gravity="left top"/>
     <input moveable="false" hittestframe="false"/>
     <layer layerlevel="10"/>
     <draw drawframe="false" drawtitlebarframe="false" drawtitlebar="false"/>
     <option closebutton="false" hideable="false"/>
-<controls/>
+	<controls/>
 </uiframe>
