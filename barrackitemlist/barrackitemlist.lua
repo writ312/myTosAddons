@@ -12,7 +12,7 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     acutil.slashCommand('/itemlist', BARRACKITEMLIST_COMMAND)
     acutil.slashCommand('/il',BARRACKITEMLIST_COMMAND)
     
-    addon:RegisterMsg('GAME_TO_BARRACK','BARRACKITEMLIST_SAVE_LIST')
+    acutil.setupEvent(addon,'GAME_TO_BARRACK',BARRACKITEMLIST_SAVE_LIST)
     acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', SELECT_CHARBTN_LBTNUP_EVENT)
    
 end
@@ -67,40 +67,78 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
     local frame = ui.GetFrame('barrackitemlist')
     frame:ShowWindow(0)
     local gbox = GET_CHILD(frame,'treeGbox','ui::CGroupBox');
-    gbox:RemoveAllChild()
+    local tree = GET_CHILD(gbox,'inventree','ui::CTreeControl');  
+    tree:RemoveAllChild() 
     local list ,e = acutil.loadJSON(g.settingPath..cid..'.json',nil)
     if(e) then return end
-    local row = 1
-    local cow = 13
+    local col = 13
+    local slot,slotset,treegroup
+
     for k,value in pairs(list) do
-        local text = gbox:CreateOrGetControl("richtext","text"..k,30,(row-1)*40,300,40)
-        text:SetText(string.format("{s25}{#000000}%s{/}",k))
-            for i = 0 , #value - 1 do
-            if i%cow == 0 and i ~= (#value - 1) and i ~= 0 then row = row + 1 end
-            local v = value[i + 1]
-            local slot = gbox:CreateOrGetControl("slot","slot"..v[1]..i,40*(i%cow + 1),row*40,40,40)
-            tolua.cast(slot, 'ui::CSlot')
-            slot:SetSkinName('slot')
-            local icon = CreateIcon(slot);
-            icon:SetImage(v[2])
+        treegroup =  tree:Add(k,k)
+        BARRACKITEMLIST_MAKE_INVEN_SLOTSET_AND_TITLE(tree, treegroup, k)
+        slotset = GET_CHILD(tree,k,'ui::CSlotSet')	
+        for i ,v in ipairs(value) do
+            if (i % col) == 0 then
+                slotset:ExpandRow()
+            end
+            slot = slotset:GetSlotByIndex(i)
+            slot:SetImage(v[2])
         end
-        row = row + 2
     end
     frame:ShowWindow(1)
 end
 
--- function BARRACKITEMLIST_SETUP_SLOTSET(frame,name,slotsize,col)
---     local slotset = frame:CreateOrGetControl('slotset','slotset'..name,0,0,480,0)
---     slotset:EnablePop(0)
--- 	slotset:EnableDrag(0)
--- 	slotset:EnableDrop(0)
--- 	slotset:SetMaxSelectionCount(999)
--- 	slotset:SetSlotSize(slotsize,slotsize);
--- 	slotset:SetColRow(10,1)
--- 	slotset:SetSpc(0,0)
--- 	slotset:SetSkinName('invenslot')
--- 	slotset:EnableSelection(0)
--- 	slotset:CreateSlots()
---     return slotset
--- end
+function BARRACKITEMLIST_MAKE_INVEN_SLOTSET_AND_TITLE(tree, treegroup, name)
+	local slotsettitle = 'ssettitle_'..name;
+	local newSlotsname = BARRACKITEMLIST_MAKE_INVEN_SLOTSET_NAME(tree, slotsettitle,name)
+	local newSlots = BARRACKITEMLIST_MAKE_INVEN_SLOTSET(tree, name)
+	tree:Add(treegroup, newSlotsname, slotsettitle);
+	local slotHandle = tree:Add(treegroup, newSlots, name);
 
+	local slotNode = tree:GetNodeByTreeItem(slotHandle);
+	slotNode:SetUserValue("IS_ITEM_SLOTSET", 1);
+end
+
+function BARRACKITEMLIST_MAKE_INVEN_SLOTSET(tree, name)
+	
+	local frame = ui.GetFrame('barrackitemlist');
+	local slotsize = 40
+	local colcount = 13
+
+	local newslotset = tree:CreateOrGetControl('slotset',name,0,0,0,0) 
+	tolua.cast(newslotset, "ui::CSlotSet");
+	
+	newslotset:EnablePop(0)
+	newslotset:EnableDrag(0)
+	newslotset:EnableDrop(0)
+	newslotset:SetMaxSelectionCount(999)
+	newslotset:SetSlotSize(slotsize,slotsize);
+	newslotset:SetColRow(colcount,1)
+	newslotset:SetSpc(0,0)
+	newslotset:SetSkinName('invenslot')
+	newslotset:EnableSelection(0)
+	newslotset:CreateSlots()
+	-- SLOTSET_NAMELIST[#SLOTSET_NAMELIST + 1] = name
+	return newslotset;
+end
+
+
+function BARRACKITEMLIST_MAKE_INVEN_SLOTSET_NAME(tree, name, titletext)
+
+	local frame = ui.GetFrame('barrackitemlist');
+	local width = 300
+	local height = 40
+	local font = 'white_18_ol'
+
+	local newtext = tree:CreateOrGetControl('richtext',name,0,0,width,height) 
+	tolua.cast(newtext, "ui::CRichText");
+
+	newtext:EnableResizeByText(0);
+	newtext:SetFontName(font);
+	newtext:SetUseOrifaceRect(true);
+	newtext:SetText(titletext..'(0)');
+	newtext:SetTextAlign('left','bottom');
+
+	return newtext;
+end
