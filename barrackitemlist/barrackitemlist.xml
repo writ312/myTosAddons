@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uiframe name="barrackitemlist" x="0" y="0" width="600" height="960">
+<frame layout_gravity="right top"/>
+  <option hideable="true"/>
+    <controls>
+        <groupbox name="treeGbox"  rect="0 0 600 960" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
+		<tree name="inventree" parent="treeGbox" rect="0 0 470 0" margin="0 10 0 0" layout_gravity="left top"  drawline="false"/>
+    </controls>
+</uiframe>
