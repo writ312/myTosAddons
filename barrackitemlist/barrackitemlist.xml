@@ -5,6 +5,6 @@
   <layer layerlevel="96"/>
     <controls>
         <groupbox name="treeGbox"  rect="0 0 600 900" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
-		<tree name="inventree" parent="treeGbox" rect="0 0 470 0" margin="0 10 0 0" layout_gravity="left top"  drawline="false"/>
+		<!--<tree name="inventree" parent="treeGbox" rect="0 0 470 0" margin="0 10 0 0" layout_gravity="left top"  drawline="false"/>-->
     </controls>
 </uiframe>
