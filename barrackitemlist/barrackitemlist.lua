@@ -14,7 +14,9 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     acutil.slashCommand('/il',BARRACKITEMLIST_COMMAND)
     
     acutil.setupEvent(addon,'GAME_TO_BARRACK','BARRACKITEMLIST_SAVE_LIST')
-    acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', 'SELECT_CHARBTN_LBTNUP_EVENT')
+    acutil.setupEvent(addon,'GAME_TO_LOGIN','BARRACKITEMLIST_SAVE_LIST')
+    acutil.setupEvent(addon,'DO_QUIT_GAME','BARRACKITEMLIST_SAVE_LIST')
+    -- acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', 'SELECT_CHARBTN_LBTNUP_EVENT')
     local droplist = tolua.cast(ui.GetFrame('barrackitemlist'):GetChild("droplist"), "ui::CDropList");
     droplist:ClearItems()
     droplist:AddItem(1,'None')
@@ -73,7 +75,6 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
     if  textview:GetUserValue('IS_SET') ~= '1' then
         textview:SetUserValue('IS_SET',1)
         textview:Clear()
-        CHAT_SYSTEM('clear')
         for k,value in pairs(list) do
             textview:AddText(k, "red_18_b");
             for i ,v in ipairs(value) do
@@ -94,11 +95,13 @@ function BARRACKITEMLIST_SAVE_LIST()
         local invItem = invItemList:at(i);
         if invItem ~= nil then
     		local obj = GetIES(invItem:GetObject());
+            CHAT_SYSTEM(invItem:GetIESID())
             list[obj.GroupName] = list[obj.GroupName] or {}
-            table.insert(list[obj.GroupName],{dictionary.ReplaceDicIDInCompStr(obj.Name),invItem.count})
+            table.insert(list[obj.GroupName],{dictionary.ReplaceDicIDInCompStr(obj.Name),invItem.count,invItem:GetIESID()})
         end
 	end
     local cid = info.GetCID(session.GetMyHandle())
     acutil.saveJSON(g.settingPath..cid..'.json',list)
     g.itemlist[cid] = list  
 end
+BARRACKITEMLIST_SAVE_LIST()
