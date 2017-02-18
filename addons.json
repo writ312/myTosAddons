@@ -78,5 +78,16 @@
 		"tags" : [
 			"ui","quiqslot"
 		]
+	},{
+		"name" : "Barrack Itemlist",
+		"file" : "barrackitemlist",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "barrackitemlist",
+		"unicode" : "⛄",
+		"description" : "他のキャラのインベントリの中身を表示する。/ilで表示",
+		"tags" : [
+			"ui","item"
+		]
 	}
 ]

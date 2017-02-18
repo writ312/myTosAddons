@@ -4,7 +4,7 @@
   <option hideable="true"/>
   <layer layerlevel="96"/>
     <controls>
-        <groupbox name="treeGbox"  rect="0 0 600 900" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
+        <groupbox name="treeGbox"  rect="0 50 600 880" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
 		<droplist name="droplist" rect="30 10 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
     </controls>
 </uiframe>

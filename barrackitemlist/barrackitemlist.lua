@@ -52,6 +52,23 @@ function BARRACKITEMLIST_COMMAND(command)
     end
 end 
 
+function BARRACKITEMLIST_SAVE_LIST()
+    local list = {}
+	local invItemList = session.GetInvItemSortedList();
+
+    for i = 1, invItemList:size() - 1 do
+        local invItem = invItemList:at(i);
+        if invItem ~= nil then
+    		local obj = GetIES(invItem:GetObject());
+
+            list[obj.GroupName] = list[obj.GroupName] or {}
+            table.insert(list[obj.GroupName],{dictionary.ReplaceDicIDInCompStr(obj.Name),invItem.count,obj.Icon})
+        end
+	end
+    local cid = info.GetCID(session.GetMyHandle())
+    acutil.saveJSON(g.settingPath..cid..'.json',list)
+    g.itemlist[cid] = list  
+end
 
 function BARRACKITEMLIST_SHOW_LIST(cid)
     local frame = ui.GetFrame('barrackitemlist')
@@ -60,7 +77,7 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
     local droplist = GET_CHILD(frame,'droplist', "ui::CDropList")
     if not cid then cid= droplist:GetSelItemKey() end
     for k,v in pairs(g.userlist) do
-        local child = gbox:GetChild("textview"..k) 
+        local child = gbox:GetChild("tree"..k) 
         if child then
             child:ShowWindow(0)
         end
@@ -70,38 +87,57 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
         list ,e = acutil.loadJSON(g.settingPath..cid..'.json',nil)
         if(e) then return end
     end
-    local textview = gbox:CreateOrGetControl("textview","textview"..cid,30,70,540,830)
-	tolua.cast(textview, "ui::CTextView");
-    if  textview:GetUserValue('IS_SET') ~= '1' then
-        textview:SetUserValue('IS_SET',1)
-        textview:Clear()
+
+    local tree = gbox:CreateOrGetControl('tree','tree'..cid,25,20,545,0)
+    if tree:GetUserValue('exist_data') ~= '1' then
+        tree:SetUserValue('exist_data',1) 
+        tolua.cast(tree,'ui::CTreeControl')
+        tree:ResizeByResolutionRecursively(1)
+        tree:Clear()
+        tree:EnableDrawFrame(true);
+        tree:SetFitToChild(true,60); 
+        tree:SetFontName("white_20_ol");
+        local nodeName,parentCategory
+        local slot,slotset,icon
+        local col,slotsize = 13,40
         for k,value in pairs(list) do
-            textview:AddText(k, "red_18_b");
+            tree:Add(k);
+            parentCategory = tree:FindByCaption(k);
+            slotset = BARRACKITEMLIST_MAKE_SLOTSET(tree,k,col,slotsize)
+            tree:Add(parentCategory,slotset, 'slotset_'..k);
             for i ,v in ipairs(value) do
-                textview:AddText(v[1]..' : '..v[2], "white_18_ol");
+                slot = slotset:GetSlotByIndex(i - 1)
+                slot:SetText('{#000000}'..v[2])
+                slot:SetTextMaxWidth(1000)
+                icon = CreateIcon(slot)
+                icon:SetImage(v[3])
+                icon:SetTextTooltip(v[1])
+                if (i % col) == 0 then
+                    slotset:ExpandRow()
+                end
             end
         end
-    
     end
-    textview:ShowWindow(1)
+    tree:ShowWindow(1)
     frame:ShowWindow(1)
-end 
-
-function BARRACKITEMLIST_SAVE_LIST()
-    local list = {}
-	local invItemList = session.GetInvItemSortedList();
-
-    for i = 1, invItemList:size() - 1 do
-        local invItem = invItemList:at(i);
-        if invItem ~= nil then
-    		local obj = GetIES(invItem:GetObject());
-            CHAT_SYSTEM(invItem:GetIESID())
-            list[obj.GroupName] = list[obj.GroupName] or {}
-            table.insert(list[obj.GroupName],{dictionary.ReplaceDicIDInCompStr(obj.Name),invItem.count,invItem:GetIESID()})
-        end
-	end
-    local cid = info.GetCID(session.GetMyHandle())
-    acutil.saveJSON(g.settingPath..cid..'.json',list)
-    g.itemlist[cid] = list  
 end
-BARRACKITEMLIST_SAVE_LIST()
+
+
+function BARRACKITEMLIST_MAKE_SLOTSET(tree, name,col,slotsize)
+    local slotsetTitle = 'slotset_titile_'..name
+	local newslotset = tree:CreateOrGetControl('slotset','slotset_'..name,0,0,0,0) 
+	tolua.cast(newslotset, "ui::CSlotSet");
+	
+	newslotset:EnablePop(0)
+	newslotset:EnableDrag(0)
+	newslotset:EnableDrop(0)
+	newslotset:SetMaxSelectionCount(999)
+	newslotset:SetSlotSize(slotsize,slotsize);
+	newslotset:SetColRow(col,1)
+	newslotset:SetSpc(0,0)
+	newslotset:SetSkinName('invenslot2')
+	newslotset:EnableSelection(0)
+    newslotset:ResizeByResolutionRecursively(1)
+	newslotset:CreateSlots()
+	return newslotset;
+end
