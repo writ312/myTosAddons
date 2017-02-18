@@ -3,7 +3,7 @@ _G['ADDONS']['BARRACKITEMLIST'] = _G['ADDONS']['BARRACKITEMLIST'] or {};
 local acutil = require('acutil')
 local g = _G['ADDONS']['BARRACKITEMLIST']
 g.settingPath = '../addons/barrackitemlist/'
-g.userlist  = acutil.loadJSON(g.settingPath..'userlist.json',nil)
+g.userlist  = acutil.loadJSON(g.settingPath..'userlist.json',nil) or {}
 g.itemlist = g.itemlist or {}
 
 function BARRACKITEMLIST_ON_INIT(addon,frame)
