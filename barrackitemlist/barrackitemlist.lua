@@ -5,6 +5,11 @@ local g = _G['ADDONS']['BARRACKITEMLIST']
 g.settingPath = '../addons/barrackitemlist/'
 g.userlist  = acutil.loadJSON(g.settingPath..'userlist.json',nil) or {}
 g.itemlist = g.itemlist or {}
+for k,v in pairs(g.userlist) do
+    if not g.itemlist[k] then
+        g.itemlist[k] = acutil.loadJSON(g.settingPath..k..'.json',nil)
+    end
+end
 
 function BARRACKITEMLIST_ON_INIT(addon,frame)
     local cid = info.GetCID(session.GetMyHandle())
@@ -30,39 +35,49 @@ function SELECT_CHARBTN_LBTNUP_EVENT(addonFrame, eventMsg)
     BARRACKITEMLIST_SHOW_LIST(cid)
 end
 function BARRACKITEMLIST_COMMAND(command)
+    if #command > 0 then
+        local itemlist = BARRACKITEMLIST_SEARCH_ITEMS(table.remove(command,1))
+        for cid ,items in pairs(itemlist) do
+            if items then
+                CHAT_SYSTEM(g.userlist[cid])
+                for i ,v in ipairs(items) do
+                    CHAT_SYSTEM(string.format('%s : %d',v[1],v[2]))
+                end
+            end
+        end
+        return
+    end   
     ui.GetFrame('barrackitemlist'):ShowWindow(1)
-    -- local droplist = tolua.cast(ui.GetFrame('barrackitemlist'):GetChild("droplist"), "ui::CDropList");
-    -- droplist:ClearItems()
-    -- droplist:AddItem(1,'None')
     -- local t = {}
     -- for k,v in pairs(g.userlist) do
     --     table.insert(t,{k,v})
-    --     droplist:AddItem(k,"{s20}"..v.."{/}",0,'BARRACKITEMLIST_SHOW_LIST()');
     -- end
-    local cmd = table.remove(command,1)
-    if cmd then
-        local cid = t[tonumber(cmd)][1]
-        if cid then
-            BARRACKITEMLIST_SHOW_LIST(cid)
-        end
-    -- else
-    --     for i,v in ipairs(t) do
-    --         CHAT_SYSTEM(string.format("%d : %s",i,v[2]))
+    -- local cmd = table.remove(command,1)
+    -- if cmd then
+    --     local cid = t[tonumber(cmd)][1]
+    --     if cid then
+    --         BARRACKITEMLIST_SHOW_LIST(cid)
     --     end
-    end
+    -- end
+
 end 
 
 function BARRACKITEMLIST_SAVE_LIST()
     local list = {}
+    session.BuildInvItemSortedList()
 	local invItemList = session.GetInvItemSortedList();
 
     for i = 1, invItemList:size() - 1 do
         local invItem = invItemList:at(i);
         if invItem ~= nil then
     		local obj = GetIES(invItem:GetObject());
-
             list[obj.GroupName] = list[obj.GroupName] or {}
-            table.insert(list[obj.GroupName],{dictionary.ReplaceDicIDInCompStr(obj.Name),invItem.count,obj.Icon})
+            local itemName = dictionary.ReplaceDicIDInCompStr(obj.Name)
+            local itemCount = invItem.count
+            if obj.GroupName ==  'Gem' or obj.GroupName ==  'Card' then
+                itemCount = GET_ITEM_LEVEL(obj)
+            end
+            table.insert(list[obj.GroupName],{itemName,itemCount,obj.Icon})
         end
 	end
     local cid = info.GetCID(session.GetMyHandle())
@@ -107,11 +122,11 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
             tree:Add(parentCategory,slotset, 'slotset_'..k);
             for i ,v in ipairs(value) do
                 slot = slotset:GetSlotByIndex(i - 1)
-                slot:SetText('{#000000}'..v[2])
+                slot:SetText(string.format(v[2]))
                 slot:SetTextMaxWidth(1000)
                 icon = CreateIcon(slot)
                 icon:SetImage(v[3])
-                icon:SetTextTooltip(v[1])
+                icon:SetTextTooltip(string.format("%s : %s",v[1],v[2]))
                 if (i % col) == 0 then
                     slotset:ExpandRow()
                 end
@@ -140,4 +155,21 @@ function BARRACKITEMLIST_MAKE_SLOTSET(tree, name,col,slotsize)
     newslotset:ResizeByResolutionRecursively(1)
 	newslotset:CreateSlots()
 	return newslotset;
+end
+
+function BARRACKITEMLIST_SEARCH_ITEMS(itemName)
+    local items = {}
+    for cid,name in pairs(g.userlist) do
+        if g.itemlist[cid] then
+            for group,list in pairs(g.itemlist[cid]) do
+                for i ,v in ipairs(list) do
+                    if string.find(v[1],itemName) then
+                        items[cid] = items[cid] or {}
+                        table.insert(items[cid],v)
+                    end
+                end
+            end
+        end
+    end
+    return items
 end
