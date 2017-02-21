@@ -11,6 +11,7 @@ for k,v in pairs(g.userlist) do
     end
 end
 
+
 function BARRACKITEMLIST_ON_INIT(addon,frame)
     local cid = info.GetCID(session.GetMyHandle())
     g.userlist[cid] = info.GetPCName(session.GetMyHandle())
@@ -22,7 +23,8 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     acutil.setupEvent(addon,'GAME_TO_LOGIN','BARRACKITEMLIST_SAVE_LIST')
     acutil.setupEvent(addon,'DO_QUIT_GAME','BARRACKITEMLIST_SAVE_LIST')
     -- acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', 'SELECT_CHARBTN_LBTNUP_EVENT')
-    local droplist = tolua.cast(ui.GetFrame('barrackitemlist'):GetChild("droplist"), "ui::CDropList");
+    ui.GetFrame('barrackitemlist'):GetChild("searchGbox"):ShowWindow(0)
+    local droplist = tolua.cast(ui.GetFrame('barrackitemlist'):GetChild("treeGbox"):GetChild("droplist"), "ui::CDropList");
     droplist:ClearItems()
     droplist:AddItem(1,'None')
     for k,v in pairs(g.userlist) do
@@ -75,7 +77,7 @@ function BARRACKITEMLIST_SAVE_LIST()
             local itemName = dictionary.ReplaceDicIDInCompStr(obj.Name)
             local itemCount = invItem.count
             if obj.GroupName ==  'Gem' or obj.GroupName ==  'Card' then
-                itemCount = GET_ITEM_LEVEL(obj)
+                itemCount = 'Lv' .. GET_ITEM_LEVEL(obj)
             end
             table.insert(list[obj.GroupName],{itemName,itemCount,obj.Icon})
         end
@@ -89,7 +91,7 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
     local frame = ui.GetFrame('barrackitemlist')
     frame:ShowWindow(1)
     local gbox = GET_CHILD(frame,'treeGbox','ui::CGroupBox');
-    local droplist = GET_CHILD(frame,'droplist', "ui::CDropList")
+    local droplist = GET_CHILD(gbox,'droplist', "ui::CDropList")
     if not cid then cid= droplist:GetSelItemKey() end
     for k,v in pairs(g.userlist) do
         local child = gbox:GetChild("tree"..k) 
@@ -103,7 +105,7 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
         if(e) then return end
     end
 
-    local tree = gbox:CreateOrGetControl('tree','tree'..cid,25,20,545,0)
+    local tree = gbox:CreateOrGetControl('tree','tree'..cid,25,50,545,0)
     if tree:GetUserValue('exist_data') ~= '1' then
         tree:SetUserValue('exist_data',1) 
         tolua.cast(tree,'ui::CTreeControl')
@@ -115,20 +117,40 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
         local nodeName,parentCategory
         local slot,slotset,icon
         local col,slotsize = 13,40
-        for k,value in pairs(list) do
-            tree:Add(k);
-            parentCategory = tree:FindByCaption(k);
-            slotset = BARRACKITEMLIST_MAKE_SLOTSET(tree,k,col,slotsize)
-            tree:Add(parentCategory,slotset, 'slotset_'..k);
-            for i ,v in ipairs(value) do
-                slot = slotset:GetSlotByIndex(i - 1)
-                slot:SetText(string.format(v[2]))
-                slot:SetTextMaxWidth(1000)
-                icon = CreateIcon(slot)
-                icon:SetImage(v[3])
-                icon:SetTextTooltip(string.format("%s : %s",v[1],v[2]))
-                if (i % col) == 0 then
-                    slotset:ExpandRow()
+        local nodeList = {
+             {"Unused" , "シルバー"}
+            ,{"Weapon" , "武器"}
+            ,{"SubWeapon" , "サブ武器"}
+            ,{"Armor" , "アーマー"}
+            ,{"Drug" , "消費アイテム"}
+            ,{"Recipe" ,"レシピ"}
+            ,{"Material","素材"}
+            ,{"Gem","ジェム"}
+            ,{"Card","カード"}
+            ,{"Collection","コレクション"}
+            ,{"Quest" ,"クエスト"}
+            ,{"Event" ,"イベント"}
+            ,{"Cube" , "キューブ"}
+            ,{"Premium" ,"プレミアム"}
+        }
+        for i,value in ipairs(nodeList) do
+            DEVELOPERCONSOLE_PRINT_TEXT(value[1]..value[2])
+            local nodeItemList = list[value[1]]
+            if nodeItemList then
+                tree:Add(value[2]);
+                parentCategory = tree:FindByCaption(value[2]);
+                slotset = BARRACKITEMLIST_MAKE_SLOTSET(tree,value[1],col,slotsize)
+                tree:Add(parentCategory,slotset, 'slotset_'..value[1]);
+                for i ,v in ipairs(nodeItemList) do
+                    slot = slotset:GetSlotByIndex(i - 1)
+                    slot:SetText(string.format(v[2]))
+                    slot:SetTextMaxWidth(1000)
+                    icon = CreateIcon(slot)
+                    icon:SetImage(v[3])
+                    icon:SetTextTooltip(string.format("%s : %s",v[1],v[2]))
+                    if (i % col) == 0 then
+                        slotset:ExpandRow()
+                    end
                 end
             end
         end
@@ -136,7 +158,6 @@ function BARRACKITEMLIST_SHOW_LIST(cid)
     tree:ShowWindow(1)
     frame:ShowWindow(1)
 end
-
 
 function BARRACKITEMLIST_MAKE_SLOTSET(tree, name,col,slotsize)
     local slotsetTitle = 'slotset_titile_'..name
@@ -172,4 +193,58 @@ function BARRACKITEMLIST_SEARCH_ITEMS(itemName)
         end
     end
     return items
+end
+
+function BARRACKITEMLIST_TAB_CHANGE(frame, obj, argStr, argNum)
+    local treeGbox = frame:GetChild('treeGbox')
+    local searchGbox = frame:GetChild('searchGbox')
+
+	local tabObj = tolua.cast(obj, "ui::CTabControl");
+	local tabIndex = tabObj:GetSelectItemIndex();
+
+	if (tabIndex == 0) then
+		treeGbox:ShowWindow(1)
+		searchGbox:ShowWindow(0)
+	else
+		treeGbox:ShowWindow(0)
+		searchGbox:ShowWindow(1)
+	end
+end
+
+function BARRACKITEMLIST_SHOW_SEARCH_ITEMS(frame, obj, argStr, argNum)
+    local frame = ui.GetFrame('barrackitemlist')
+    local searchGbox = frame:GetChild('searchGbox')
+    local editbox = tolua.cast(searchGbox:GetChild('searchEdit'), "ui::CEditControl");
+    local items = BARRACKITEMLIST_SEARCH_ITEMS( editbox:GetText())
+
+    local tree = searchGbox:CreateOrGetControl('tree','saerchTree',25,50,545,0)
+    tolua.cast(tree,'ui::CTreeControl')
+    tree:ResizeByResolutionRecursively(1)
+    tree:Clear()
+    tree:EnableDrawFrame(true);
+    tree:SetFitToChild(true,60); 
+    tree:SetFontName("white_20_ol");
+        local nodeName,parentCategory
+        local slot,slotset,icon
+        local col,slotsize = 13,40
+        for k,value in pairs(items) do
+            tree:Add(g.userlist[k]);
+            parentCategory = tree:FindByCaption(k);
+            slotset = BARRACKITEMLIST_MAKE_SLOTSET(tree,k,col,slotsize)
+            tree:Add(parentCategory,slotset, 'slotset_'..k);
+            for i ,v in ipairs(value) do
+                slot = slotset:GetSlotByIndex(i - 1)
+                slot:SetText(string.format('{s20}%s',v[2]))
+                slot:SetTextAlign(30,30)
+                -- slot:SetTextMaxWidth(1000)
+                icon = CreateIcon(slot)
+                icon:SetImage(v[3])
+                icon:SetTextTooltip(string.format("%s : %s",v[1],v[2]))
+                if (i % col) == 0 then
+                    slotset:ExpandRow()
+                end
+            end
+        end
+    tree:OpenNodeAll()
+    tree:ShowWindow(1)
 end

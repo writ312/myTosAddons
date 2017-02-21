@@ -4,7 +4,13 @@
   <option hideable="true"/>
   <layer layerlevel="96"/>
     <controls>
-        <groupbox name="treeGbox"  rect="0 50 600 880" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
-		<droplist name="droplist" rect="30 10 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
+    <tab name="tab" rect="0 0 800 40" margin="40 0 0 0" layout_gravity="left top" LBtnDownScp="BARRACKITEMLIST_TAB_CHANGE" fixwidth="false"/>
+		<tabitem name="ItemListTab" parent="tab" crect="5 100 235 30" layout_gravity="left top" caption="アイテムリスト" control="none"/>
+    <tabitem name="SearchListTab" parent="tab" crect="5 100 235 30" layout_gravity="left top" caption="アイテム検索" control="none"/>
+    <groupbox name="treeGbox"  rect="0 100 600 860" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
+		  <droplist name="droplist" parent="treeGbox" rect="30 0 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
+    <groupbox name="searchGbox"  rect="0 100 600 860" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
+      <edit name="searchEdit" parent="searchGbox" rect="30 0 300 30" layout_gravity="left top" OffsetForDraw="0 -1"  fontname="white_18_ol" maxlen="40"  EnterKeyScp="BARRACKITEMLIST_SHOW_SEARCH_ITEMS" textalign="left top" usetag="true"/>
+      <button name="searchBtn" parent="searchGbox" rect="330 0 60 30" margin="0 0 10 9" layout_gravity="left top" LBtnUpArgNum="" LBtnUpScp="BARRACKITEMLIST_SHOW_SEARCH_ITEMS" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" clicksound="button_click_big" image="inven_s" />
     </controls>
 </uiframe>
