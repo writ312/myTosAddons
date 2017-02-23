@@ -82,7 +82,7 @@
 		"name" : "Barrack Itemlist",
 		"file" : "barrackitemlist",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.4",
+		"fileVersion" : "v1.1.0",
 		"releaseTag" : "barrackitemlist",
 		"unicode" : "⛄",
 		"description" : "他のキャラのインベントリの中身を表示する。/ilで表示",
