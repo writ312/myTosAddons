@@ -52,6 +52,7 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     acutil.setupEvent(addon,'WAREHOUSE_CLOSE','BARRACKITEMLIST_SAVE_WAREHOUSE')
     -- acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', 'SELECT_CHARBTN_LBTNUP_EVENT')
 
+    addon:RegisterMsg('GAME_START_3SEC','BARRACKITEMLIST_CREATE_VAR_ICONS')
     
     local droplist = tolua.cast(frame:GetChild("droplist"), "ui::CDropList");
     droplist:ClearItems()
@@ -62,6 +63,7 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     tolua.cast(frame:GetChild('tab'), "ui::CTabControl"):SelectTab(0)
     BARRACKITEMLIST_CREATE_SETTINGMENU()
     BARRACKITEMLIST_TAB_CHANGE(frame)
+    frame:ShowWindow(0)
 end
 
 -- function SELECT_CHARBTN_LBTNUP_EVENT(addonFrame, eventMsg)
@@ -82,6 +84,7 @@ function BARRACKITEMLIST_TAB_CHANGE(frame, obj, argStr, argNum)
         droplist:ShowWindow(1)
 		searchGbox:ShowWindow(0)
         settingGbox:ShowWindow(0)
+        BARRACKITEMLIST_SHOW_LIST()
         BARRACKITEMLIST_SAVE_SETTINGMENU()
 	elseif (tabIndex == 1) then
 		treeGbox:ShowWindow(0)
@@ -95,24 +98,12 @@ function BARRACKITEMLIST_TAB_CHANGE(frame, obj, argStr, argNum)
         droplist:ShowWindow(0)
 		searchGbox:ShowWindow(0)
         settingGbox:ShowWindow(1)
-        BARRACKITEMLIST_SHOW_LIST()
 	end
 end
 
 function BARRACKITEMLIST_COMMAND(command)
-    if #command > 0 then
-        local itemlist = BARRACKITEMLIST_SEARCH_ITEMS(table.remove(command,1))
-        for cid ,items in pairs(itemlist) do
-            if items then
-                for i ,v in ipairs(items) do
-                    CHAT_SYSTEM(string.format('%s : %d',v[1],v[2]))
-                end
-            end
-        end
-        return
-    end
     BARRACKITEMLIST_CREATE_SETTINGMENU()
-    ui.GetFrame('barrackitemlist'):ShowWindow(1)
+    ui.ToggleFrame('barrackitemlist')
 end 
 
 function BARRACKITEMLIST_SAVE_LIST()
@@ -382,6 +373,39 @@ function BARRACKITEMLIST_SAVE_SETTINGMENU()
     checkbox = tolua.cast(settingGbox:GetChild('openNodeChbox'),'ui::CCheckBox')
     if checkbox:IsChecked() == 1 then 
         g.setting.OpenNodeAll = true
+    else
+        g.setting.OpenNodeAll = false
     end
     acutil.saveJSON(g.settingPath..'setting.json',g.setting)
+end
+
+function BARRACKITEMLIST_CREATE_VAR_ICONS()
+    local frame = ui.GetFrame("sysmenu");
+	if false == VARICON_VISIBLE_STATE_CHANTED(frame, "necronomicon", "necronomicon")
+	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "grimoire", "grimoire")
+	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "guild", "guild")
+	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "poisonpot", "poisonpot")
+    and false == VARICON_VISIBLE_STATE_CHANTED(frame, "expcardcalculator", "expcardcalculator")
+	then
+		return;
+	end
+
+	DESTROY_CHILD_BY_USERVALUE(frame, "IS_VAR_ICON", "YES");
+
+	local status = frame:GetChild("status");
+	local inven = frame:GetChild("inven");
+	local offsetX = inven:GetX() - status:GetX();
+	local startX = status:GetMargin().left - offsetX;
+
+	startX = SYSMENU_CREATE_VARICON(frame, status, "guild", "guild", "sysmenu_guild", startX, offsetX, "Guild");
+	startX = SYSMENU_CREATE_VARICON(frame, status, "necronomicon", "necronomicon", "sysmenu_card", startX, offsetX);
+	startX = SYSMENU_CREATE_VARICON(frame, status, "grimoire", "grimoire", "sysmenu_neacro", startX, offsetX);
+	startX = SYSMENU_CREATE_VARICON(frame, status, "poisonpot", "poisonpot", "sysmenu_wugushi", startX, offsetX);
+	startX = SYSMENU_CREATE_VARICON(frame, status, "expcardcalculator", "expcardcalculator", "addonmenu_expcard", startX, offsetX, "Experience Card Calculator");
+	startX = SYSMENU_CREATE_VARICON(frame, status, "barrackitemlist", "barrackitemlist", "sysmenu_inv", startX, offsetX, "barrack item list");
+
+	local expcardcalculatorButton = GET_CHILD(frame, "barrackitemlist", "ui::CButton");
+	if expcardcalculatorButton ~= nil then
+		expcardcalculatorButton:SetTextTooltip("{@st59}barrackitemlist");
+	end
 end
