@@ -1,6 +1,10 @@
 ## hotkey ability
  キーボードショートカットに特性を入れることが出来る
 
+### 使い方
+コマンド又はドラッグアンドドロップで設定可能  
+[参考動画](https://youtu.be/bWcU8fO4pGk)
+
 ### コマンド
  `/hotkey number ClassID`
 

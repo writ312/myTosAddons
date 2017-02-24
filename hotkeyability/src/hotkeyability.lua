@@ -13,10 +13,10 @@ function HOTKEYABILITY_ON_INIT(addon,frame)
     acutil.setupHook(QUICKSLOTNEXPBAR_EXECUTE_HOOK,'QUICKSLOTNEXPBAR_EXECUTE')
     acutil.setupHook(MAKE_ABILITY_ICON_HOOK,'MAKE_ABILITY_ICON')
     acutil.setupHook(QUICKSLOTNEXPBAR_ON_DROP_HOOK,'QUICKSLOTNEXPBAR_ON_DROP')
+    acutil.setupHook(LOAD_SESSION_CHAT_MACRO_HOOK,'LOAD_SESSION_CHAT_MACRO')
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
-
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
@@ -37,9 +37,12 @@ function HOTKEYABILITY_SET_ICON()
         for k,v in pairs(g.setting) do
             if v[2] == 'Pose' then
                 HOTKEYABILITY_SET_POSE_ICON(k,v[1])
+            elseif v[2] == 'Macro' then
+                local imageNum = tonumber(v[1])%10
+                ui.GetFrame('quickslotnexpbar'):GetChild('slot'..k):GetIcon():SetImage(imageNum)
             else
                 HOTKEYABILITY_SET_ABIL_ICON(k,v[1])
-            end
+            end         
             frame:GetChild('slot'..k):SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
         end
     end
@@ -62,6 +65,8 @@ function HOTKEYABILITY_COMMAND(command)
             if v[2] == 'Pose' then
                 local cls = GetClassByType("Pose", v[1])
                 CHAT_SYSTEM(string.format("%s : %s",k,cls.Name))
+            elseif v[2] == 'Macro' then
+                CHAT_SYSTEM(string.format('%s : Chat Macro %s',k,v[1]))
             else
                 local abilID,abilName,abilClass = GetAbilityData(v[1])
                 CHAT_SYSTEM(string.format("%s : %s",k,abilClass.Name))
@@ -129,6 +134,9 @@ function HOTKEYABILITY_SET_POSE_ICON(k,poseID)
     icon:SetImage(cls.Icon)
 end
 
+function HOTKEYABILITY_SET_MACRO_ICON(k,macroID)
+end
+
 function GetAbilityData(abilID)
     local abil = session.GetAbility(abilID);
 	if not abil then
@@ -147,11 +155,17 @@ function QUICKSLOTNEXPBAR_ON_DROP_HOOK(frame, control, argStr, argNum)
     local icon                  = slot:GetIcon()
     if(FromFrameName == 'chatmacro') then
         local poseID = liftIcon:GetUserValue('POSEID');
-        local cls = GetClassByType("Pose", poseID);
-		local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
-        if cls.Premium == "YES" and isPremiumTokenState == false then return end
-        icon:SetImage(cls.Icon)
-        g.setting[tostring(slot:GetSlotIndex()+1)] = {poseID,'Pose'}
+        local macroID = liftIcon:GetUserValue('MacroID')
+        if poseID ~='None' then
+            local cls = GetClassByType("Pose", poseID);
+            local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
+            if cls.Premium == "YES" and isPremiumTokenState == false then return end
+            icon:SetImage(cls.Icon)
+            g.setting[tostring(slot:GetSlotIndex()+1)] = {poseID,'Pose'}
+        elseif macroID ~= 'None'then
+            icon:SetImage(macroID)
+            g.setting[tostring(slot:GetSlotIndex()+1)] = {macroID,'Macro'}
+        end
     elseif(FromFrameName == 'skilltree' and liftIcon:GetUserValue('ABILID') ~= 'None') then
         local abilID,abilName,abilClass = GetAbilityData(liftIcon:GetUserValue('ABILID'))
         if(abilClass.AlwaysActive == 'YES') then return end
@@ -233,6 +247,8 @@ function QUICKSLOTNEXPBAR_EXECUTE_HOOK(number)
 	        if poseCls ~= nil then
 		        control.Pose(poseCls.ClassName);
             end
+        elseif value[2] == 'Macro' then
+            EXEC_CHATMACRO(tonumber(value[1]))
         else
             HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
         end
@@ -251,3 +267,38 @@ function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
     end
     acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
 end
+
+function LOAD_SESSION_CHAT_MACRO_HOOK(frame)
+
+	local macroGbox = frame:GetChild('macroGroupbox');
+	local clslist = GetClassList("Pose");
+	local list = session.GetChatMacroList();
+	local cnt = list:Count();
+	
+	for i = 0 , cnt - 1 do
+		local info = list:PtrAt(i);
+		local ctrl = macroGbox:GetChild("CHAT_MACRO_" .. info.index);
+		ctrl:SetText(info.macro);
+		ctrl:ShowWindow(1);
+
+		local slot = macroGbox:GetChild("CHAT_MACRO_SLOT_" .. info.index);
+		tolua.cast(slot, "ui::CSlot");		
+		slot:SetUserValue('POSEID', info.poseID);
+		
+		local cls = GetClassByTypeFromList(clslist, info.poseID);
+		if cls ~= nil then			
+			local icon = slot:GetIcon();
+			icon:SetImage(cls.Icon);
+			icon:SetColorTone("FFFFFFFF");
+		end		
+	end
+    for i = 1 , MAX_MACRO_CNT do
+		local slot = macroGbox:GetChild("CHAT_MACRO_SLOT_" .. i);
+		tolua.cast(slot, "ui::CSlot");
+		local icon = slot:GetIcon();
+        if icon then
+            icon:SetUserValue('MacroID',i%10)
+        end
+    end
+end
+
