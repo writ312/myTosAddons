@@ -104,7 +104,7 @@ function RESOURCEMANAGER_ON_INIT(addon,frame)
         end
         g.loaded = true;
     end
-    g.addnon = addnon;
+    g.addnon = addon;
     g.frame = frame;
     existPresetJobs()
     frame:ShowWindow(g.frameVisual)

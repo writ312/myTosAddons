@@ -404,8 +404,13 @@ function BARRACKITEMLIST_CREATE_VAR_ICONS()
 	startX = SYSMENU_CREATE_VARICON(frame, status, "expcardcalculator", "expcardcalculator", "addonmenu_expcard", startX, offsetX, "Experience Card Calculator");
 	startX = SYSMENU_CREATE_VARICON(frame, status, "barrackitemlist", "barrackitemlist", "sysmenu_inv", startX, offsetX, "barrack item list");
 
-	local expcardcalculatorButton = GET_CHILD(frame, "barrackitemlist", "ui::CButton");
+    local expcardcalculatorButton = GET_CHILD(frame, "expcardcalculator", "ui::CButton");
 	if expcardcalculatorButton ~= nil then
-		expcardcalculatorButton:SetTextTooltip("{@st59}barrackitemlist");
+		expcardcalculatorButton:SetTextTooltip("{@st59}expcardcalculator");
+	end
+
+	local barrackitemlistButton = GET_CHILD(frame, "barrackitemlist", "ui::CButton");
+	if barrackitemlistButton ~= nil then
+		barrackitemlistButton:SetTextTooltip("{@st59}barrackitemlist");
 	end
 end

@@ -39,7 +39,7 @@ function HOTKEYABILITY_SET_ICON()
                 HOTKEYABILITY_SET_POSE_ICON(k,v[1])
             elseif v[2] == 'Macro' then
                 local imageNum = tonumber(v[1])%10
-                ui.GetFrame('quickslotnexpbar'):GetChild('slot'..k):GetIcon():SetImage(imageNum)
+                ui.GetFrame('quickslotnexpbar'):GetChild('slot'..k):GetIcon():SetImage('key'..imageNum)
             else
                 HOTKEYABILITY_SET_ABIL_ICON(k,v[1])
             end         
@@ -155,7 +155,7 @@ function QUICKSLOTNEXPBAR_ON_DROP_HOOK(frame, control, argStr, argNum)
     local icon                  = slot:GetIcon()
     if(FromFrameName == 'chatmacro') then
         local poseID = liftIcon:GetUserValue('POSEID');
-        local macroID = liftIcon:GetUserValue('MacroID')
+        local macroID =  liftIcon:GetUserValue('MacroID')
         if poseID ~='None' then
             local cls = GetClassByType("Pose", poseID);
             local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
@@ -163,7 +163,7 @@ function QUICKSLOTNEXPBAR_ON_DROP_HOOK(frame, control, argStr, argNum)
             icon:SetImage(cls.Icon)
             g.setting[tostring(slot:GetSlotIndex()+1)] = {poseID,'Pose'}
         elseif macroID ~= 'None'then
-            icon:SetImage(macroID)
+            icon:SetImage('key'..tonumber(macroID)%10)
             g.setting[tostring(slot:GetSlotIndex()+1)] = {macroID,'Macro'}
         end
     elseif(FromFrameName == 'skilltree' and liftIcon:GetUserValue('ABILID') ~= 'None') then
@@ -297,7 +297,7 @@ function LOAD_SESSION_CHAT_MACRO_HOOK(frame)
 		tolua.cast(slot, "ui::CSlot");
 		local icon = slot:GetIcon();
         if icon then
-            icon:SetUserValue('MacroID',i%10)
+            icon:SetUserValue('MacroID',i)
         end
     end
 end
