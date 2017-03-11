@@ -104,7 +104,7 @@
 		"name" : "Hotkey Ability For Joystick",
 		"file" : "hotkeyabilityforjoy",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.1",
+		"fileVersion" : "v1.2.2",
 		"releaseTag" : "hotkeyabilityforjoy",
 		"unicode" : "⛄",
 		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",

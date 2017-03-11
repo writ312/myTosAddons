@@ -238,26 +238,6 @@ function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 	return classCtrl:GetY() + classCtrl:GetHeight() + 30;
 end
 
-
--- function QUICKSLOTNEXPBAR_SLOT_USE_HOOK(frame, slot, argStr, argNum)
---     local index = tolua.cast(slot,'ui::CSlot'):GetSlotIndex()
---     local key = tostring(index + 1)
---     local value = g.setting[key]
---     if value then
---         if value[2] == 'Pose' then
---             local poseCls = GetClassByType('Pose', value[1]);
--- 	        if poseCls ~= nil then
--- 		        control.Pose(poseCls.ClassName);
---             end
---         elseif value[2] == 'Macro' then
---             EXEC_CHATMACRO(tonumber(value[1]))
---         else
---             HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
---         end
---     else
---         QUICKSLOTNEXPBAR_SLOT_USE_HOOK_OLD(frame, slot, argStr, argNum)
---     end
--- end
 function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 
 	local quickFrame = ui.GetFrame('joystickquickslot')
@@ -304,23 +284,24 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
 	else
 
 	end
-	local key = tostring(slotIndex + 1)
+	 
+	local quickslotFrame = ui.GetFrame('joystickquickslot');
+	local slot = quickslotFrame:GetChildRecursively("slot"..slotIndex+1);
+	QUICKSLOTNEXPBAR_SLOT_USE(quickSlotFrame, slot, 'None', 0);	
+    
+    local key = tostring(slotIndex + 1)
     local value = g.setting[key]
     if value then
         if value[2] == 'Pose' then
             local poseCls = GetClassByType('Pose', value[1]);
-	        if poseCls ~= nil then
-		        control.Pose(poseCls.ClassName);
+            if poseCls ~= nil then
+                control.Pose(poseCls.ClassName);
             end
         elseif value[2] == 'Macro' then
             EXEC_CHATMACRO(tonumber(value[1]))
         else
             HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
         end
-    else
-		local quickslotFrame = ui.GetFrame('joystickquickslot');
-		local slot = quickslotFrame:GetChildRecursively("slot"..slotIndex+1);
-		JOYSTICK_QUICKSLOT_EXECUTE_OLD(quickSlotFrame, slot, 'None', 0);	
     end
 end
 function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
@@ -367,4 +348,3 @@ function LOAD_SESSION_CHAT_MACRO_HOOK(frame)
         end
     end
 end
-
