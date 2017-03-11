@@ -10,10 +10,12 @@ g.settingPath = '../addons/hotkeyabilityforjoy/'
 CHAT_SYSTEM('on load hotkey')   
 
 function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
+    g.addon = addon
     acutil.setupHook(JOYSTICK_QUICKSLOT_EXECUTE_HOOK,'JOYSTICK_QUICKSLOT_EXECUTE')
     acutil.setupHook(MAKE_ABILITY_ICON_HOOK,'MAKE_ABILITY_ICON')
     acutil.setupHook(JOYSTICK_QUICKSLOT_ON_DROP_HOOK,'JOYSTICK_QUICKSLOT_ON_DROP')
     acutil.setupHook(LOAD_SESSION_CHAT_MACRO_HOOK,'LOAD_SESSION_CHAT_MACRO')
+
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
@@ -32,6 +34,7 @@ function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
 end
 
 function HOTKEYABILITY_SET_ICON()
+    acutil.setupEvent(g.addon, 'JOYSTICK_QUICKSLOT_EXECUTE', 'JOYSTICK_QUICKSLOT_EXECUTE_EVENT')
     if  g.setting then
         local frame = ui.GetFrame('joystickquickslot')
         for k,v in pairs(g.setting) do
@@ -238,57 +241,74 @@ function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 	return classCtrl:GetY() + classCtrl:GetHeight() + 30;
 end
 
-function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
-
+function JOYSTICK_QUICKSLOT_EXECUTE_EVENT(addonFrame, eventMsg)
+    local slotIndex = acutil.getEventArgs(eventMsg);
 	local quickFrame = ui.GetFrame('joystickquickslot')
 	local Set1 = GET_CHILD_RECURSIVELY(quickFrame,'Set1','ui::CGroupBox');
 	local Set2 = GET_CHILD_RECURSIVELY(quickFrame,'Set2','ui::CGroupBox');
 
 	local input_L1  = joystick.IsKeyPressed("JOY_BTN_5")
 	local input_R1  = joystick.IsKeyPressed("JOY_BTN_6")
-
-	local joystickRestFrame = ui.GetFrame('joystickrestquickslot')
-	if joystickRestFrame:IsVisible() == 1 then
-		REST_JOYSTICK_SLOT_USE(joystickRestFrame, slotIndex);
-		return;
-	end
-
-	if Set2:IsVisible() == 1 then
-			slotIndex = slotIndex + 20
-	end
+    local joystickextend = ui.GetFrame('joystickextender')
+    if joystickextend then
+        if Set2:IsGrayStyle() == 1 then
+	    	slotIndex = slotIndex + 20
+    	end
 	
-	if input_L1 == 1 and input_R1 == 1 then
-		if Set1:IsVisible() == 1 then
-			if	slotIndex == 2  or slotIndex == 14 then
-				slotIndex = 10
-			elseif	slotIndex == 0  or slotIndex == 12 then
-				slotIndex = 8
-			elseif	slotIndex == 1  or slotIndex == 13 then
-				slotIndex = 9
-			elseif	slotIndex == 3  or slotIndex == 15 then
-				slotIndex = 11
-			end
-		end	
+        if input_L1 == 1 and input_R1 == 1 then
+            if Set2:IsGrayStyle() == 0 then
+                if	slotIndex == 2  or slotIndex == 14 then
+                    slotIndex = 10
+                elseif	slotIndex == 0  or slotIndex == 12 then
+                    slotIndex = 8
+                elseif	slotIndex == 1  or slotIndex == 13 then
+                    slotIndex = 9
+                elseif	slotIndex == 3  or slotIndex == 15 then
+                    slotIndex = 11
+                end
+            else
+                if	slotIndex == 22  or slotIndex == 34 then
+                    slotIndex = 30
+                elseif	slotIndex == 20  or slotIndex == 32 then
+                    slotIndex = 28
+                elseif	slotIndex == 21  or slotIndex == 33 then
+                    slotIndex = 29
+                elseif	slotIndex == 23  or slotIndex == 35 then
+                    slotIndex = 31
+                end
+            end
 
-		if Set2:IsVisible() == 1 then
-			if	slotIndex == 22  or slotIndex == 34 then
-				slotIndex = 30
-			elseif	slotIndex == 20  or slotIndex == 32 then
-				slotIndex = 28
-			elseif	slotIndex == 21  or slotIndex == 33 then
-				slotIndex = 29
-			elseif	slotIndex == 23  or slotIndex == 35 then
-				slotIndex = 31
-			end
-		end
-	else
+        end
+    else
+        if Set2:IsVisible() == 1 then
+                slotIndex = slotIndex + 20
+        end
+        if input_L1 == 1 and input_R1 == 1 then
+            if Set1:IsVisible() == 1 then
+                if	slotIndex == 2  or slotIndex == 14 then
+                    slotIndex = 10
+                elseif	slotIndex == 0  or slotIndex == 12 then
+                    slotIndex = 8
+                elseif	slotIndex == 1  or slotIndex == 13 then
+                    slotIndex = 9
+                elseif	slotIndex == 3  or slotIndex == 15 then
+                    slotIndex = 11
+                end
+            end	
 
-	end
-	 
-	local quickslotFrame = ui.GetFrame('joystickquickslot');
-	local slot = quickslotFrame:GetChildRecursively("slot"..slotIndex+1);
-	QUICKSLOTNEXPBAR_SLOT_USE(quickSlotFrame, slot, 'None', 0);	
-    
+            if Set2:IsVisible() == 1 then
+                if	slotIndex == 22  or slotIndex == 34 then
+                    slotIndex = 30
+                elseif	slotIndex == 20  or slotIndex == 32 then
+                    slotIndex = 28
+                elseif	slotIndex == 21  or slotIndex == 33 then
+                    slotIndex = 29
+                elseif	slotIndex == 23  or slotIndex == 35 then
+                    slotIndex = 31
+                end
+            end
+        end
+    end
     local key = tostring(slotIndex + 1)
     local value = g.setting[key]
     if value then
@@ -304,6 +324,7 @@ function JOYSTICK_QUICKSLOT_EXECUTE_HOOK(slotIndex)
         end
     end
 end
+
 function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
     local slot 	= tolua.cast(control, 'ui::CSlot');
     local index = slot:GetSlotIndex()

@@ -9,7 +9,7 @@
     <!--<script OpenpScp="FEVORCOMBO_OPEN"/>-->
     <userconfig Color_0_9="FF0000FF" Color_10_29="FF8000FF" Color_30_49="FFFF00FF" Color_50_99="FFFF0080" Color_100="FFFF0000" Ex_DigitFont="{@st45tw3}" Ex_XFont="{@st45tw3}" Ex_TextFont="{@st45tw3}"/>
     <controls>
-        <!--<gauge name="combo_gauge_right" rect="0 0 120 50" margin="0 85 0 0" layout_gravity="center top"/>-->
+        <gauge name="combo_gauge_right" rect="0 0 120 50" margin="0 85 0 0" layout_gravity="center top"/>
         <!--gauge name="combo_gauge_left" rect="-80 54 120 50" layout_gravity="center top"/-->
         <!--<picture name="digit1" rect="0 0 40 60" margin="0 0 210 0" layout_gravity="right top" hittest="false" image="3" stretch="true"/>-->
         <picture name="digit2" rect="0 0 40 60" margin="0 0 330 0" layout_gravity="right top" hittest="false" image="1" stretch="true"/>

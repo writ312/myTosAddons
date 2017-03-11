@@ -21,7 +21,6 @@ local function DoV_UPDATE_DIGIT_COLOR(frame, cnt, digit2, digit3)
 	end
 	
 	local colorTone = frame:GetUserConfig(configName);
-	DEVELOPERCONSOLE_PRINT_TEXT(colorTone)
 	digit2:SetColorTone(colorTone);
 	digit3:SetColorTone(colorTone);
 
@@ -62,6 +61,9 @@ function DoV_UPDATE()
            SetStackPic(g.frame,stack)
            g.stack = stack
         end
+        local rightGauge = GET_CHILD(g.frame, "combo_gauge_right", "ui::CGauge");
+        rightGauge:SetPoint(dov.time/1000, dov.arg1 * 3 + 20);
+    	rightGauge:SetPointWithTime(0, dov.time/1000);
     else
         g.stack = 0
         g.frame:ShowWindow(0)
