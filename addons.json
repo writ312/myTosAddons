@@ -3,7 +3,7 @@
 		"name" : "Poison Auto Charge",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.0",
+		"fileVersion" : "v1.2.1",
 		"releaseTag" : "poisonpot",
 		"unicode" : "⛄",
 		"description" : "ポイズンシューターの毒液を自動で補充する.",
