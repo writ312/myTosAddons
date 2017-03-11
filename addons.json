@@ -3,7 +3,7 @@
 		"name" : "Poison Auto Charge",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.0",
+		"fileVersion" : "v1.2.0",
 		"releaseTag" : "poisonpot",
 		"unicode" : "⛄",
 		"description" : "ポイズンシューターの毒液を自動で補充する.",
@@ -99,6 +99,28 @@
 		"description" : "他のキャラのインベントリの中身を表示する(検索機のなしバージョン)。/ilで表示(一度そのキャラでログインする必要有り)",
 		"tags" : [
 			"ui","item"
+		]
+	},{
+		"name" : "Hotkey Ability For Joystick",
+		"file" : "hotkeyabilityforjoy",
+		"extension" : "ipf",
+		"fileVersion" : "v1.2.1",
+		"releaseTag" : "hotkeyabilityforjoy",
+		"unicode" : "⛄",
+		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",
+		"tags" : [
+			"ui","joystick","quiqslot","ability","pose"
+		]
+	},{
+		"name" : "DoV Counter",
+		"file" : "dovcounter",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "dovcounter",
+		"unicode" : "⛄",
+		"description" : "DoVのスタックをコルセアのコンボのように表示する",
+		"tags" : [
+			"ui","DoV"
 		]
 	}
 ]
