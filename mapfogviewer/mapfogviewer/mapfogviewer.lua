@@ -62,29 +62,30 @@ function DRAW_RED_FOG(frame)
 	end
 
 	local list = session.GetMapFogList(session.GetMapName());
-	local cnt = list:Count();
-	for i = 0 , cnt - 1 do
-		local tile = list:PtrAt(i);
+	if list then
+		local cnt = list:Count();
+		for i = 0 , cnt - 1 do
+			local tile = list:PtrAt(i);
 
-		if tile.revealed == 0 then
-			local name = string.format("_SAMPLE_%d", i);
-			local tilePosX = (tile.x * mapZoom) + offsetX;
-			local tilePosY = (tile.y * mapZoom) + offsetY;
-			local tileWidth = math.ceil(tile.w * mapZoom);
-			local tileHeight = math.ceil(tile.h * mapZoom);
-			local pic = frame:CreateOrGetControl("picture", name, tilePosX, tilePosY, tileWidth, tileHeight);
-			tolua.cast(pic, "ui::CPicture");
-			pic:ShowWindow(1);
-			pic:SetImage("fullred");
-			pic:SetEnableStretch(1);
-			pic:SetAlpha(30.0);
-			pic:EnableHitTest(0);
+			if tile.revealed == 0 then
+				local name = string.format("_SAMPLE_%d", i);
+				local tilePosX = (tile.x * mapZoom) + offsetX;
+				local tilePosY = (tile.y * mapZoom) + offsetY;
+				local tileWidth = math.ceil(tile.w * mapZoom);
+				local tileHeight = math.ceil(tile.h * mapZoom);
+				local pic = frame:CreateOrGetControl("picture", name, tilePosX, tilePosY, tileWidth, tileHeight);
+				tolua.cast(pic, "ui::CPicture");
+				pic:ShowWindow(1);
+				pic:SetImage("fullred");
+				pic:SetEnableStretch(1);
+				pic:SetAlpha(30.0);
+				pic:EnableHitTest(0);
 
-			if tile.selected == 1 then
-				pic:ShowWindow(0);
+				if tile.selected == 1 then
+					pic:ShowWindow(0);
+				end
 			end
 		end
 	end
-
 	frame:Invalidate();
 end

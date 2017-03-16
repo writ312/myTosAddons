@@ -49,7 +49,7 @@
 		"name" : "Map Fog Viewer Ex",
 		"file" : "mapfogviewerex",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.0.2",
 		"releaseTag" : "mapfogviewer",
 		"unicode" : "⛄",
 		"description" : "Map Fog viewer + Mini Map Extra 干渉するので両方共消してください",
