@@ -126,7 +126,7 @@
 		"name" : "Market History",
 		"file" : "markethistory",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
+		"fileVersion" : "v1.0.1",
 		"releaseTag" : "markethistory",
 		"unicode" : "⛄",
 		"description" : "マーケットの購入/出品履歴を保存し表示する。マーケットUIの4つ目のタブをクリック。",
