@@ -5,27 +5,17 @@ local g = _G['ADDONS']['DOVCOUNTER'];
 local acutil = require('acutil')
 g.settings = acutil.loadJSON('../addons/dovcounter/setting.json',{}) or {}
 
-local function DoV_UPDATE_DIGIT_COLOR(frame, cnt, digit2, digit3)
-
-	local configName = "";
-	if cnt < 3 then
-		configName = "Color_0_9";
-	elseif cnt < 5 then
-		configName = "Color_10_29";
-	elseif cnt < 10 then
-		configName = "Color_30_49";
-	elseif cnt < 15 then
-		configName = "Color_50_99";
-	else
-		configName = "Color_100";
-	end
-	
-	local colorTone = frame:GetUserConfig(configName);
+local function DoV_UPDATE_DIGIT_COLOR(frame, cnt,color, digit2, digit3)
+	local colorTone 
+    if color > 128 then
+        colorTone = string.format('FFFF00%02x',(255 - color)*2)
+    else
+        colorTone = string.format('FF%02x00FF',color * 2)
+    end
 	digit2:SetColorTone(colorTone);
 	digit3:SetColorTone(colorTone);
-
 end
-local function SetStackPic(frame,stack)
+local function SetStackPic(frame,stack,color)
     local digit2 = GET_CHILD(frame, "digit2", "ui::CPicture");
     local digit3 = GET_CHILD(frame, "digit3", "ui::CPicture");
 
@@ -37,8 +27,7 @@ local function SetStackPic(frame,stack)
         digit2:ShowWindow(0)
         digit3:SetImage(tostring(stack%10))
     end
-	-- local colorTone = DoV_UPDATE_DIGIT_COLOR(frame,stack)
-    DoV_UPDATE_DIGIT_COLOR(frame,stack,digit2,digit3)
+    DoV_UPDATE_DIGIT_COLOR(frame,stack,color,digit2,digit3)
 end
 
 local function DoV_Buff_Check()
@@ -55,26 +44,44 @@ function DoV_UPDATE()
 	local dov = DoV_Buff_Check()
 	if dov then
         g.frame:ShowWindow(1)
+        local stack = dov.over
 		-- local skillLv = dov.arg1
-		local stack = dov.over
-        if g.stack < stack  then
-           SetStackPic(g.frame,stack)
+        local buffMaxTime = dov.arg1 * 3 + 20
+        local buffTime = dov.time/1000
+        local rightGauge = GET_CHILD(g.frame, "combo_gauge_right", "ui::CGauge");
+        rightGauge:SetPoint(buffTime,buffMaxTime);
+    	rightGauge:SetPointWithTime(0, buffTime);
+        local color = math.floor(buffTime/buffMaxTime * 255)
+        rightGauge:SetColorTone(string.format('FFFF%x00',color));
+        
+        if g.stack <= stack  then
+            if stack == 1 then
+               SetStackPic(g.frame,stack,0) 
+            else
+               SetStackPic(g.frame,stack,dov.over/dov.arg1*255)
+            end
            g.stack = stack
         end
-        local rightGauge = GET_CHILD(g.frame, "combo_gauge_right", "ui::CGauge");
-        rightGauge:SetPoint(dov.time/1000, dov.arg1 * 3 + 20);
-    	rightGauge:SetPointWithTime(0, dov.time/1000);
     else
         g.stack = 0
         g.frame:ShowWindow(0)
     end
 end
 
+function DoV_UPDATE_GAUGE()
+        local rightGauge = GET_CHILD(g.frame, "combo_gauge_right", "ui::CGauge");
+        rightGauge:SetPoint(dov.time/1000, dov.arg1 * 3 + 20);
+    	rightGauge:SetPointWithTime(0, dov.time/1000);
+        local color = math.floor((dov.time/1000)/(dov.arg1 * 3 + 20) * 255)
+        DEVELOPERCONSOLE_PRINT_TEXT(color)
+        rightGauge:SetColorTone(string.format('FFFF%x00',color));
+       
+end
+
 function DoV_END_DRAG()
   g.settings.position.x = g.frame:GetX();
   g.settings.position.y = g.frame:GetY();
   acutil.saveJSON('../addons/dovcounter/setting.json',g.settings)
-
 end
 
 function DOVCOUNTER_ON_INIT(addon,frame)
