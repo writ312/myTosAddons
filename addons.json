@@ -133,5 +133,16 @@
 		"tags" : [
 			"ui","Market"
 		]
+	},{
+		"name" : "Ausrine Highlight",
+		"file" : "ausrinehighlight",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "ausrinehighlight",
+		"unicode" : "⛄",
+		"description" : "アウシュリネ像を強調する。/ausで設定画面を表示。デバッグモードは全ての像にエフェクトを追加する。確認用にどうぞ。",
+		"tags" : [
+			"Ausrine"
+		]
 	}
 ]

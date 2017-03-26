@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uiframe name="ausrinehighlight" x="0" y="0" width="400" height="320" keyboardselectframe="true">
+<frame layout_gravity="left top"/>
+  <option hideable="true"/>
+  <layer layerlevel="96"/>
+    <controls>
+    <groupbox name="settingGbox"  rect="0 0 300 290" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
+       <richtext name="effectTxt" parent="settingGbox" margin="30 0 200 40" layout_gravity="left top" caption="エフェクト" fontname="white_18_ol" hittest="false"/>
+       <droplist name="effectList" parent="settingGbox" rect="30 50 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
+
+       <richtext name="scaleTxt" parent="settingGbox" margin="30 150 200 40" layout_gravity="left top" caption="エフェクトの大きさ" fontname="white_18_ol" hittest="false"/>
+       <droplist name="scaleList" parent="settingGbox" rect="30 200 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
+
+       <button name="save" margin="0 50 0 0"  rect="0 0 100 40" caption="Save" layout_gravity="center bottom" LBtnUpScp="AUSRINE_HIGHLIGHT_SAVE_SETTING"/>
+       <button name="debug" margin="110 50 0 0"  rect="0 0 100 40" caption="DebugMode" layout_gravity="center bottom" LBtnUpScp="AUSRINE_HIGHLIGHT_DEBUGMODE"/>
+
+    </controls>
+</uiframe>
