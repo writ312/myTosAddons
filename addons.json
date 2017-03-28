@@ -144,5 +144,16 @@
 		"tags" : [
 			"Ausrine"
 		]
+	},{
+		"name" : "Exp Popup",
+		"file" : "exppopup",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "exppopup",
+		"unicode" : "⛄",
+		"description" : "手に入れた経験値をキャラ横に表示する",
+		"tags" : [
+			"exp"
+		]
 	}
 ]
