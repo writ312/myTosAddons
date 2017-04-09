@@ -148,10 +148,10 @@
 		"name" : "Exp Popup",
 		"file" : "exppopup",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.0.2",
 		"releaseTag" : "exppopup",
 		"unicode" : "⛄",
-		"description" : "手に入れた経験値をキャラ横に表示する",
+		"description" : "手に入れた経験値をキャラ横に表示する。/exppopでモード切替",
 		"tags" : [
 			"exp"
 		]
