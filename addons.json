@@ -126,7 +126,7 @@
 		"name" : "Market History",
 		"file" : "markethistory",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.0.2",
 		"releaseTag" : "markethistory",
 		"unicode" : "⛄",
 		"description" : "マーケットの購入/出品履歴を保存し表示する。マーケットUIの4つ目のタブをクリック。",
@@ -154,6 +154,17 @@
 		"description" : "手に入れた経験値をキャラ横に表示する。/exppopでモード切替",
 		"tags" : [
 			"exp"
+		]
+	},{
+		"name" : "Barrack Item List English ver",
+		"file" : "barrackitemlist_eng",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "barrackitemlist_eng",
+		"unicode" : "⛄",
+		"description" : "barrack item list translat into English.",
+		"tags" : [
+			"ui","item"
 		]
 	}
 ]

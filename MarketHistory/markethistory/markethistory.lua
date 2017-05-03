@@ -3,9 +3,10 @@ _G['ADDONS']['MARKETHISTORY'] = _G['ADDONS']['MARKETHISTORY'] or {};
 local g = _G['ADDONS']['MARKETHISTORY'] 
 local acutil = require('acutil')
 
-CHAT_SYSTEM('Market History v1.0.1 loaded!!')
+CHAT_SYSTEM('Market History v1.0.2 loaded!!')
 
 local function CreateHistoryModeBtn(frame)
+	frame:SetLayerLevel(95)
     local btn = frame:CreateOrGetControl("button","historyBtn",0,0,200,45)
     btn:SetOffset(1210,105)
     tolua.cast(btn,'ui::CButton')
@@ -21,12 +22,12 @@ local function SaveMarketHistroy(type,item)
             table.remove(list,1)
         end
     end
-	  local now = os.date('*t')
-	  item.date = string.format('%2d/%2d',now.month,now.day)
+	local now = os.date('*t')
+	item.date = string.format('%2d/%2d',now.month,now.day)
 
 	item.name = dictionary.ReplaceDicIDInCompStr(item.name)
     table.insert(list,item)
-    g.list[type] = list
+    g.list[type] = 	
     acutil.saveJSON(g.settingsFileLoc, g.list);
 end
 
@@ -51,7 +52,7 @@ function CREATE_HISTORY_LIST(frame,ctrl,type,argNum)
     if not list then return end
 
     local count = #list
-    for i = 1, count  do
+    for i = count,1,-1 do
         local marketItem = list[i];
 		if marketItem then
 			local ctrlSet = INSERT_CONTROLSET_DETAIL_LIST(itemlist, i, 0, "market_sell_item_detail");
@@ -68,6 +69,7 @@ function CREATE_HISTORY_LIST(frame,ctrl,type,argNum)
 			price:SetTextByKey("value",  acutil.addThousandsSeparator(marketItem.price));
 
 			local totalPrice = ctrlSet:GetChild("totalPrice");
+			marketItem.price = string.gsub(marketItem.price,',','');
 			totalPrice:SetTextByKey("value",  acutil.addThousandsSeparator(marketItem.count *  marketItem.price));
 		
 			ctrlSet:GetChild("btn"):ShowWindow(0)
@@ -148,8 +150,8 @@ function ON_MARKET_REGISTER_HOOK(frame, msg, argStr, argNum)
 
 	local item = {}
     item.name = frame:GetChildRecursively("itemname"):GetTextByKey("name")
-    item.price = frame:GetChildRecursively("edit_price"):GetText()
-    item.count = frame:GetChildRecursively("edit_count"):GetText()
+    item.price = string.gsub(frame:GetChildRecursively("edit_price"):GetText(),',','')
+    item.count = string.gsub(frame:GetChildRecursively("edit_count"):GetText(),',','')
     item.icon = icon:GetInfo().imageName
     SaveMarketHistroy('sell',item)
 	CLEAR_SLOT_ITEM_INFO(slot_item);
