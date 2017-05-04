@@ -164,9 +164,9 @@ function existPresetJobs()
             g.presetTable[1] = g.presetTable[1] or {}
             local tempTable = g.table[jobTable[jobID]]
             if (#tempTable == 1 ) or (#g.presetTable[1] == 1) and (n > 1) then
-                g.presetTable[1] = g.tableMerge(g.presetTable[1],tempTable)
+                g.presetTable[1] = g.tableMerge({unpack(g.presetTable[1])},tempTable)
             else
-                g.presetTable[n] = tempTable
+                g.presetTable[n] = {unpack(tempTable)}
                 n = n + 1;
             end
         end
@@ -184,6 +184,7 @@ function RESOURCEMANAGER_SET_ICON()
     for i ,v in ipairs(g.presetTable) do
         col = _RESOURCEMANAGER_SET_ICON(frame,col,v)
     end
+    existPresetJobs()
 end
 
 function _RESOURCEMANAGER_SET_ICON(frame,col,list)
