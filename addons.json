@@ -162,7 +162,7 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "barrackitemlist_eng",
 		"unicode" : "⛄",
-		"description" : "barrack item list translat into English.",
+		"description" : "barrack item list translat into English.If you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
 		"tags" : [
 			"ui","item"
 		]
