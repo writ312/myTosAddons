@@ -170,7 +170,7 @@
 		"name" : "Status Extend(Equipment)",
 		"file" : "statusextend",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
+		"fileVersion" : "v1.0.1",
 		"releaseTag" : "statusextend",
 		"unicode" : "⛄",
 		"description" : "ステータスの攻撃及び防御の値に()付けて装備の合計値を表示します。また、その内約をツールチップで表示します。",

@@ -24,6 +24,7 @@ local function GetObjByIcon(icon)
 end
 
 local function GetEquipsStatus()
+    g.status = {}
     local frame = ui.GetFrame('inventory')
     for i,v in ipairs({
         "HAT",
