@@ -96,7 +96,7 @@
 		"fileVersion" : "v1.1.5",
 		"releaseTag" : "barrackitemlistlite",
 		"unicode" : "⛄",
-		"description" : "他のキャラのインベントリの中身を表示する(検索機のなしバージョン)。/ilで表示(一度そのキャラでログインする必要有り)",
+		"description" : "他のキャラのインベントリの中身を表示する(検索機のなしバージョン)。<br>/ilで表示(一度そのキャラでログインする必要有り)",
 		"tags" : [
 			"ui","item"
 		]
@@ -162,7 +162,7 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "barrackitemlist_eng",
 		"unicode" : "⛄",
-		"description" : "barrack item list translat into English.If you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
+		"description" : "barrack item list translat into English.\nIf you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
 		"tags" : [
 			"ui","item"
 		]
