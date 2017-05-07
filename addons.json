@@ -177,5 +177,16 @@
 		"tags" : [
 			"ui","status"
 		]
+	},{
+		"name" : "Event Item Notice",
+		"file" : "eventitemnotice",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "eventitemnotice",
+		"unicode" : "⛄",
+		"description" : "イベントアイテムが規定数を超えた場合にシステムメッセージを流す。(今回はJToS ～5/31のイベント用)",
+		"tags" : [
+			"ui","status"
+		]
 	}
 ]
