@@ -162,7 +162,7 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "barrackitemlist_eng",
 		"unicode" : "⛄",
-		"description" : "Please once install barrack item list(not lite version) and unistanll that. barrack item list translat into English.If you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
+		"description" : "Pleaseeinstall barrack item list once (not lite version) and unistanll it. barrack item list translat into English.If you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
 		"tags" : [
 			"ui","item"
 		]
