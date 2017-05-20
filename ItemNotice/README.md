@@ -11,7 +11,7 @@
     1. Stop : 停止状態(この状態でアイテムを手に入れても通知されない。Restartボタンで再開)
     1. Automatic Restart : キャラクターをチェンジしたときに自動でChecking状態にする(イベントアイテムなどに使う)
 
-![img](./img1.png)
+![img](https://github.com/writ312/myTosAddons/blob/master/ItemNotice/img1.png?raw=true)
 
 ## 操作方法
 ① インベントリからのアイテムをドロップするためのスロット。  
