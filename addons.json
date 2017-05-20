@@ -178,13 +178,13 @@
 			"ui","status"
 		]
 	},{
-		"name" : "Event Item Notice",
-		"file" : "eventitemnotice",
+		"name" : "ItemNotice",
+		"file" : "itemnotice",
 		"extension" : "ipf",
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "eventitemnotice",
 		"unicode" : "⛄",
-		"description" : "イベントアイテムが規定数を超えた場合にシステムメッセージを流す。(今回はJToS ～5/31のイベント用)",
+		"description" : "Notify me when I got the specified number of items.command is /itemnotice. 指定されたアイテムを指定数手に入れたときに通知する。/itemnotice",
 		"tags" : [
 			"ui","status"
 		]
