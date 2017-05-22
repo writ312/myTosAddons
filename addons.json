@@ -181,7 +181,7 @@
 		"name" : "ItemNotice",
 		"file" : "itemnotice",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
+		"fileVersion" : "v1.0.3",
 		"releaseTag" : "itemnotice",
 		"unicode" : "⛄",
 		"description" : "Notify me when I got the specified number of items.command is /itemnotice. 指定されたアイテムを指定数手に入れたときに通知する。/itemnotice",
