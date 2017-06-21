@@ -6,16 +6,10 @@ g.user = 'fill'
 g.index = 1
 g.counter = 0
 g.setting = {}
-g.settingPath = '../addons/quickmenu/'
+g.settingPath = '../addons/quickmenu/setting.json'
 
 function QUICKMENU_ON_INIT(addon,frame)
-	local user = GetMyName()
-	if(g.user ~= user) then
-		g.setting = {}
-		g.user = user
-        g.index = 1
-	end
-	local setting ,e = acutil.loadJSON(g.settingPath..user..'.json',nil) or {}
+	local setting ,e = acutil.loadJSON(g.settingPath,nil) or {}
 	if(e or #setting == 0) then
 		table.insert(setting,{title = 'indun',type = 'chat',msg = '$indun'})
 		table.insert(setting,{title = 'よろ',type = 'chat',msg = 'よろー'})
@@ -36,7 +30,7 @@ function QUICKMENU_ON_INIT(addon,frame)
         end
     end
 
-	acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+	acutil.saveJSON(g.settingPath,g.setting)
     acutil.setupHook(OPEN_QUICKMENU_FRAME,'UI_TOGGLE_HELPLIST')
     acutil.slashCommand('/qm',QUICKMENU_COMMAND)
     acutil.slashCommand('/quickmenu',QUICKMENU_COMMAND)
@@ -119,6 +113,7 @@ function QUICKMENU_COMMAND(command)
         CHAT_SYSTEM("/qm msg [num] [message]");
         CHAT_SYSTEM("/qm title [num] [title]");
         CHAT_SYSTEM("/qm interval [num]");
+        CHAT_SYSTEM("/qm open")
     elseif cmd == 'msg' then
         -- /qm msg [num] [message]
         local msg = "";
@@ -140,6 +135,8 @@ function QUICKMENU_COMMAND(command)
         end
     elseif cmd == 'interval' then
         g.setting.interval = tonumber(table.remove(command,1))
+    elseif cmd == 'open' then
+        OPEN_QUICKMENU_FRAME()
     else
     -- /qm [num] [title] [message]
         num = tonumber(cmd)
@@ -157,7 +154,7 @@ function QUICKMENU_COMMAND(command)
             g.setting.menu[num].title = title
         end
     end
-    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+    acutil.saveJSON(g.settingPath,g.setting)
     local frame = ui.GetFrame('quickmenu')
     for i = 1 ,12 do
         if g.setting.menu[i] then

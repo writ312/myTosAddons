@@ -192,7 +192,7 @@
 		"name" : "Quick Menu",
 		"file" : "quickmenu",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
+		"fileVersion" : "v1.0.1",
 		"releaseTag" : "quickmenu",
 		"unicode" : "⛄",
 		"description" : "チャットやチャットコマンドを登録し、選択できるメニューを表示する。詳細はREADMEに",
