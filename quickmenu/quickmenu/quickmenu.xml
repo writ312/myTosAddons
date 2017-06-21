@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by imc (imc) -->
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by MinstFaith (EMBRACE) -->
+<uiframe name="quickmenu" x="0" y="0" width="500" height="400">
+	<frame title="{@st44}돌아가기{/}" layout_gravity="center top" margin="0 150 0 0"/>
+	<skin frameskin="test_win_system"/>
+	<draw drawnotitlebar="false" drawtitlebar="false"/>
+	<input moveable="false"/>
+	<layer topmostlayer="true" layerlevel="100"/>
+	<option closebutton="true" hideable="true"/>
+	<sound opensound="sys_popup_open_1" closesound="character_item_window_close"/>
+	<animation frameOpenAnim="chat_balloon_start" frameCloseAnim="chat_balloon_end"/>
+	<controls>
+		<!--<richtext name="tip" rect="0 60 380 30" layout_gravity="center top" caption="어떤 퀘스트로 돌아가시겠습니까?" fixwidth="true" fontname="brown_18_b" textalign="center center"/>-->
+		<button name="menu1" rect="0 0 200 40" margin="30 100 0 0" layout_gravity="left top" LBtnDownArgNum="0" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu2" rect="0 0 200 40" margin="30 140 0 0" layout_gravity="left top" LBtnDownArgNum="1" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu3" rect="0 0 200 40" margin="30 180 0 0" layout_gravity="left top" LBtnDownArgNum="2" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu4" rect="0 0 200 40" margin="30 220 0 0" layout_gravity="left top" LBtnDownArgNum="3" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu5" rect="0 0 200 40" margin="30 260 0 0" layout_gravity="left top" LBtnDownArgNum="4" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu6" rect="0 0 200 40" margin="30 300 0 0" layout_gravity="left top" LBtnDownArgNum="5" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+
+		<button name="menu7" rect="0 0 200 40" margin="260 100 0 0" layout_gravity="left top" LBtnDownArgNum="0" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu8" rect="0 0 200 40" margin="260 140 0 0" layout_gravity="left top" LBtnDownArgNum="1" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu9" rect="0 0 200 40" margin="260 180 0 0" layout_gravity="left top" LBtnDownArgNum="2" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu10" rect="0 0 200 40" margin="260 220 0 0" layout_gravity="left top" LBtnDownArgNum="3" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu11" rect="0 0 200 40" margin="260 260 0 0" layout_gravity="left top" LBtnDownArgNum="4" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+		<button name="menu12" rect="0 0 200 40" margin="260 300 0 0" layout_gravity="left top" LBtnDownArgNum="5" LBtnDownScp="QUESTWARP_QUESTID" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="{@st66b}퀘스트 클래스 네임{/}" clicksound="button_click_big" oversound="button_over" skin="test_pvp_btn" textalign="center center"/>
+
+	</controls>
+</uiframe>
