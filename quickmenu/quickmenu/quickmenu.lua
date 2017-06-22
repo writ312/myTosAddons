@@ -2,7 +2,7 @@ _G['ADDONS'] = _G['ADDONS'] or {};
 _G['ADDONS']['QUICKMENU'] = _G['ADDONS']['QUICKMENU'] or {};
 local g = _G['ADDONS']['QUICKMENU']
 local acutil = require('acutil')
-g.user = 'fill'
+g.user = nil
 g.index = 1
 g.counter = 0
 g.setting = {}
@@ -10,7 +10,9 @@ g.settingPath = '../addons/quickmenu/setting.json'
 
 function QUICKMENU_ON_INIT(addon,frame)
 	local setting ,e = acutil.loadJSON(g.settingPath,nil) or {}
-	if(e or #setting == 0) then
+	if(e or setting.version ~= '1.0.2') then
+        g.setting = {}
+        setting = {}
 		table.insert(setting,{title = 'indun',type = 'chat',msg = '$indun'})
 		table.insert(setting,{title = 'よろ',type = 'chat',msg = 'よろー'})
 		table.insert(setting,{title = 'おつ',type = 'chat',msg = 'おつー'})
@@ -19,15 +21,13 @@ function QUICKMENU_ON_INIT(addon,frame)
 		table.insert(setting,{title = 'うう～い',type = 'chat',msg = 'うう～い'})
         g.setting.menu = setting
         g.setting.interval = 5
+        g.setting.version = '1.0.2'
     else
         g.setting = setting
     end
     for i = 1 ,12 do
-        if g.setting.menu[i] then
-            frame:GetChild('menu'..i):SetText('{#000000}'..g.setting.menu[i].title)
-        else
-             g.setting.menu[i] = {}
-        end
+        g.setting.menu[i] = g.setting.menu[i] or {}
+        frame:GetChild('menu'..i):SetText('{#000000}'..(g.setting.menu[i].title or 'None')) 
     end
 
 	acutil.saveJSON(g.settingPath,g.setting)
@@ -157,9 +157,8 @@ function QUICKMENU_COMMAND(command)
     acutil.saveJSON(g.settingPath,g.setting)
     local frame = ui.GetFrame('quickmenu')
     for i = 1 ,12 do
-        if g.setting.menu[i] then
-            frame:GetChild('menu'..i):SetText('{#000000}'..g.setting.menu[i].title)
-        end
+        g.setting.menu[i] = g.setting.menu[i] or {}
+        frame:GetChild('menu'..i):SetText('{#000000}'..(g.setting.menu[i].title or "None"))
     end
 end
 
