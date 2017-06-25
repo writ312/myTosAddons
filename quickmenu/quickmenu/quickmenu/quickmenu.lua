@@ -192,10 +192,7 @@ function QUICKMENU_COMMAND(command)
     end
     acutil.saveJSON(g.settingPath,g.setting)
     local frame = ui.GetFrame('quickmenu')
-    for i = 1 ,12 do
-        g.setting.menu[i] = g.setting.menu[i] or {}
-        frame:GetChild('menu'..i):SetText('{#000000}'..(g.setting.menu[i].title or "None"))
-    end
+    QUICKMENU_UPDATE_UI()
 end
 
 function OPEN_QUICKMENU_FRAME()
