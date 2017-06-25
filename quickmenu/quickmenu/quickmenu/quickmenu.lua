@@ -94,7 +94,7 @@ function QUICKMENU_UPDATE(frame,msg,argStr,argNum)
     g.counter = g.counter - 1
     if g.counter > 0 then return end
     local frame = ui.GetFrame('quickmenu')
-	if keyboard.GetDownKey() == 'ESC' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyaessed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
+	if keyboard.GetDownKey() == 'ESC' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyPressed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or joystick.IsKeyPressed('JOY_BTN_11') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
         GET_CHILD(frame,'timer','ui::CAddOnTimer'):Stop()
 		frame:ShowWindow(0)
         ui.GetFrame('quickmenu_setting'):ShowWindow(0)
