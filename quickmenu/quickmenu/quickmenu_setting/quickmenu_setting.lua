@@ -1,0 +1,2 @@
+function QUICKMENU_SETTING_ON_INIT()
+end

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by imc (imc) -->
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by MinstFaith (EMBRACE) -->
+<uiframe name="quickmenu_setting" x="0" y="0" width="300" height="300">
+	<frame title="{@st44}돌아가기{/}" layout_gravity="center top" margin="0 200 0 0"/>
+	<skin frameskin="test_win_system"/>
+	<draw drawnotitlebar="false" drawtitlebar="false"/>
+	<input moveable="false"/>
+	<layer topmostlayer="true" layerlevel="100"/>
+	<option closebutton="true" hideable="true"/>
+	<sound opensound="sys_popup_open_1" closesound="character_item_window_close"/>
+	<animation frameOpenAnim="chat_balloon_start" frameCloseAnim="chat_balloon_end"/>
+	<controls>
+        <richtext name="titleTxt" rect="0 0 50 30" margin="0 40 0 0" layout_gravity="center top" caption="Title          Msg" fontname="white_18_ol" hittest="false"/>
+        <edit name="titleEdit" rect="0 0 120 50" margin="30 70 0 0" layout_gravity="left top" OffsetForDraw="0 -1"  fontname="white_18_ol" maxlen="40" textalign="left top" usetag="true"/>
+        <edit name="msgEdit" rect="0 0 120 50" margin="150 70 0 0" layout_gravity="left top" OffsetForDraw="0 -1"  fontname="white_18_ol" maxlen="40" textalign="left top" usetag="true"/>
+
+		<labelline name="labelline" rect="0 0 300 2" margin="0 122 0 0 " layout_gravity="center top" skin="None"/>
+        <richtext name="slotText" rect="0 0 50 30" margin="0 125 0 0" layout_gravity="center top" caption="Drop InvItem or Skill" fontname="white_18_ol" hittest="false"/>
+        <slot name="slot" rect="0 0 50 50" margin="0 150 0 0" layout_gravity="center top" skin="slot" DropScp="QUICKMENU_ON_DROP"/>
+
+    	<button name="removeBtn" rect="0 0 100 30" margin="0 0 0 10" layout_gravity="center bottom" caption="REMOVE THIS SETTING" LBtnUpScp="QUICKMENU_REMOVE_SETTING"  MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" clicksound="button_click_big"/>
+        <button name="saveBtn" rect="0 0 100 30" margin="0 0 0 60" layout_gravity="center bottom" caption="SAVE" LBtnUpScp="QUICKMENU_TEMP_SAVE_ITEM"  MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" clicksound="button_click_big"/>
+    
+    </controls>
+</uiframe>	
