@@ -53,7 +53,7 @@ function QUICKMENU_ON_INIT(addon,frame)
         g.setting = {}
         setting = {}
 		table.insert(setting,{title = 'indun',type = 'chat',msg = '$indun'})
-		table.insert(setting,{title = 'よろ',type = 'chat',msg = '$cc'})
+		table.insert(setting,{title = 'よろ',type = 'chat',msg = 'よろ～'})
 		table.insert(setting,{title = 'おつ',type = 'chat',msg = 'おつー'})
 		table.insert(setting,{title = 'おはよ',type = 'chat',msg = 'おはよー'})
 		table.insert(setting,{title = 'ばんわ',type = 'chat',msg = 'ばんわー'})
@@ -261,7 +261,7 @@ function OPEN_QUICKMENU_SETTING_FRAME(index)
     
     local slot = GET_CHILD(frame,'slot','ui::CSlot')
     slot:ClearIcon()
-    CreateIcon(slot)
+    local icon = CreateIcon(slot)
 
     frame:GetChild('titleEdit'):SetText('') 
     frame:GetChild('msgEdit'):SetText('')
@@ -273,7 +273,8 @@ function OPEN_QUICKMENU_SETTING_FRAME(index)
         else
              obj = GetClassByType('Item',item.ClassID)
         end
-        slot:SetImage((item.type == 'item' and '' or 'icon_')..obj.Icon)
+        icon:SetImage((item.type == 'item' and '' or 'icon_')..obj.Icon)
+        icon:SetTextTooltip(' '..obj.Name..' ')
     else
         item = g.setting.menu[index] or {}
         frame:GetChild('titleEdit'):SetText(item.title or '') 
@@ -304,9 +305,7 @@ function QUICKMENU_ON_DROP(frame,control,argStr,argNum)
 end
 
 function QUICKMENU_SLOT_CLEAR(frame,control,argStr,argNum)
-    local slot = GET_CHILD(frame,'slot','ui::CSlot');
-    slot:ClearIcon()
-    g.tempObj = nil
+
 end
 
 function QUICKMENU_TEMP_SAVE_ITEM(frame,control,argStr,argNum)
@@ -371,3 +370,4 @@ function QUICKMENU_REMOVE_SETTING(frame,control,argStr,argNum)
     QUICKMENU_UPDATE_UI()
     ui.GetFrame('quickmenu_setting'):ShowWindow(0)
 end
+local frame ui.GetFrame('quickmenu_setting')
