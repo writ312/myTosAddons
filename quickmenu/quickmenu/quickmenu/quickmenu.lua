@@ -19,9 +19,10 @@ local function QUICKMENU_UPDATE_UI()
             menu:SetText(string.format('{img icon_%s 30 30}{#000000}%s',skill.Icon,skill.Name)) 
         elseif item.type == 'item' then
             local obj = GetClassByType('Item',item.ClassID)
-            local invitem = session.GetInvItemByName(obj.ClassName) 
-            menu:SetText(string.format('{img %s 30 30}{#000000}%s : %d',obj.Icon,obj.Name,invitem.count))
-
+            local invitem = session.GetInvItemByName(obj.ClassName)
+            if invitem then
+                menu:SetText(string.format('{img %s 30 30}{#000000}%s : %d',obj.Icon,obj.Name,invitem.count))
+            end
         else 
             menu:SetText('{#000000}'..(g.setting.menu[i].title or 'None'))
         end
