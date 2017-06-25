@@ -7,6 +7,20 @@ g.index = 1
 g.counter = 0
 g.settingPath = '../addons/quickmenu/setting.json'
 
+local function escapeCommand(string)
+    if string.sub(string, 1, 1) == "/" then
+        string = "$"..string.sub(string, 2, #string);
+    end
+    return string;
+end
+
+local function unescapeCommand(string)
+    if string.sub(string, 1, 1) == "$" then
+        string = "/"..string.sub(string, 2, #string);
+    end
+    return string;
+end
+
 local function QUICKMENU_UPDATE_UI()
     local frame = ui.GetFrame('quickmenu')
     local name =  GETMYPCNAME()
@@ -17,16 +31,18 @@ local function QUICKMENU_UPDATE_UI()
         if item.type == 'skill' then
             local skill = GetClassByType('Skill',item.SkillID)
             menu:SetText(string.format('{img icon_%s 30 30}{#000000}%s',skill.Icon,skill.Name)) 
+            menu:SetTextTooltip(string.gsub(" "..menu:GetText(),'000000','FFFFFF').." ")       
         elseif item.type == 'item' then
             local obj = GetClassByType('Item',item.ClassID)
             local invitem = session.GetInvItemByName(obj.ClassName)
             if invitem then
                 menu:SetText(string.format('{img %s 30 30}{#000000}%s : %d',obj.Icon,obj.Name,invitem.count))
+                menu:SetTextTooltip(string.gsub(" "..menu:GetText(),'000000','FFFFFF').." ")   
             end
         else 
             menu:SetText('{#000000}'..(g.setting.menu[i].title or 'None'))
+            menu:SetTextTooltip(string.format('{#ffffff} %s ',unescapeCommand(g.setting.menu[i].msg or 'None')))
         end
-        menu:SetTextTooltip(string.gsub(" "..menu:GetText(),'000000','FFFFFF').." ")   
         menu:Resize(200,40)
     end
 end
@@ -78,7 +94,7 @@ function QUICKMENU_UPDATE(frame,msg,argStr,argNum)
     g.counter = g.counter - 1
     if g.counter > 0 then return end
     local frame = ui.GetFrame('quickmenu')
-	if keyboard.GetDownKey() == 'ESC' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyPressed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
+	if keyboard.GetDownKey() == 'ESC' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyaessed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
         GET_CHILD(frame,'timer','ui::CAddOnTimer'):Stop()
 		frame:ShowWindow(0)
         ui.GetFrame('quickmenu_setting'):ShowWindow(0)
@@ -124,20 +140,6 @@ function QUICKMENU_UPDATE(frame,msg,argStr,argNum)
 		SELECT_QUICKMENU_ITEM(frame,g.index)
 		return
 	end
-end
-
-local function escapeCommand(string)
-    if string.sub(string, 1, 1) == "/" then
-        string = "$"..string.sub(string, 2, #string);
-    end
-    return string;
-end
-
-local function unescapeCommand(string)
-    if string.sub(string, 1, 1) == "$" then
-        string = "/"..string.sub(string, 2, #string);
-    end
-    return string;
 end
 
 function QUICKMENU_COMMAND(command)
@@ -263,6 +265,21 @@ function OPEN_QUICKMENU_SETTING_FRAME(index)
 
     frame:GetChild('titleEdit'):SetText('') 
     frame:GetChild('msgEdit'):SetText('')
+
+    local item = g.setting.user[GETMYPCNAME()][index] or {}
+    if  next(item) then
+        if item.type == 'skill' then
+            local obj = GetClassByType('Skill',item.SkillID)
+        else
+             obj = GetClassByType('Item',item.ClassID)
+        end
+        slot:SetImage((item.type == 'item' and '' or 'icon_')..obj.Icon)
+    else
+        item = g.setting.menu[index] or {}
+        frame:GetChild('titleEdit'):SetText(item.title or '') 
+        frame:GetChild('msgEdit'):SetText(unescapeCommand(item.msg or ''))
+    end
+
     frame:ShowWindow(1)
 
     g.tempObj = nil
@@ -281,6 +298,7 @@ function QUICKMENU_ON_DROP(frame,control,argStr,argNum)
     local icon = CreateIcon(slot)
     icon:SetImage((FromFrameName == 'inventory' and '' or 'icon_')..obj.Icon)
     icon:SetTextTooltip(obj.Name)
+    slot:SetEventScript(ui.RBUTTONUP, 'QUICKMENU_SLOT_CLEAR')
     icon:SetEventScript(ui.RBUTTONUP, 'QUICKMENU_SLOT_CLEAR')
     g.tempObj = liftIconInfo
 end
@@ -288,6 +306,7 @@ end
 function QUICKMENU_SLOT_CLEAR(frame,control,argStr,argNum)
     local slot = GET_CHILD(frame,'slot','ui::CSlot');
     slot:ClearIcon()
+    g.tempObj = nil
 end
 
 function QUICKMENU_TEMP_SAVE_ITEM(frame,control,argStr,argNum)
