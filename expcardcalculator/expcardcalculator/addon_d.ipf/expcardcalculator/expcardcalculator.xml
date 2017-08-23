@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uiframe name="expcardcalculator" x="0" y="0" width="470" height="609" create="open">
+	<draw drawnotitlebar="false" drawtitlebar="false"/>
+	<skin frameskin=""/>
+	<frame fullheight="true" fasthide="true" layout_gravity="left top" open="pip" margin="-470 0 0 0"/>
+	<input maxwidth="1280" moveable="false"/>
+	<layer layerlevel="80"/>
+	<option closebutton="false"/>
+	<sound opensound="inven_win_open" closesound="inven_win_close"/>
+	<script OpenScp="EXP_CARD_CALCULATOR_OPEN" CloseScp="EXP_CARD_CALCULATOR_CLOSE"/>
+	<controls>
+		<richtext name="title" rect="0 0 400 30" margin="0 18 0 0" layout_gravity="center top" caption="{@st43}Experience Card Calculator{/}"/>
+		<groupbox name="bg_box" rect="0 0 470 1000" margin="0 30 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyresolution="true" scrollbar="true" skin="test_frame_low"/>
+		<groupbox name="pipwin_top" rect="0 0 470 126" margin="0 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" scrollbar="false" skin="test_frame_top"/>
+		<button name="close" rect="0 0 44 44" margin="0 20 28 0" layout_gravity="right top" LBtnUpScp="ui.CloseFrame(&apos;expcardcalculator&apos;)" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" caption="" clicksound="button_click_big" image="testclose_button" oversound="button_over" texttooltip="{@st59}파티 정보를 닫습니다{/}"/>
+		<picture name="question" rect="0 0 44 44" margin="27 20 0 0" layout_gravity="left top" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" hittest="true" image="testquesten_button" oversound="button_over" texttooltip="{@st59b}Experience Card Calculator{nl}{@st59s}This looks at all experience cards in{nl}your inventory and calculates what your{nl}level will be after using them.{/}"/>
+
+		<groupbox name="experienceCardGroupBox" rect="0 0 450 415" margin="10 300 0 0" layout_gravity="left top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="false" skin="test_frame_midle"/>
+		<groupbox name="internalExperienceCardGroupBox" parent="experienceCardGroupBox" rect="0 0 483 415" margin="0 0 0 0" layout_gravity="left top" draw="false" hittest="true" resizebyparent="false" resizebyresolution="true" scrollbar="true"/>
+
+		<richtext name="baseCardLevel" rect="0 0 200 50" margin="30 70 0 0" caption="{@st43}Base Card Level:{/}" layout_gravity="center top" textalign="center center"/>
+		<richtext name="classCardLevel" rect="0 0 200 50" margin="30 150 0 0" caption="{@st43}Base Card Level:{/}" layout_gravity="center top" textalign="center center"/>
+
+		<gauge name="baseExperienceGauge" parent="expcardcalculator" rect="0 0 450 30" margin="0 110 0 0" layout_gravity="center top" inverse="" skin="gauge_exp" usepostooltip="250 -30"/>
+		<gauge name="classExperienceGauge" parent="expcardcalculator" rect="0 0 450 30" margin="0 190 0 0" layout_gravity="center top" inverse="" skin="gauge_skillexp" usepostooltip="250 -30"/>
+	</controls>
+</uiframe>

@@ -1,0 +1,1 @@
+Automatically calculates your card level based on experience cards in your inventory.

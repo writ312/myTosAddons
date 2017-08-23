@@ -199,5 +199,16 @@
 		"tags" : [
 			"ui","Chat"
 		]
+	},{
+		"name" : "ExpCardCalculator fix(2017 summer ui patch)",
+		"file" : "expcardcalculator",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "expcardcalculator",
+		"unicode" : "⛄",
+		"description" : "fix(2017 Summer UI Patch). Automatically calculates your card level based on experience cards in your inventory.",
+		"tags" : [
+			"ui","Chat"
+		]
 	}
 ]
