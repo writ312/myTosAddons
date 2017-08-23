@@ -61,6 +61,7 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
         droplist:AddItem(k,"{s20}"..v.."{/}",0,'BARRACKITEMLIST_SHOW_LIST()');
     end
     tolua.cast(frame:GetChild('tab'), "ui::CTabControl"):SelectTab(0)
+    frame:GetChild('saveBtn'):SetTextTooltip('現在のキャラのインベントリを保存する')
     BARRACKITEMLIST_CREATE_SETTINGMENU()
     BARRACKITEMLIST_TAB_CHANGE(frame)
     frame:ShowWindow(0)
@@ -385,24 +386,25 @@ function BARRACKITEMLIST_CREATE_VAR_ICONS()
 	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "grimoire", "grimoire")
 	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "guild", "guild")
 	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "poisonpot", "poisonpot")
-    and false == VARICON_VISIBLE_STATE_CHANTED(frame, "expcardcalculator", "expcardcalculator")
 	then
 		return;
 	end
 
 	DESTROY_CHILD_BY_USERVALUE(frame, "IS_VAR_ICON", "YES");
 
+    local extraBag = frame:GetChild('extraBag');
 	local status = frame:GetChild("status");
-	local inven = frame:GetChild("inven");
-	local offsetX = inven:GetX() - status:GetX();
-	local startX = status:GetMargin().left - offsetX;
+	local offsetX = status:GetX() - extraBag:GetX();
+	local rightMargin = extraBag:GetMargin().right + offsetX;
 
-	startX = SYSMENU_CREATE_VARICON(frame, status, "guild", "guild", "sysmenu_guild", startX, offsetX, "Guild");
-	startX = SYSMENU_CREATE_VARICON(frame, status, "necronomicon", "necronomicon", "sysmenu_card", startX, offsetX);
-	startX = SYSMENU_CREATE_VARICON(frame, status, "grimoire", "grimoire", "sysmenu_neacro", startX, offsetX);
-	startX = SYSMENU_CREATE_VARICON(frame, status, "poisonpot", "poisonpot", "sysmenu_wugushi", startX, offsetX);
-	startX = SYSMENU_CREATE_VARICON(frame, status, "expcardcalculator", "expcardcalculator", "addonmenu_expcard", startX, offsetX, "Experience Card Calculator");
-	startX = SYSMENU_CREATE_VARICON(frame, status, "barrackitemlist", "barrackitemlist", "sysmenu_inv", startX, offsetX, "barrack item list");
+	rightMargin = SYSMENU_CREATE_VARICON(frame, extraBag, "guild", "guild", "sysmenu_guild", rightMargin, offsetX, "Guild");
+	rightMargin = SYSMENU_CREATE_VARICON(frame, extraBag, "necronomicon", "necronomicon", "sysmenu_card", rightMargin, offsetX);
+	rightMargin = SYSMENU_CREATE_VARICON(frame, extraBag, "grimoire", "grimoire", "sysmenu_neacro", rightMargin, offsetX);
+	rightMargin = SYSMENU_CREATE_VARICON(frame, extraBag, "poisonpot", "poisonpot", "sysmenu_wugushi", rightMargin, offsetX);	
+    if _G["EXPCARDCALCULATOR"] then
+    	rightMargin = SYSMENU_CREATE_VARICON(frame, status, "expcardcalculator", "expcardcalculator", "addonmenu_expcard", rightMargin, offsetX, "Experience Card Calculator") or rightMargin
+	end
+    rightMargin = SYSMENU_CREATE_VARICON(frame, status, "barrackitemlist", "barrackitemlist", "sysmenu_inv", rightMargin, offsetX, "barrack item list");
 
     local expcardcalculatorButton = GET_CHILD(frame, "expcardcalculator", "ui::CButton");
 	if expcardcalculatorButton ~= nil then
