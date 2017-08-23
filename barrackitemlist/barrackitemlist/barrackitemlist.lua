@@ -65,6 +65,7 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     BARRACKITEMLIST_CREATE_SETTINGMENU()
     BARRACKITEMLIST_TAB_CHANGE(frame)
     frame:ShowWindow(0)
+    BARRACKITEMLIST_SAVE_LIST()
 end
 
 -- function SELECT_CHARBTN_LBTNUP_EVENT(addonFrame, eventMsg)

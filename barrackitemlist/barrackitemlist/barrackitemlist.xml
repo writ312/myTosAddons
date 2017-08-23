@@ -9,7 +9,7 @@
     <tabitem name="SearchListTab" parent="tab" crect="5 100 235 30" layout_gravity="left top" caption="アイテム検索" control="none"/>
     <tabitem name="SettingTab" parent="tab" crect="5 100 235 30" layout_gravity="left top" caption="設定" control="none"/>
     <droplist name="droplist" rect="30 50 400 50" layout_gravity="left top" frametextalign="left" textalign="left center" textoffset="10 8" visibleline="11" skin="droplist_normal2"/>
-    <button name="searchBtn"  rect="30 50 100 50" caption="保存" layout_gravity="right top" LBtnUpArgNum="" LBtnUpScp="BARRACKITEMLIST_SAVE_LIST" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" clicksound="button_click_big"/>
+    <button name="saveBtn"  rect="130 50 100 50" caption="保存" layout_gravity="right top" LBtnUpArgNum="" LBtnUpScp="BARRACKITEMLIST_SAVE_LIST" MouseOffAnim="btn_mouseoff" MouseOnAnim="btn_mouseover" clicksound="button_click_big"/>
     <groupbox name="treeGbox"  rect="0 100 600 830" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
     <groupbox name="searchGbox"  rect="0 100 600 860" margin="2 0 0 0" layout_gravity="center top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="None"/>
       <edit name="searchEdit" parent="searchGbox" rect="30 0 300 30" layout_gravity="left top" OffsetForDraw="0 -1"  fontname="white_18_ol" maxlen="40"  EnterKeyScp="BARRACKITEMLIST_SHOW_SEARCH_ITEMS" textalign="left top" usetag="true"/>
