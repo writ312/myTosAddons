@@ -22,6 +22,10 @@ F10以外のボタンに設定したい場合は、システムの設定から�
 パッドの場合はHotkeyAbilityForJoyなどの関数で/qm openを設定するか、ToSインストールフォルダのReleaseにある`hotkey_joystick.xml`を編集し、好みのボタンの`DownScp`の中身をを`UI_TOGGLE_HELPLIST`に書き換えてください  
 おすすめは35行目のWeponSwapです。  
 
+`<HotKey ID="WeaponSwap1" Name="무기 스왑" DownScp="WEAPONSWAP_HOTKEY_ENTERED()" UpScp="None" Key="JOY_BTN_11" PressedKey="None" Mode="Key" UseAlt="NO" UseCtrl="NO" OnEdit="NO" Category="Basic"/>`  
+これを  
+`	<HotKey ID="WeaponSwap1" Name="무기 스왑" DownScp="UI_TOGGLE_HELPLIST()" UpScp="None" Key="JOY_BTN_11" PressedKey="None" Mode="Key" UseAlt="NO" UseCtrl="NO" OnEdit="NO" Category="Basic"/>`  
+こうする
 ### v1.1 新機能
 * 設定をキャラクター固有と全体の2種類に分けました。キャラクター固有の設定が優先的に表示されます。
 * v1.1では2つの機能を追加しました
