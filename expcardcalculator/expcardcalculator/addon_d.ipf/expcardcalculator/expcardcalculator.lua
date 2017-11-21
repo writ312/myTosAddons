@@ -9,10 +9,11 @@ function EXPCARDCALCULATOR_ON_INIT(addon, frame)
 	addon:RegisterMsg("JOB_EXP_ADD", "EXPCARDCALCULATOR_ON_JOB_EXP_UPDATE");
 	addon:RegisterMsg("JOB_EXP_UPDATE", "EXPCARDCALCULATOR_ON_JOB_EXP_UPDATE");
 
-	acutil.setupHook(SYSMENU_CHECK_HIDE_VAR_ICONS_HOOKED, "SYSMENU_CHECK_HIDE_VAR_ICONS");
+	-- acutil.setupHook(SYSMENU_CHECK_HIDE_VAR_ICONS_HOOKED, "SYSMENU_CHECK_HIDE_VAR_ICONS");
+    acutil.addSysIcon("expcardcalculator", "addonmenu_expcard", "Experience Card Calculator", "EXPCARDCALCULATOR_TOGGLE_FRAME")    
 
 	local sysmenuFrame = ui.GetFrame("sysmenu");
-	SYSMENU_CHECK_HIDE_VAR_ICONS(sysmenuFrame);
+	-- SYSMENU_CHECK_HIDE_VAR_ICONS(sysmenuFrame);
 end
 
 function EXPCARDCALCULATOR_TOGGLE_FRAME()
