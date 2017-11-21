@@ -32,6 +32,10 @@ end
 
 g.itemlist = g.itemlist or {}
 
+function OPEN_BARRACKITEMLIST()
+	ui.ToggleFrame('barrackitemlist')
+end
+
 function BARRACKITEMLIST_ON_INIT(addon,frame)
     local cid = info.GetCID(session.GetMyHandle())
     g.userlist[cid] = info.GetPCName(session.GetMyHandle())
@@ -45,8 +49,9 @@ function BARRACKITEMLIST_ON_INIT(addon,frame)
     acutil.setupEvent(addon,'WAREHOUSE_CLOSE','BARRACKITEMLIST_SAVE_WAREHOUSE')
     -- acutil.setupEvent(addon, 'SELECT_CHARBTN_LBTNUP', 'SELECT_CHARBTN_LBTNUP_EVENT')
 
-    addon:RegisterMsg('GAME_START_3SEC','BARRACKITEMLIST_CREATE_VAR_ICONS')
-    
+    -- addon:RegisterMsg('GAME_START_3SEC','BARRACKITEMLIST_CREATE_VAR_ICONS')
+    acutil.addSysIcon("barrackitemlist", "sysmenu_inv", "Barrack Item List", "OPEN_BARRACKITEMLIST")    
+
     local droplist = tolua.cast(frame:GetChild("droplist"), "ui::CDropList");
     droplist:ClearItems()
     droplist:AddItem(1,'None')
