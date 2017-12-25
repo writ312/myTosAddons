@@ -207,6 +207,7 @@
 		"releaseTag" : "expcardcalculatorfix",
 		"unicode" : "⛄",
 		"description" : "fix(2017 Summer UI Patch).\n Automatically calculates your card level based on experience cards in your inventory.",
+		"updateInfo" :"v1.0.1 acutilのシステムメニュー関数に対応 システムメニューからaddonアイコンをクリック!!\nv1.0.0 夏の大型アップデートでの変更に対応",
 		"tags" : [
 			"ui","Chat"
 		]
