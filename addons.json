@@ -38,7 +38,7 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.4",
+		"fileVersion" : "v1.1.5",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
 		"description" : "各職のスキルに必要なアイテムの残数を表示する.",
