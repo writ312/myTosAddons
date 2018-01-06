@@ -203,7 +203,7 @@
 		"name" : "ExpCardCalculator fix(2017 summer ui patch)",
 		"file" : "expcardcalculatorfix",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.0.2",
 		"releaseTag" : "expcardcalculatorfix",
 		"unicode" : "⛄",
 		"description" : "fix(2017 Summer UI Patch).\n Automatically calculates your card level based on experience cards in your inventory.",
