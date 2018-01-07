@@ -38,10 +38,10 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.5",
+		"fileVersion" : "v1.1.6",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
-		"description" : "各職のスキルに必要なアイテムの残数を表示する.",
+		"description" : "各職のスキルに必要なアイテムの残数を表示する.ToggleFrame : /rscm ,Resize : /rscm -r [s,m,l] ",
 		"tags" : [
 			"ui"
 		]
@@ -203,7 +203,7 @@
 		"name" : "ExpCardCalculator fix(2017 summer ui patch)",
 		"file" : "expcardcalculatorfix",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
+		"fileVersion" : "v1.0.3",
 		"releaseTag" : "expcardcalculatorfix",
 		"unicode" : "⛄",
 		"description" : "fix(2017 Summer UI Patch).\n Automatically calculates your card level based on experience cards in your inventory.",
