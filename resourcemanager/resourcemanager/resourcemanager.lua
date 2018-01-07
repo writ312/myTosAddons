@@ -1,62 +1,109 @@
 _G['ADDONS'] = _G['ADDONS'] or {};
 _G['ADDONS']['RESOURCEMANAGER'] = _G['ADDONS']['RESOURCEMANAGER'] or {};
 local g = _G['ADDONS']['RESOURCEMANAGER'] 
-
-g.table = {
+local maxRow = 8
+local colLength = 0
+g.jobTable = {}
+    -- Sapper
+g.jobTable[3005] = { 
     {
-        --flecher
+        645604,
+        645240
+    },{
+        645239,
+    },{
+        645605        
+    }
+}
+-- Flecher
+g.jobTable[3011] = {
+    { -- arrows
         645250,
         645251,
-        645252,
         645349,
-        645567,
-        645568,
+        645252,
+    },{
+        645568
+    },{
+        645567
+    },{ -- materials
         645238,
         645239,
-        645240,
         645241,
-        645232,
+        645240
+    },{
+        645232
+    },{
         645571
-    },
+    }
+} 
+-- Priest
+g.jobTable[4002] = {
     {
-        -- dievdirbys
+        640069,
+        640068
+    },{
+        640031
+    }
+}
+-- Dievdirbys
+g.jobTable[4007] = {
+    {
         645238,
-        645239,
         645240,
         645241
     },{
-        -- rune
-        645750
-    },
+        645239        
+    }
+}
+--Paladin
+g.jobTable[4011] = {
+    {},{
+        640068
+    }
+}
+-- Inquisitor
+g.jobTable[4016] = {
     {
-        -- sapper
-        645239,
-        645240,
-        645604,
-        645605
-    },{ 
-        --Inquisitor
         645924
-    },
+    }
+} 
+-- Daoshi
+g.jobTable[4017] = {
     {
-        --Daoshi
         645821
-    },
-    {
-        --Chronomancer
+    }
+}
+-- Chronomancer
+g.jobTable[2008] = {
+    {},{},{
         645606
-    },{
-        --Priest
-        640069,
-        640068,
-        640031 
-    },{
-        --Alchemist
+    }
+}
+-- Alchemist
+g.jobTable[2005] = {
+    {
         645533
-    },{
-        --Squire 
+    }
+}
+-- RuneCaster
+g.jobTable[2017] = {
+    {
+        645750
+    }
+}
+--Sage 
+g.jobTable[2014] = {
+    {
+        646064
+    }
+}
+--Squire
+g.jobTable[1011] = {
+    {
         645534,
         645525,
+    },{
         645570,
         640044,
         640125,
@@ -67,26 +114,39 @@ g.table = {
         640253
     }
 }
-
 g.presetTable = {}
 g.addonName = 'resourcemanager'
-g.frameVisual = 1
+
+local acutil = require('acutil');
 g.settingsFileLoc = string.format("../addons/%slite/settings.json", g.addonName);
-if not g.loaded then
-  g.settings = {
-    position = {
-      x = 1575,
-      y = 300
-    }
-  };
+
+local function resourcemanagerSaveSetting()
+  acutil.saveJSON(g.settingsFileLoc, g.settings);
 end
+
+local t, err = acutil.loadJSON(g.settingsFileLoc, g.settings);
+if err then
+    g.settings = {
+        position = {
+            x = 1575,
+            y = 300
+        },
+        size = 'm',
+        frameVisual = 1
+    };
+else
+    g.settings = t;
+end
+g.settings.frameVisual = g.settings.frameVisual or 1 
+g.settings.size = g.settings.size or 'm'
+resourcemanagerSaveSetting()
+
 g.tableMerge = function(t1,t2)
     for i,v in ipairs(t2) do
         table.insert(t1,t2[i])
     end
     return t1
 end
-
 
 g.tableSplit = function(t,n)
     local t1 = {}
@@ -95,127 +155,94 @@ g.tableSplit = function(t,n)
     end
     return t1,t
 end
-
-local acutil = require('acutil');
-
 CHAT_SYSTEM("load Resource Manager");
 
-function RESOURCEMANAGER_ON_INIT(addon,frame)
-    if not g.loaded then
-        local t, err = acutil.loadJSON(g.settingsFileLoc, g.settings);
-        if err then
-            CHAT_SYSTEM(string.format("[%s] cannot load setting files", g.addonName));
+local function optimizationPresetTanle(tempTable)
+    local n = 1
+    g.presetTable[1] = {}
+    local insertLast = {}
+    for i , v in ipairs(tempTable) do
+        if (#v + #g.presetTable[n]) < maxRow then
+            g.tableMerge(g.presetTable[n],v)
         else
-            g.settings = t;
+            n = n + 1
+            g.presetTable[n] = v
         end
-        g.loaded = true;
-    end
-    g.addnon = addon;
-    g.frame = frame;
-    existPresetJobs()
-    frame:ShowWindow(g.frameVisual)
-    frame:SetEventScript(ui.LBUTTONUP, "RESOURCEMANAGER_END_DRAG")
-    acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
-    acutil.setupEvent(addon,"FPS_UPDATE","RESOURCEMANAGER_UPDATE_TXT")
-    RESOURCEMANAGER_SET_ICON()
+    end    
 end
 
-
-function RESOURCEMANAGER_COMMAND(command)
-    local cmd = table.remove(command, 1);
-    if cmd == nil then
-        RESOURCEMANAGER_TOGGLE()
-        return
-    end
-    CHAT_SYSTEM('/rscm : toggle on or off')
-    CHAT_SYSTEM('/rscm number  1:Flecher 2:Dievdirbys 3:Sapper 4:RuneCaster')
-end
-
-function RESOURCEMANAGER_TOGGLE()
-    ui.ToggleFrame(g.addonName)    
-    g.frameVisual = ui.IsFrameVisible(g.addonName)
-    local msg = (g.frameVisual == 1) and 'ON' or 'OFF'
-    CHAT_SYSTEM(g.addonName..' is '..msg)
-end
-function existPresetJobs()
-    local jobTable = {}
-    jobTable[3011] = 1 -- Flecher
-    jobTable[4007] = 2 -- Dievdirbys
-    jobTable[2017] = 3 -- RuneCaster
-    jobTable[3005] = 4 -- Sapper
-    jobTable[4016] = 5 -- Inquisitor
-    jobTable[4017] = 6 -- Daoshi
-    jobTable[2008] = 7 -- Chronomancer
-    jobTable[4002] = 8 -- Priest
-    jobTable[2005] = 9 -- Alchemist
-    jobTable[1011] = 10 --Squire
+local function existPresetJobs()
     local cid = info.GetCID(session.GetMyHandle())
     local pcSession = session.GetSessionByCID(cid);
     local pcJobInfo = pcSession.pcJobInfo;
     local cnt = pcJobInfo:GetJobCount();
     local n = 1
+    local tempTable = {}
     g.presetTable = {}
     for i = 0 , cnt - 1 do
         local jobID = pcJobInfo:GetJobByIndex(i);
         if jobID == -1 then
             break;
         end
-        if jobTable[jobID] then
-            g.presetTable[1] = g.presetTable[1] or {}
-            local tempTable = g.table[jobTable[jobID]]
-            if (#tempTable == 1 ) or (#g.presetTable[1] == 1) and (n > 1) then
-                g.presetTable[1] = g.tableMerge({unpack(g.presetTable[1])},tempTable)
-            else
-                g.presetTable[n] = {unpack(tempTable)}
-                n = n + 1;
+        if g.jobTable[jobID] then
+            local jobGrade = session.GetJobGrade(jobID)
+            for i = 1 , jobGrade do
+                if(g.jobTable[jobID][i] and unpack(g.jobTable[jobID][i])) then
+                    tempTable[n] = g.tableMerge(tempTable[n] or {},{unpack(g.jobTable[jobID][i])})
+                end
+            end
+            n = n + 1
+            if jobID == 3011 then
+                for i = 4 , jobGrade + 3 do
+                    tempTable[n] = g.tableMerge(tempTable[n] or {},{unpack(g.jobTable[jobID][i])})
+                end
+                n = n + 1
             end
         end
     end
+    optimizationPresetTanle(tempTable)
 end
 
-function RESOURCEMANAGER_SET_ICON()
-    if g.presetTable == {} then
+function RESOURCEMANAGER_ON_INIT(addon,frame)
+    g.addnon = addon;
+    g.frame = frame;
+    frame:ShowWindow(g.settings.frameVisual)
+    frame:SetEventScript(ui.LBUTTONUP, "RESOURCEMANAGER_END_DRAG")
+    acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
+    addon:RegisterMsg('INV_ITEM_ADD', 'RESOURCEMANAGER_UPDATE_TXT');
+    addon:RegisterMsg('INV_ITEM_CHANGE_COUNT', 'RESOURCEMANAGER_UPDATE_TXT');
+    addon:RegisterMsg("INV_ITEM_REMOVE","RESOURCEMANAGER_UPDATE_TXT")
+
+    RESOURCEMANAGER_SET_ICON()
+end
+
+
+function RESOURCEMANAGER_COMMAND(command)
+    local cmd = table.remove(command,1)
+    if cmd == 'resize' or '-r' then
+        g.settings.size = string.lower(table.remove(command) or 'm')
+        resourcemanagerSaveSetting()
+        RESOURCEMANAGER_SET_ICON()
         return
     end
-    local frame = g.frame
-    frame:SetPos(g.settings.position.x ,g.settings.position.y)
-    frame:RemoveAllChild()
-    local col = 0  
-    for i ,v in ipairs(g.presetTable) do
-        col = _RESOURCEMANAGER_SET_ICON(frame,col,v)
-    end
-    existPresetJobs()
+    RESOURCEMANAGER_TOGGLE()
 end
 
-function _RESOURCEMANAGER_SET_ICON(frame,col,list)
-    local items = GET_ITEM_COUNT(list);
-    local i = 0;
-     for i,v in ipairs(items) do
-        if v ~= 0 then
-            if i == 7 then
-                local t1,t2 = g.tableSplit(list,6)
-                return _RESOURCEMANAGER_SET_ICON(frame,col+1,t2)
-
-            end 
-            local item = GetClassByType('Item',v[1])
-            local slot = frame:CreateOrGetControl("slot","slot"..v[1],50*i,-100 + 70*col,45,65)
-            tolua.cast(slot, 'ui::CSlot')
-            slot:SetSkinName('slot')
-           
-		   	local slot2 = slot:CreateOrGetControl("slot","slot"..v[1],0,0,43,43)
-            tolua.cast(slot2, 'ui::CSlot')
-		    local icon = CreateIcon(slot2);
-			icon:SetImage(item.Icon)
-			local text = slot:CreateOrGetControl("richtext","txt"..v[1],0,0,60,20)
-            tolua.cast(text, 'ui::CRichText')
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
-            text:SetGravity(2,1)
-            i = i + 1;
-        end
-    end
-    return col + 1
+function RESOURCEMANAGER_TOGGLE()
+    ui.ToggleFrame(g.addonName)    
+    g.settings.frameVisual = ui.IsFrameVisible(g.addonName)
+    local msg = (g.settings.frameVisual == 1) and 'ON' or 'OFF'
+    CHAT_SYSTEM(g.addonName..' is '..msg)
+    resourcemanagerSaveSetting()    
 end
-function GET_ITEM_COUNT(list)
+
+local function getTextColorByCount(count)
+    local color = (count < 100) and 'FF4500';
+    color = (count < 50) and 'FF0000' or color
+    return color or 'FFFFFF'
+end
+
+local function getResourceItemCount(list)
     local items = {}
     if not list then
         return items
@@ -232,41 +259,81 @@ function GET_ITEM_COUNT(list)
     return items
 end
 
-function getTextColorByCount(count)
-    local color = (count < 100) and 'FF4500';
-    color = (count < 50) and 'FF0000' or color
-    return color or 'FFFFFF'
-end
 
-
-function RESOURCEMANAGER_UPDATE_TXT()
-    if g.presetTable == {} then
+function RESOURCEMANAGER_SET_ICON()
+    existPresetJobs()
+    if not unpack(g.presetTable) then
         return
     end
-        
+    local frame = g.frame
+    frame:Resize(300,210)
+    frame:SetPos(g.settings.position.x ,g.settings.position.y)
+    frame:RemoveAllChild()
+    local col = 0  
+    for i ,v in ipairs(g.presetTable) do
+        col = _RESOURCEMANAGER_SET_ICON(frame,col,v)
+    end
+    colLength = col
+end
+
+function _RESOURCEMANAGER_SET_ICON(frame,col,list)
+    local size = g.settings.size
+    local w = (size == 's') and 30 or (size == 'm' and 40) or (size == 'l' and 50) or 40
+    local h = w+20
+    frame:Resize(w*maxRow,210)
+    local items = getResourceItemCount(list);
+    local i = 0;
+     for i,v in ipairs(items) do
+        if v ~= 0 then
+            if i == maxRow then
+                local t1,t2 = g.tableSplit(list,maxRow -1)
+                return _RESOURCEMANAGER_SET_ICON(frame,col+1,t2)
+
+            end 
+            local item = GetClassByType('Item',v[1])
+            local baseSlot = frame:CreateOrGetControl("slot","slot"..col..v[1], 10+w*(i-1), 10+h*(col-1),w-5,h-5)
+            tolua.cast(baseSlot, 'ui::CSlot')
+            baseSlot:SetSkinName('slot')
+            baseSlot:SetTextTooltip(item.Name)
+
+		   	local iconSlot = baseSlot:CreateOrGetControl("slot","slot"..col..v[1],0,0,w-8,w-8)               
+            tolua.cast(iconSlot, 'ui::CSlot')
+		    local icon = CreateIcon(iconSlot);
+			icon:SetImage(item.Icon)
+            icon:SetTextTooltip(item.Name)
+
+			local text = baseSlot:CreateOrGetControl("richtext","txt"..col..v[1],0,0,w,h-w)
+            tolua.cast(text, 'ui::CRichText')
+            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
+            text:SetGravity(2,1)
+            i = i + 1;
+        end
+    end
+    return col + 1
+end
+
+function RESOURCEMANAGER_UPDATE_TXT()
+    if not unpack(g.presetTable)  then return end
     local frame = ui.GetFrame('resourcemanager')  
-    frame:ShowWindow(g.frameVisual)      
     for i ,v in ipairs(g.presetTable) do
         _RESOURCEMANAGER_UPDATE_TXT(frame,v);
     end
 end
 
 function _RESOURCEMANAGER_UPDATE_TXT(frame,list)
-    local items = GET_ITEM_COUNT(list)
+    local items = getResourceItemCount(list)
     for i,v in ipairs(items) do
-        local text = GET_CHILD_RECURSIVELY(frame, "txt"..v[1], "ui::CRichText");
-        if text then
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
+        for i = 0 , colLength do
+            local text = GET_CHILD_RECURSIVELY(frame, "txt"..i..v[1], "ui::CRichText");
+            if text then
+                text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
+            end
         end
     end
-end
-
-function RESOURCEMANAGER_SAVE_SETTINGS()
-  acutil.saveJSON(g.settingsFileLoc, g.settings);
 end
 
 function RESOURCEMANAGER_END_DRAG()
   g.settings.position.x = g.frame:GetX();
   g.settings.position.y = g.frame:GetY();
-  RESOURCEMANAGER_SAVE_SETTINGS();
+  resourcemanagerSaveSetting();
 end
