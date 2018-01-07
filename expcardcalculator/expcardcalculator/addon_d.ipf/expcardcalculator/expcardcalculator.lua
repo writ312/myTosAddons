@@ -178,6 +178,7 @@ end
 function EXP_CARD_CALCULATOR_CLOSE()
 end
 
+--[[
 function SYSMENU_CHECK_HIDE_VAR_ICONS_HOOKED(frame)
 	if false == VARICON_VISIBLE_STATE_CHANTED(frame, "necronomicon", "necronomicon")
 	and false == VARICON_VISIBLE_STATE_CHANTED(frame, "grimoire", "grimoire")
@@ -205,6 +206,7 @@ function SYSMENU_CHECK_HIDE_VAR_ICONS_HOOKED(frame)
 		expcardcalculatorButton:SetTextTooltip("{@st59}Experience Card Calculator");
 	end
 end
+]]--
 
 function getTotalExperienceFromCards()
 	local experienceCardData = {};
