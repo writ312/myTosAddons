@@ -4,7 +4,7 @@ local g = _G['ADDONS']['RESOURCEMANAGER']
 local maxRow = 8
 local colLength = 0
 g.jobTable = {}
-    -- Sapper
+-- Sapper
 g.jobTable[3005] = { 
     {
         645604,
@@ -12,7 +12,7 @@ g.jobTable[3005] = {
     },{
         645239,
     },{
-        645605        
+        645605
     }
 }
 -- Flecher
@@ -53,10 +53,10 @@ g.jobTable[4007] = {
         645240,
         645241
     },{
-        645239        
+        645239
     }
 }
---Paladin
+-- Paladin
 g.jobTable[4011] = {
     {},{
         640068
@@ -74,9 +74,35 @@ g.jobTable[4017] = {
         645821
     }
 }
+-- Pyromancer
+g.jobTable[2002] = {
+    {},{},{
+        649208
+    }
+}
+-- Cryomancer
+g.jobTable[2003] = {
+    {},{},{
+        649210
+    }
+}
+-- Thaumaturge
+g.jobTable[2010] = {
+    {
+        645810
+    }
+}
+-- Sorcerer
+g.jobTable[2006] = {
+    {
+        645923
+    }
+}
 -- Chronomancer
 g.jobTable[2008] = {
-    {},{},{
+    {
+        646070
+    },{},{
         645606
     }
 }
@@ -92,13 +118,25 @@ g.jobTable[2017] = {
         645750
     }
 }
---Sage 
+-- Sage 
 g.jobTable[2014] = {
     {
         646064
     }
 }
---Squire
+-- Enchanter
+g.jobTable[2018] = {
+    {
+        640240
+    }
+}
+-- Onmyoji
+g.jobTable[2020] = {
+    {
+        646074
+    }
+}
+-- Squire
 g.jobTable[1011] = {
     {
         645534,
