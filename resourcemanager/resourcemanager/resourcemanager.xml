@@ -3,7 +3,7 @@
 	<frame fasthide="true" layout_gravity="left top"/>
 	<input hittest="true" movable="true" moveintitlebar="false" hittestframe="true"/>
     <layer layerlevel="1"/>
-    <draw drawframe="true" drawtitlebarframe="false" drawtitlebar="true"/>
+    <draw drawframe="true" drawtitlebarframe="false" drawtitlebar="false"/>
     <option closebutton="false" hideable="false"/>
     <skin frameskin="none"/>
 <controls/>
