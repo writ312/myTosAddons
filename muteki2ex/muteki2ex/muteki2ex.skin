@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skinset name="MONOGUSA_MUTEKI2">
+	<skinlist category="gauges">
+		<skin name="muteki2_gauge_red" texture="\skin\mainframe_A.tga">
+			<img name="bgleft" imgrect="382 116 1 14"/>
+			<img name="bgmiddle" imgrect="383 116 258 14"/>
+			<img name="bgright" imgrect="641 116 1 14"/>
+
+			<img name="barleft" imgrect="382 58 1 14"/>
+			<img name="barmiddle" imgrect="383 58 258 14"/>
+			<img name="barright" imgrect="641 58 1 14"/>
+		</skin>
+		<skin name="muteki2_gauge_orange" texture="\skin\mainframe_A.tga">
+			<img name="bgleft" imgrect="382 116 1 14"/>
+			<img name="bgmiddle" imgrect="383 116 258 14"/>
+			<img name="bgright" imgrect="641 116 1 14"/>
+
+			<img name="barleft" imgrect="382 73 1 14"/>
+			<img name="barmiddle" imgrect="383 73 258 14"/>
+			<img name="barright" imgrect="641 73 1 14"/>
+		</skin>
+		<skin name="muteki2_gauge_green" texture="\skin\mainframe_A.tga">
+			<img name="bgleft" imgrect="382 116 1 14"/>
+			<img name="bgmiddle" imgrect="383 116 258 14"/>
+			<img name="bgright" imgrect="641 116 1 14"/>
+
+			<img name="barleft" imgrect="382 88 1 14"/>
+			<img name="barmiddle" imgrect="383 88 258 14"/>
+			<img name="barright" imgrect="641 88 1 14"/>
+		</skin>
+		<skin name="muteki2_gauge_blue" texture="\skin\mainframe_A.tga">
+			<img name="bgleft" imgrect="382 116 1 14"/>
+			<img name="bgmiddle" imgrect="383 116 258 14"/>
+			<img name="bgright" imgrect="641 116 1 14"/>
+
+			<img name="barleft" imgrect="382 103 1 14"/>
+			<img name="barmiddle" imgrect="383 103 258 14"/>
+			<img name="barright" imgrect="641 103 1 14"/>
+		</skin>
+		<skin name="muteki2_gauge_yellow" texture="\skin\mainframe_A.tga">
+			<img name="bgleft" imgrect="382 116 1 14"/>
+			<img name="bgmiddle" imgrect="383 116 258 14"/>
+			<img name="bgright" imgrect="641 116 1 14"/>
+
+			<img name="barleft" imgrect="382 133 1 14"/>
+			<img name="barmiddle" imgrect="383 133 258 14"/>
+			<img name="barright" imgrect="641 133 1 14"/>
+		</skin>
+	</skinlist>
+</skinset>
