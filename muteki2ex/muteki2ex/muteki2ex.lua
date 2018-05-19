@@ -33,19 +33,8 @@ if not g.loaded then
     },
     buffList = 
     {
-      ['229'] = {color='EEFFFFFF'},
-      ['4506'] = {color='EEFFFFFF'},
-      ['4508'] = {color='EEFFFFFF'},
-      ['6020'] = {color='EEFFFFFF'},
-      ['104'] = {color='EEFFFFFF'},
-      ['3022'] = {color='EEFFFFFF'},
-      ['67'] = {color='EEFFFFFF'},
-      ['94'] = {color='EEFFFFFF',circleIcon = true},
-      ['1021'] = {color='EEFFFFFF',circleIcon = true},
-      ['126'] = {color='EEFFFFFF'},
-      ['146'] = { color = 'EEFFFFFF'},
-      ['147'] = { color = 'EEFFFFFF'}
-   }   
+   },
+   hiddenBuffTime = 300   
   };
 end
 
@@ -123,7 +112,7 @@ function MUTEKI2_CHANGE_MODE(mode)
   
   mode = string.lower(mode);
   MUTEKI2_UPDATE_GAUGE_POS()
-
+  MUTEKI2_UPDATE_CIRCLE_POS()
   if mode == "trace" then
     local handle = session.GetMyHandle();
     local actor = world.GetActor(handle)
@@ -286,9 +275,9 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
 
   local sec = math.floor(curPoint);
   local msec = math.floor((curPoint - sec) * 100);
-
-  if sec < 0 then
-    gauge:ShowWindow(0);
+  -- if sec < 0 or sec > hiddenBuffTime then
+    if sec < 0  then
+      gauge:ShowWindow(0);
     return 0;
   end
 
@@ -301,8 +290,18 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
   gauge:SetTextStat(0, text);
   
   if pause == 1 then
+    
     -- gauge:SetSkinName("muteki2_gauge_green");
     return 0;
+  end
+
+  if sec > g.settings.hiddenBuffTime then
+    gauge:ShowWindow(0)
+  else
+    if not gauge:IsVisible() then
+      MUTEKI2_UPDATE_GAUGE_POS()
+    end
+    gauge:ShowWindow(1)
   end
 
   return 1;  
@@ -325,18 +324,17 @@ function MUTEKI2_UPDATE_BUFF(frame, msg, argStr, argNum)
         MUTEKI2_REMOVE_CIRCLE_BUFF(buff,control)
       elseif msg == 'BUFF_UPDATE' or msg == 'BUFF_ADD' then
         MUTEKI2_ADD_CIRCLE_BUFF(buff,control)
-      end
-      MUTEKI2_UPDATE_CIRCLE_POS()
-      
+      end      
     else
       if msg == 'BUFF_REMOVE' then
           MUTEKI2_REMOVE_GAUGE_BUFF(buff,control)
       elseif msg == 'BUFF_UPDATE' or msg == 'BUFF_ADD' then
         MUTEKI2_ADD_GAUGE_BUFF(buff,control)
       end
-      MUTEKI2_UPDATE_GAUGE_POS()
     end
   end
+  MUTEKI2_UPDATE_CIRCLE_POS()
+  MUTEKI2_UPDATE_GAUGE_POS()
 end
 
 function MUTEKI2_GET_BUFF(id)
@@ -363,6 +361,7 @@ end
 
 function MUTEKI2_UPDATE_CIRCLE_POS()
   local circleList = {}
+  local handle = session.GetMyHandle()
   local buffCount = info.GetBuffCount(handle);
   for i = 0, buffCount - 1 do
     local buff = info.GetBuffIndexed(handle, i);
@@ -373,7 +372,7 @@ function MUTEKI2_UPDATE_CIRCLE_POS()
   end
   local maxLen = #circleList
   for i , circle in ipairs(circleList) do
-    circle:SetOffset((i%2 and -1 or 1)*50*(maxLen/2),10)
+    circle:SetOffset((i-maxLen)*50+(maxLen%2 == 0 and 50 or 25),0)
   end
 end
 -- function MUTEKI2_ADD_POTION_BUFF(buff, frame, label)
@@ -393,6 +392,7 @@ function MUTEKI2_ADD_GAUGE_BUFF(buff, frame)
   local gauge = frame;
   gauge:ShowWindow(1);
   local time = math.floor(buff.time / 1000);
+  -- if(time == 0 )gauge:ShowWindow(0)
   MUTEKI2_START_GAUGE_DOWN(gauge, time, time);
 
   -- if g.melstis then
@@ -402,6 +402,7 @@ function MUTEKI2_ADD_GAUGE_BUFF(buff, frame)
     gauge:AddStat("{@st62}"..buff.Name.."{/}");
     gauge:SetStatAlign(1, 'center', 'center');
     gauge:SetStatOffset(1, 0, -2);
+    MUTEKI2_UPDATE_GAUGE_POS()
   
     -- gauge:SetTextStat(1, "{@st48}"..buff.Name.."{/}")
   -- end
@@ -423,12 +424,13 @@ function MUTEKI2_UPDATE_GAUGE_POS()
     local gauge = g.gauge[tostring(buff.buffID)]
     if gauge then
       local curPoint = gauge:GetCurPoint()
-      table.insert(gaugeList,{gauge = gauge,time = curPoint})
+      if  curPoint < g.settings.hiddenBuffTime then
+        table.insert(gaugeList,{gauge = gauge,time = curPoint})
+      end
     end       
   end
   table.sort(gaugeList,function(a,b) return (a.time < b.time) end)
   for i , obj in ipairs(gaugeList) do
-    print(i)
     obj.gauge:SetOffset(0,(i-1)*offsetY + circleIconHeight)
   end
 end
