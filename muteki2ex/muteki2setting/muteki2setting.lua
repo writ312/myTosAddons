@@ -129,7 +129,7 @@ function MUTEKI2_UPDATE_LIST_VIEW(list,buffid)
   MUTEKI2_CREATE_SETTING_LIST(list:GetParent(),index,buffid,MUTEKI2_GET_GAUGE_BUFF(buffid))
 end
 
-function MUTEKI2_CHANGE_BUFFID(list,control,oldIDbuffid,argNum)
+function MUTEKI2_CHANGE_BUFFID(list,control,oldID,argNum)
   
   local newID = tostring(control:GetText())    
   local index = control:GetUserIValue('index')
