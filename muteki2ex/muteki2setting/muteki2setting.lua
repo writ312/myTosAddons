@@ -157,15 +157,18 @@ function MUTEKI2_CHANGE_BUFFID(list,control,oldIDbuffid,argNum)
   
   local newID = tostring(control:GetText())    
   local index = control:GetUserIValue('index')
-  if oldID == newID or GetClassByType('Buff',tonumber(newID)) then return end
+  if oldID == newID or not GetClassByType('Buff',tonumber(newID)) then return end
   if oldID and g.settings.buffList[oldID] then
-    g.settings.buffList[newID] = g.settings.buffList[oldID]
+    g.settings.buffList[newID] = {unpack(g.settings.buffList[oldID])}
     g.settings.buffList[oldID] = nil
-  else
+    g.frame:RemoveChild(g.gauge[oldID]:GetName())
+    g.gauge[oldID] = nil
+    else
     g.settings.buffList[newID] = {
       color = defaultColor
     }
   end
+  g.gauge[newID] = MUTEKI2_INIT_GAUGE(g.frame,buff,g.settings.buffList[newID].color)
   MUTEKI2_CREATE_SETTING_FRAME()
 end
 
