@@ -147,6 +147,7 @@ end
 
 function MUTEKI2_DELETE_BUFFID(list,control,buffid,argNum)
   g.settings.buffList[buffid] = nil
+  g.gauge[buffid] = nil
   ui.SysMsg(string.format("MUTEKI2の%sを`削除しました.",GetClassByType('Buff',buffid).Name))
   g.frame:RemoveChild(g.gauge[buffid]:GetName())
   MUTEKI2_CREATE_SETTING_FRAME()
