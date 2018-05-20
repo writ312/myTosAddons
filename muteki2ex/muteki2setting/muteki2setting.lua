@@ -13,6 +13,30 @@ local g = _G["ADDONS"][author][addonNameUpper];
 local acutil = require('acutil')
 local defaultColor = "FFCCCC22"
 
+g.translations = {
+	GLOBAL = {
+		gaugeDescription = 'Show gauges below specific buff time (in seconds)',
+		rotateIcons = '{#000000}Display{nl}icon',
+		addBuff = 'MUTEKI2 - Added %s in settings ',
+		deleteBuff = 'MUTEKI2 - Removed %s in settings ',
+		colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
+		hideGauge = 'MUTEKI2 : Hide gauge with remaining time more than %d seconds'
+	},
+	JP = {
+		gaugeDescription = '指定されたバフの時間を超えている場合は隠されています';
+		rotateIcons = '{#000000}アイコンを{nl}回転させるだけ',
+		addBuff = 'MUTEKI2に%sを追加しました.',
+		deleteBuff = "MUTEKI2の%sを`削除しました.",
+		colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
+		hideGauge = 'MUTEKI2 : Hide gauge with remaining time more than %d seconds'
+	}
+} 
+local serviceNation = config.GetServiceNation()
+local function _translate(key)
+	local localization = g.translations[serviceNation] or g.translations["GLOBAL"]
+	return localization[key] or "Translation not provided"
+end
+
 function MUTEKI2SETTING_ON_INIT(addon,frame)
     g.settingAddon = addon
     g.settingFrame = frame
@@ -34,7 +58,7 @@ function MUTEKI2_CREATE_SETTING_FRAME()
   MUTEKI2_SAVE_SETTINGS()  
   local frame = g.settingFrame
   local txt = frame:CreateOrGetControl('richtext','buffTimeTxt',20,-10,30,25)
-  txt:SetText('{#000000}指定されたバフの時間を超えている場合は隠されています{nl}Hidden if it is more than specified buff time')
+  txt:SetText('{#000000}'.._translate('gaugeDescription')..'{/}')
   
   local edit = frame:CreateOrGetControl('edit','buffTimeEdit',430,0,70,25)
   tolua.cast(edit,'ui::CEditControl')
@@ -99,7 +123,7 @@ function MUTEKI2_CREATE_SETTING_LIST(frame,gbox,index,buffid,gaugeBuff)
   checkbox:SetEventScript(ui.LOST_FOCUS , 'MUTEKI2_CHANGE_CIRCLE_MODE')
   checkbox:SetEventScriptArgNumber(ui.LOST_FOCUS,index) 
   checkbox:SetEventScriptArgString(ui.LOST_FOCUS,buffid) 
-  checkbox:SetText("{#000000}アイコンを{nl}回転させるだけ")
+  checkbox:SetText(_translate('rotateIcons'))
 
   local colorTonePic = list:CreateOrGetControl('picture','colorTonePic',350,10,55,55)
   tolua.cast(colorTonePic,'ui::CPicture')
@@ -119,7 +143,7 @@ function MUTEKI2_CREATE_SETTING_LIST(frame,gbox,index,buffid,gaugeBuff)
 
   
   local colorToneText = list:CreateOrGetControl('richtext','colorToneText',420,5,60,30)
-  colorToneText:SetText('{#000000}Color Tone{nl}(AlphaRGB)')
+  colorToneText:SetText(_translate('colorTone'))
 
 end
 
@@ -148,7 +172,7 @@ end
 function MUTEKI2_DELETE_BUFFID(list,control,buffid,argNum)
   g.settings.buffList[buffid] = nil
   g.gauge[buffid] = nil
-  ui.SysMsg(string.format("MUTEKI2の%sを`削除しました.",GetClassByType('Buff',buffid).Name))
+  ui.SysMsg(string.format(_translate('deleteBuff'),GetClassByType('Buff',buffid).Name))
   g.frame:RemoveChild(g.gauge[buffid]:GetName())
   MUTEKI2_CREATE_SETTING_FRAME()
 end
@@ -182,7 +206,7 @@ function MUTEKI2_ADD_BUFFID(frame,control,argStr,buffid)
   if not g.settings.buffList[tostring(buffid)] then
     local buff = GetClassByType('Buff',buffid)
     g.settings.buffList[tostring(buffid)] = {color = defaultColor}
-    ui.SysMsg(string.format("MUTEKI2に%sを追加しました.",buff.Name))
+    ui.SysMsg(string.format(_translate('addBuff'),buff.Name))
     g.gauge[tostring(buffid)] = MUTEKI2_INIT_GAUGE(g.frame,buff,defaultColor)
     g.gauge[tostring(buffid)]:ShowWindow(1)
     MUTEKI2_ADD_GAUGE_BUFF(MUTEKI2_GET_BUFF(buffid),g.gauge[tostring(buffid)])
@@ -194,7 +218,7 @@ function MUTEKI2_SET_HIDDEN_BUFF_TIME(frame,control,argStr,argNum)
   local bufftime = tonumber(control:GetText())    
   if bufftime > 0  and bufftime ~= g.settings.hiddenBuffTime  then
     g.settings.hiddenBuffTime = bufftime
-    ui.SysMsg(string.format('MUTEKI2 : Hide gauge with remaining time more than %d seconds',bufftime))
+    ui.SysMsg(string.format(_translate('hideGauge'),bufftime))
   end
 end
 
