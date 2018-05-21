@@ -120,9 +120,8 @@ function MUTEKI2_CREATE_SETTING_LIST(frame,gbox,index,buffid,gaugeBuff)
   local checkbox = list:CreateOrGetControl('checkbox','circleIcon',200,35,100,35) 
   tolua.cast(checkbox,'ui::CCheckBox')
   checkbox:SetCheck(gaugeBuff.circleIcon and 1 or 0)
-  checkbox:SetEventScript(ui.LOST_FOCUS , 'MUTEKI2_CHANGE_CIRCLE_MODE')
-  checkbox:SetEventScriptArgNumber(ui.LOST_FOCUS,index) 
-  checkbox:SetEventScriptArgString(ui.LOST_FOCUS,buffid) 
+  checkbox:SetEventScript(ui.LBUTTONDOWN  , 'MUTEKI2_CHANGE_CIRCLE_MODE')
+  checkbox:SetEventScriptArgNumber(ui.LBUTTONDOWN ,buffid) 
   checkbox:SetText(_translate('rotateIcons'))
 
   local colorTonePic = list:CreateOrGetControl('picture','colorTonePic',350,10,55,55)
@@ -149,15 +148,18 @@ end
 
 function MUTEKI2_UPDATE_LIST_VIEW(list,buffid)
   MUTEKI2_SAVE_SETTINGS()
-  local index = list:GetUserIValue('index')
+  local index = list:GetUserValue('index')
+  -- print(index)
   MUTEKI2_CREATE_SETTING_LIST(list:GetParent(),index,buffid,MUTEKI2_GET_GAUGE_BUFF(buffid))
 end
 
-function MUTEKI2_CHANGE_BUFFID(list,control,oldIDbuffid,argNum)
-  
+function MUTEKI2_CHANGE_BUFFID(list,control,oldID,argNum)
+  print(oldID)
   local newID = tostring(control:GetText())    
   local index = control:GetUserIValue('index')
-  if oldID == newID or not GetClassByType('Buff',tonumber(newID)) then return end
+  local buff = GetClassByType('Buff',tonumber(newID))
+  print(buff.Name)
+  if oldID == newID or not buff then return end
   if oldID and g.settings.buffList[oldID] then
     g.settings.buffList[newID] = {unpack(g.settings.buffList[oldID])}
     g.settings.buffList[oldID] = nil
@@ -168,15 +170,16 @@ function MUTEKI2_CHANGE_BUFFID(list,control,oldIDbuffid,argNum)
       color = defaultColor
     }
   end
-  g.gauge[newID] = MUTEKI2_INIT_GAUGE(g.frame,buff,g.settings.buffList[newID].color)
   MUTEKI2_CREATE_SETTING_FRAME()
+  g.gauge[newID] = MUTEKI2_INIT_GAUGE(g.frame,buff,g.settings.buffList[newID].color)
+  MUTEKI2_ADD_GAUGE_BUFF(MUTEKI2_GET_BUFF(newID),g.gauge[newID])
 end
 
 function MUTEKI2_DELETE_BUFFID(list,control,buffid,argNum)
   g.settings.buffList[buffid] = nil
-  g.gauge[buffid] = nil
   ui.SysMsg(string.format(_translate('deleteBuff'),GetClassByType('Buff',buffid).Name))
   g.frame:RemoveChild(g.gauge[buffid]:GetName())
+  g.gauge[buffid] = nil
   MUTEKI2_CREATE_SETTING_FRAME()
 end
 
@@ -186,23 +189,30 @@ function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   local oldColor = obj.color
   if #newColor ~= 8 or newColor == oldColor then return end
   obj.color = newColor
-  local buff = GetClassByType('Buff',tonumber(buffid))
-  -- MUTEKI2_UPDATE_LIST_VIEW(list,buffid)
-  if obj.circleIcon then
-    g.circle[buffid] = MUTEKI2_INIT_CIRCLE(frame,buff)
-  else
+  if not obj.circleIcon then
     g.gauge[buffid]:SetColorTone(newColor)
   end
-  
+  list:GetChild('colorTonePic'):SetColorTone(newColor)
   MUTEKI2_SAVE_SETTINGS()
 end
 
-function MUTEKI2_CHANGE_CIRCLE_MODE(list,control,buffid,index)
-  
-    local checkbox = tolua.cast(control,'ui::CCheckBox')   
-    g.settings.buffList[buffid].circleIcon = (checkbox:IsChecked() == 1) and true or false
-    MUTEKI2_CREATE_SETTING_FRAME()
-    -- MUTEKI2_UPDATE_LIST_VIEW(list,buffid)
+function MUTEKI2_CHANGE_CIRCLE_MODE(list,control,argStr,buffid)
+  local checkbox = tolua.cast(control,'ui::CCheckBox')  
+  buffid = tostring(buffid)
+  local buff = GetClassByType('Buff',tonumber(buffid)) 
+  g.settings.buffList[buffid].circleIcon = (checkbox:IsChecked() == 1) and true or false
+  if g.settings.buffList[buffid].circleIcon then
+    g.circle[buffid] =  MUTEKI2_INIT_CIRCLE(g.frame,buff)
+    MUTEKI2_ADD_CIRCLE_BUFF(nil,g.circle[buffid])
+    g.frame:RemoveChild(g.gauge[buffid]:GetName())
+    g.gauge[buffid] = nil
+  else
+    g.gauge[buffid] = MUTEKI2_INIT_GAUGE(g.frame,buff,g.settings.buffList[buffid].color)
+    MUTEKI2_ADD_GAUGE_BUFF(MUTEKI2_GET_BUFF(tonumber(buffid)),g.gauge[tostring(buffid)])
+    g.frame:RemoveChild(g.circle[buffid]:GetName())
+    g.circle[buffid] = nil
+  end
+  MUTEKI2_SAVE_SETTINGS()
 end
 
 function MUTEKI2_ADD_BUFFID(frame,control,argStr,buffid)
@@ -222,6 +232,7 @@ function MUTEKI2_SET_HIDDEN_BUFF_TIME(frame,control,argStr,argNum)
   if bufftime > 0  and bufftime ~= g.settings.hiddenBuffTime  then
     g.settings.hiddenBuffTime = bufftime
     ui.SysMsg(string.format(_translate('hideGauge'),bufftime))
+    MUTEKI2_UPDATE_GAUGE_POS()
   end
 end
 
