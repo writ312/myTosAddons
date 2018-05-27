@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<uiframe name="muteki2setting" x="0" y="0" width="600" height="900">
+	<frame fasthide="true" layout_gravity="left top"/>
+    <layer layerlevel="80"/>
+    <option closebutton="true"/>
+    <controls>
+        <groupbox name="settingGbox"  rect="0 0 560 850" margin="20 25 0 0" layout_gravity="left top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true"/>
+       
+     </controls>
+</uiframe>
