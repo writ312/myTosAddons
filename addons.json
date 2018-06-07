@@ -38,10 +38,10 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.7",
+		"fileVersion" : "v1.1.8",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
-		"updateInfo":"v1.1.7 ウィズ改変に基づく修正に対応（陰陽師他）",
+		"updateInfo":"v1.1.7 Fix : Draw Titlebar Display Issue",
 		"description" : "各職のスキルに必要なアイテムの残数を表示する.ToggleFrame : /rscm ,Resize : /rscm -r [s,m,l] ",
 		"tags" : [
 			"ui"
