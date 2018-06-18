@@ -3,8 +3,10 @@
 	<frame fasthide="true" layout_gravity="left top"/>
 	<input hittest="true" movable="true" moveintitlebar="false" hittestframe="true"/>
     <layer layerlevel="1"/>
-    <draw drawframe="true" drawtitlebarframe="false" drawtitlebar="false"/>
+    <draw drawtitlebarframe="false" drawtitlebar="false"/>
     <option closebutton="false" hideable="false"/>
-    <skin frameskin="none"/>
-<controls/>
+    <skin frameskin="none" titlebarskin="none"/>
+<controls>
+    <groupbox name="gbox"  rect="0 0 400 200" margin="0 10 0 0" layout_gravity="left top" draw="true" hittestbox="true" resizebyparent="false" resizebyresolution="true" skin="None"/>
+</controls>
 </uiframe>

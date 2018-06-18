@@ -16,7 +16,7 @@ g.jobTable[3005] = {
     }
 }
 -- Flecher
-g.jobTable[3011] = {
+g.jobTable[1011] = {
     { -- arrows
         645250,
         645251,
@@ -152,6 +152,7 @@ g.jobTable[1011] = {
         640253
     }
 }
+
 g.presetTable = {}
 g.addonName = 'resourcemanager'
 
@@ -174,7 +175,7 @@ if err then
     };
 else
     g.settings = t;
-end
+end 
 g.settings.frameVisual = g.settings.frameVisual or 1 
 g.settings.size = g.settings.size or 'm'
 resourcemanagerSaveSetting()
@@ -245,6 +246,8 @@ function RESOURCEMANAGER_ON_INIT(addon,frame)
     g.addnon = addon;
     g.frame = frame;
     frame:ShowWindow(g.settings.frameVisual)
+    frame:ShowTitleBar(1)
+    frame:ShowTitleBarFrame(1)
     frame:SetEventScript(ui.LBUTTONUP, "RESOURCEMANAGER_END_DRAG")
     acutil.slashCommand("/rscm", RESOURCEMANAGER_COMMAND);
     addon:RegisterMsg('INV_ITEM_ADD', 'RESOURCEMANAGER_UPDATE_TXT');
@@ -296,20 +299,25 @@ local function getResourceItemCount(list)
     end
     return items
 end
-
-
 function RESOURCEMANAGER_SET_ICON()
     existPresetJobs()
     if not unpack(g.presetTable) then
-        return
+      return
     end
     local frame = g.frame
-    frame:Resize(300,210)
     frame:SetPos(g.settings.position.x ,g.settings.position.y)
-    frame:RemoveAllChild()
-    local col = 0  
+    frame:Resize(380,300)
+    local gbox = frame:CreateOrGetControl('groupbox','gbox',0,10,450,250)
+    gbox:RemoveAllChild()
+    tolua.cast(gbox,'ui::CGroupBox')
+    gbox:SetSkinName('none')
+    gbox:EnableScrollBar(0)
+    gbox:SetGravity('0','0')
+    local col = 0
     for i ,v in ipairs(g.presetTable) do
-        col = _RESOURCEMANAGER_SET_ICON(frame,col,v)
+      if unpack(v) then
+            col = _RESOURCEMANAGER_SET_ICON(gbox,col,v)
+        end
     end
     colLength = col
 end
@@ -318,7 +326,7 @@ function _RESOURCEMANAGER_SET_ICON(frame,col,list)
     local size = g.settings.size
     local w = (size == 's') and 30 or (size == 'm' and 40) or (size == 'l' and 50) or 40
     local h = w+20
-    frame:Resize(w*maxRow,210)
+    frame:Resize(w*maxRow,250)
     local items = getResourceItemCount(list);
     local i = 0;
      for i,v in ipairs(items) do
@@ -326,30 +334,30 @@ function _RESOURCEMANAGER_SET_ICON(frame,col,list)
             if i == maxRow then
                 local t1,t2 = g.tableSplit(list,maxRow -1)
                 return _RESOURCEMANAGER_SET_ICON(frame,col+1,t2)
-
             end 
             local item = GetClassByType('Item',v[1])
-            local baseSlot = frame:CreateOrGetControl("slot","slot"..col..v[1], 10+w*(i-1), 10+h*(col-1),w-5,h-5)
+            local baseSlot = frame:CreateOrGetControl("slot","slot"..col..v[1], 10+w*(i-1), h*col,w-5,h-5)
             tolua.cast(baseSlot, 'ui::CSlot')
             baseSlot:SetSkinName('slot')
             baseSlot:SetTextTooltip(item.Name)
-
-		   	local iconSlot = baseSlot:CreateOrGetControl("slot","slot"..col..v[1],0,0,w-8,w-8)               
-            tolua.cast(iconSlot, 'ui::CSlot')
-		    local icon = CreateIcon(iconSlot);
+            baseSlot:EnableHitTest(1)
+            baseSlot:SetGravity(ui.LEFT,'0')
+		   	local icon = baseSlot:CreateOrGetControl("picture","icon"..col..v[1],0,0,w-8,w-8)               
+            tolua.cast(icon, 'ui::CPicture')
 			icon:SetImage(item.Icon)
-            icon:SetTextTooltip(item.Name)
+            icon:EnableHitTest(0)
+            icon:SetEnableStretch(1)
 
 			local text = baseSlot:CreateOrGetControl("richtext","txt"..col..v[1],0,0,w,h-w)
             tolua.cast(text, 'ui::CRichText')
             text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
             text:SetGravity(2,1)
+            text:EnableHitTest(0)
             i = i + 1;
         end
     end
     return col + 1
 end
-
 function RESOURCEMANAGER_UPDATE_TXT()
     if not unpack(g.presetTable)  then return end
     local frame = ui.GetFrame('resourcemanager')  
