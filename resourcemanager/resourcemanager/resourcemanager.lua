@@ -16,7 +16,7 @@ g.jobTable[3005] = {
     }
 }
 -- Flecher
-g.jobTable[1011] = {
+g.jobTable[3011] = {
     { -- arrows
         645250,
         645251,
