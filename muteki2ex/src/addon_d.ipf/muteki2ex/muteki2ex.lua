@@ -214,7 +214,7 @@ function MUTEKI2_INIT_CIRCLE(frame, buffObj)
   local image = frame:CreateOrGetControl("picture", "circle_"..buffObj.ClassName,0,0, 40, 40);
   tolua.cast(image, "ui::CPicture");
   image:ShowWindow(0);
-  -- SetGravity
+  image:SetGravity(ui.CENTER_HORZ, ui.TOP);
   image:SetImage('icon_'..buffObj.Icon)
   image:SetEnableStretch(1);
   image:EnableHitTest(0);
@@ -383,8 +383,7 @@ function MUTEKI2_UPDATE_POSITIONS()
 
     if circle and not buffSetting.isNotNotify[g.user] then
       table.insert(circleList,circle)
-    end     
-    if gauge and not buffSetting.isNotNotify[g.user] then
+    elseif gauge and not buffSetting.isNotNotify[g.user] then
       if  buff.time/1000 <= g.settings.hiddenBuffTime then
         if buffSetting.isNoTimeBuff then
           table.insert(noTimeBuffs,gauge)
@@ -400,7 +399,7 @@ function MUTEKI2_UPDATE_POSITIONS()
   local maxLen = #circleList
   if #circleList > 0 then
     for i , circle in ipairs(circleList) do
-      circle:SetOffset((i-maxLen/2)*50,0)
+      circle:SetOffset(-25*(maxLen-1)+(i-1)*50,0)
     end
   end
     if #gaugeList > 0 then
@@ -470,7 +469,7 @@ function MUTEKI2_TOGGLE_LOCK()
     g.frame:SetSkinName("shadow_box");
     g.frame:EnableHitTest(1);
     for k, gauge in pairs(g.gauge) do
-      MUTEKI2_START_GAUGE_DOWN(gauge, 60, 60);
+      -- MUTEKI2_START_GAUGE_DOWN(gauge, 60, 60);
     end
   end
 
@@ -502,6 +501,7 @@ function MUTEKI2_PROCESS_COMMAND(command)
   end
 
   if cmd == "lock" then
+    MUTEKI2_CHANGE_MODE("fixed")
     MUTEKI2_TOGGLE_LOCK();
     return;
   elseif cmd == "trace" then
