@@ -23,6 +23,12 @@ end
 
 local function QUICKMENU_UPDATE_UI()
     local frame = ui.GetFrame('quickmenu')
+    local intervalEdit = frame:GetChild('intervalEdit')
+    tolua.cast(intervalEdit,'ui::CEditControl')
+    intervalEdit:SetNumberMode(1)
+    intervalEdit:SetText(g.interval or 3) 
+    intervalEdit:SetTypingScp('QM_CHANGE_INTERVAL')
+
     local name =  GETMYPCNAME()
     for i = 1, 12 do
         local item = g.setting.user[name][i]
@@ -94,11 +100,13 @@ function QUICKMENU_UPDATE(frame,msg,argStr,argNum)
     g.counter = g.counter - 1
     if g.counter > 0 then return end
     local frame = ui.GetFrame('quickmenu')
-	if keyboard.GetDownKey() == 'ESC' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyPressed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or joystick.IsKeyPressed('JOY_BTN_11') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
-        GET_CHILD(frame,'timer','ui::CAddOnTimer'):Stop()
-		frame:ShowWindow(0)
-        ui.GetFrame('quickmenu_setting'):ShowWindow(0)
-        return
+    if keyboard.GetDownKey() == 'ESCAPE' or keyboard.GetDownKey() == 'F10' or joystick.IsKeyPressed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or joystick.IsKeyPressed('JOY_BTN_11') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
+      -- if keyboard.GetDownKey() == 'ESCAPE'  or joystick.IsKeyPressed('JOY_BTN_2') == 1 or joystick.IsKeyPressed('JOY_BTN_10') == 1 or joystick.IsKeyPressed('JOY_BTN_11') == 1 or GET_CHILD(frame,'edit','ui::CEditControl'):IsHaveFocus() == 0 then 
+      GET_CHILD(frame,'timer','ui::CAddOnTimer'):Stop()
+      frame:ShowWindow(0)
+      g.counter = g.setting.interval  
+      ui.GetFrame('quickmenu_setting'):ShowWindow(0)
+      return
 	end
 	if keyboard.GetDownKey() == 'SPACE' or keyboard.GetDownKey() == 'ENTER' or joystick.IsKeyPressed('JOY_BTN_3') == 1 then
 		EXECUTE_QUICKMENU_ITEM(frame,g.index)
@@ -195,18 +203,26 @@ function QUICKMENU_COMMAND(command)
     QUICKMENU_UPDATE_UI()
 end
 
+function _OPEN_QUICKMENU_FRAME()
+    print('start update')
+    print(keyboard.GetDownKey())
+    local frame = ui.GetFrame('quickmenu')    
+    local timer = GET_CHILD(frame,'timer','ui::CAddOnTimer')
+    -- timer:SetUpdateScript('QUICKMENU_UPDATE')
+    timer:Stop()
+    timer:Start(0.01)
+end
+
 function OPEN_QUICKMENU_FRAME()
     local frame = ui.GetFrame('quickmenu')
     if frame:IsVisible() == 1 then frame:ShowWindow(0);return end
-    local edit = GET_CHILD(frame,'edit','ui::CEditControl')
+        local edit = GET_CHILD(frame,'edit','ui::CEditControl')
     edit:Focus()
-    local timer = GET_CHILD(frame,'timer','ui::CAddOnTimer')
-    timer:Stop()
-    timer:Start(0.01)
     frame:Resize(frame:GetWidth(), 10 * 40 + 30);
     QUICKMENU_UPDATE_UI()
 	frame:ShowWindow(1);
-	SELECT_QUICKMENU_ITEM(frame,g.index)
+    SELECT_QUICKMENU_ITEM(frame,g.index)
+    ReserveScript("_OPEN_QUICKMENU_FRAME()",0.2)
 end
 
 function SELECT_QUICKMENU_ITEM(frame,index)
@@ -246,6 +262,10 @@ function QUICKMENU_RBTN_CLICK(frame,control,argStr,index)
     OPEN_QUICKMENU_SETTING_FRAME(index)
 end
 
+function QM_CHANGE_INTERVAL(frame,control,argStr,index)
+    g.interval = tonumber(control:GetText())  
+    acutil.saveJSON(g.settingPath,g.setting)
+end
 -- QuickMenu Setting Frame Function
 function OPEN_QUICKMENU_SETTING_FRAME(index)
     local quickmenu = ui.GetFrame('quickmenu')
@@ -367,4 +387,3 @@ function QUICKMENU_REMOVE_SETTING(frame,control,argStr,argNum)
     QUICKMENU_UPDATE_UI()
     ui.GetFrame('quickmenu_setting'):ShowWindow(0)
 end
-local frame ui.GetFrame('quickmenu_setting')
