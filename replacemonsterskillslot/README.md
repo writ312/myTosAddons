@@ -2,7 +2,7 @@
 You can change the position of monster skill like Druid's transformation.
 ドルイドの変身時のスキル配置を変更できる。
 
-##Useage
+## Usage
 
 * command is  `/rmss <SlotNumber>`
 
