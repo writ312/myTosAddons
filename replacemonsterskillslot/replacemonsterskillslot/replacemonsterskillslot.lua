@@ -33,7 +33,7 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 	if isOn == 1 then
         local monCls = GetClass("Monster", monName);
 		local list = GetMonsterSkillList(monCls.ClassID);
-        for i = slotNum, slotNum + list:Count() - 1 do
+		for i = slotNum, slotNum + list:Count() - 1 do
 			local sklName = list:Get(i - slotNum);
 			local sklCls = GetClass("Skill", sklName);
 			local slot = GET_CHILD_RECURSIVELY(frame, "slot"..i+1, "ui::CSlot");
@@ -60,8 +60,7 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 
 			slot:EnableDrag(0);
 		end
-
-		local lastSlot = GET_CHILD_RECURSIVELY(frame, "slot"..(list:Count() +1 +slotNum), "ui::CSlot");
+		local lastSlot = GET_CHILD_RECURSIVELY(frame, "slot"..(list:Count() +1), "ui::CSlot");
 		local icon = lastSlot:GetIcon();
 		if icon ~= nil then
 			local iconInfo = icon:GetInfo();
@@ -71,7 +70,7 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 
 		CLEAR_SLOT_ITEM_INFO(lastSlot);
 		local icon = CreateIcon(lastSlot);
-		local slotString 	= 'QuickSlotExecute'..(list:Count() +1 +slotNum);
+		local slotString 	= 'QuickSlotExecute'..(list:Count() +1);
 		local text 			= hotKeyTable.GetHotKeyString(slotString);
 		lastSlot:SetText('{s14}{#f0dcaa}{b}{ol}'..text, 'default', 'left', 'top', 2, 1);
 		icon:SetImage("druid_del_icon");		
