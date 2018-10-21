@@ -37,7 +37,13 @@ local function swapSlotItems(srcIndex,destIndex)
 		index = srcIndex
 	}
 	local srcIcon = srcSlot:GetIcon()
-	
+	if srcIcon ~= nil then
+		local iconInfo = srcIcon:GetInfo()
+		src.category = iconInfo.category
+		src.invIndex = iconInfo.ext
+		src.type = iconInfo.type
+		src.guid = iconInfo:GetIESID()
+	end
 	local dest = {
 		index = destIndex
 	}
