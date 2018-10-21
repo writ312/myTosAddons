@@ -229,11 +229,11 @@
 		"name" : "ReplaceMonsterSkillSlot",
 		"file" : "replacemonsterskillslot",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.1.0",
 		"releaseTag" : "replacemonsterskillslot",
 		"unicode" : "⛄",
 		"description" : "You can change the position of monster skill like Druid's transformation. See the readme.",
-		"updateInfo" :"v1.0.0 ドルイドの変身時のスキル配置を変更できる。詳しくはReadmeを",
+		"updateInfo" :"v1.1.0 変身解除の場所も変更できるように",
 		"tags" : [
 			"quickslot","druid"
 		]
