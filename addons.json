@@ -15,7 +15,7 @@
 		"name" : "HotKey Ability",
 		"file" : "hotkeyability",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.1",
+		"fileVersion" : "v1.2.2",
 		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
 		"description" : "ホットキーに特性、ポーズ、チャットマクロをドラック＆ドロップで設定可能にする",
