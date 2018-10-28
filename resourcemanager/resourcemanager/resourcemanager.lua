@@ -4,15 +4,10 @@ local g = _G['ADDONS']['RESOURCEMANAGER']
 local maxRow = 8
 local colLength = 0
 g.jobTable = {}
--- Sapper
+-- Sapper 0916 changed
 g.jobTable[3005] = { 
     {
-        645604,
-        645240
-    },{
-        645239,
-    },{
-        645605
+        646079
     }
 }
 -- Flecher
@@ -46,6 +41,14 @@ g.jobTable[4002] = {
         640031
     }
 }
+
+-- Krivis
+g.jobTable[4003]={
+    {},
+    {},
+    {640069}
+}
+
 -- Dievdirbys
 g.jobTable[4007] = {
     {
@@ -62,10 +65,18 @@ g.jobTable[4011] = {
         640068
     }
 }
--- Inquisitor
+-- Kabbalist 0916 changed
+g.jobTable[4015] = {
+    {
+        {},
+        {},
+        {640068}
+    }
+}
+-- Inquisitor 0916 changed
 g.jobTable[4016] = {
     {
-        645924
+        646078
     }
 } 
 -- Daoshi
@@ -74,6 +85,9 @@ g.jobTable[4017] = {
         645821
     }
 }
+-- g.jobTable[] = {
+--     {640068}
+-- }
 -- Pyromancer
 g.jobTable[2002] = {
     {},{},{
@@ -109,7 +123,8 @@ g.jobTable[2008] = {
 -- Alchemist
 g.jobTable[2005] = {
     {
-        645533
+        645533,
+        646081
     }
 }
 -- RuneCaster
@@ -278,6 +293,7 @@ function RESOURCEMANAGER_TOGGLE()
 end
 
 local function getTextColorByCount(count)
+	if type(count) ~= 'number' then count = 0 end
     local color = (count < 100) and 'FF4500';
     color = (count < 50) and 'FF0000' or color
     return color or 'FFFFFF'
@@ -288,14 +304,13 @@ local function getResourceItemCount(list)
     if not list then
         return items
     end
-    for i,value in ipairs(list) do
-        local item = GetClassByType('Item',value)
-        item = session.GetInvItemByName(item.ClassName)    
-        if item ~= nil then
-            table.insert(items,{value,item.count})
-        else 
-            table.insert(items,{value,0})
-        end
+	for i,value in ipairs(list) do
+		if value then
+			local item = GetClassByType('Item',value)
+			local invitem = session.GetInvItemByName(item.ClassName)
+			local count = invitem and invitem.count or 0
+			table.insert(items,{value,count})
+		end
     end
     return items
 end
@@ -334,26 +349,26 @@ function _RESOURCEMANAGER_SET_ICON(frame,col,list)
             if i == maxRow then
                 local t1,t2 = g.tableSplit(list,maxRow -1)
                 return _RESOURCEMANAGER_SET_ICON(frame,col+1,t2)
-            end 
-            local item = GetClassByType('Item',v[1])
-            local baseSlot = frame:CreateOrGetControl("slot","slot"..col..v[1], 10+w*(i-1), h*col,w-5,h-5)
-            tolua.cast(baseSlot, 'ui::CSlot')
-            baseSlot:SetSkinName('slot')
-            baseSlot:SetTextTooltip(item.Name)
-            baseSlot:EnableHitTest(1)
-            baseSlot:SetGravity(ui.LEFT,'0')
-		   	local icon = baseSlot:CreateOrGetControl("picture","icon"..col..v[1],0,0,w-8,w-8)               
-            tolua.cast(icon, 'ui::CPicture')
+			end
+			local item = GetClassByType('Item',v[1])
+			local baseSlot = frame:CreateOrGetControl("slot","slot"..col..v[1], 10+w*(i-1), h*col,w-5,h-5)
+			tolua.cast(baseSlot, 'ui::CSlot')
+			baseSlot:SetSkinName('slot')
+			baseSlot:SetTextTooltip(item.Name)
+			baseSlot:EnableHitTest(1)
+			baseSlot:SetGravity(ui.LEFT,'0')
+			local icon = baseSlot:CreateOrGetControl("picture","icon"..col..v[1],0,0,w-8,w-8)               
+			tolua.cast(icon, 'ui::CPicture')
 			icon:SetImage(item.Icon)
-            icon:EnableHitTest(0)
-            icon:SetEnableStretch(1)
+			icon:EnableHitTest(0)
+			icon:SetEnableStretch(1)
 
 			local text = baseSlot:CreateOrGetControl("richtext","txt"..col..v[1],0,0,w,h-w)
-            tolua.cast(text, 'ui::CRichText')
-            text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
-            text:SetGravity(2,1)
-            text:EnableHitTest(0)
-            i = i + 1;
+			tolua.cast(text, 'ui::CRichText')
+			text:SetText(string.format("{#%s}{s%d}%d{/}{/}",getTextColorByCount(v[2]),18,v[2]));
+			text:SetGravity(2,1)
+			text:EnableHitTest(0)
+			i = i + 1;
         end
     end
     return col + 1

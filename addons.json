@@ -38,7 +38,7 @@
 		"name" : "Resource Manager Lite",
 		"file" : "resourcemanagerlite",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.9",
+		"fileVersion" : "v1.2.0",
 		"releaseTag" : "resourcemanager",
 		"unicode" : "⛄",
 		"updateInfo":"v1.1.9 Fix. show titlebar frame issue",
