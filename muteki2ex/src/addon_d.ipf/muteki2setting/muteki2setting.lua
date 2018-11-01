@@ -1,4 +1,5 @@
 local function toboolean(str)
+  print(str)
   return str == 'true' and true or false
 end
 
@@ -18,31 +19,31 @@ local acutil = require('acutil')
 local defaultColor = "FFCCCC22"
 
 g.translations = {
-	GLOBAL = {
-		gaugeDescription = 'Show gauges below specific buff time (in seconds)',
-		rotateIcons = '{#000000}Display icon',
-		addBuff = 'MUTEKI2 - Added %s in settings ',
-		deleteBuff = 'MUTEKI2 - Removed %s in settings ',
-		colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
+    GLOBAL = {
+        gaugeDescription = 'Show gauges below specific buff time (in seconds)',
+        rotateIcons = '{#000000}Display icon',
+        addBuff = 'MUTEKI2 - Added %s in settings ',
+        deleteBuff = 'MUTEKI2 - Removed %s in settings ',
+        colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
     hideGauge = 'MUTEKI2 : Hide gauge with remaining time more than %d seconds',
     isNotNotify = "{#000000}Hide with this character",
     isEffect = "{#000000}With effect"
-	},
-	JP = {
-		gaugeDescription = '指定されたバフの時間を超えている場合は隠されています';
-		rotateIcons = '{#000000}アイコンを{nl}回転させるだけ',
-		addBuff = 'MUTEKI2に%sを追加しました.',
-		deleteBuff = "MUTEKI2の%sを`削除しました.",
-		colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
+    },
+    JP = {
+        gaugeDescription = '指定されたバフの時間を超えている場合は隠されています';
+        rotateIcons = '{#000000}アイコンを{nl}回転させるだけ',
+        addBuff = 'MUTEKI2に%sを追加しました.',
+        deleteBuff = "MUTEKI2の%sを`削除しました.",
+        colorTone = '{#000000}Color Tone{nl}(AlphaRGB)',
     hideGauge = 'MUTEKI2 : %d秒以上のバフは非表示になります',
     isNotNotify = "{#000000}このキャラクターでは{nl}表示しない",
     isEffect = "{#000000}バフがf追加されたときに{nl}エフェクトを表示する"
-	}
+    }
 } 
 local serviceNation = config.GetServiceNation()
 local function _translate(key)
-	local localization = g.translations[serviceNation] or g.translations["GLOBAL"]
-	return localization[key] or "Translation not provided"
+    local localization = g.translations[serviceNation] or g.translations["GLOBAL"]
+    return localization[key] or "Translation not provided"
 end
 
 function MUTEKI2SETTING_ON_INIT(addon,frame)
@@ -68,6 +69,13 @@ function MUTEKI2_CREATE_SETTING_FRAME()
   local buffTimeTxt = frame:CreateOrGetControl('richtext','buffTimeTxt',20,-10,30,25)
   buffTimeTxt:SetText('{#000000}'.._translate('gaugeDescription')..'{/}')
   
+  frame:GetChild(g.settings.mode..'modeBtn'):SetSkinName('test_red_button')
+  
+  local isLock = g.settings.position.lock
+  local lockModeBtn = frame:GetChild('lockmodeBtn')
+  lockModeBtn:SetSkinName(isLock and 'test_cardtext_btn' or  'textbutton')
+  lockModeBtn:SetText(isLock and '{s20}ON' or '{s20}OFF')
+
   local buffTimeEdit = frame:CreateOrGetControl('edit','buffTimeEdit',430,0,70,25)
   tolua.cast(buffTimeEdit,'ui::CEditControl')
   buffTimeEdit:SetNumberMode(1)
@@ -211,7 +219,7 @@ end
 
 function MUTEKI2_CHANGE_CIRCLE_MODE(list,control,isChecked,buffid)
   local buff = GetClassByType('Buff',buffid) 
-  g.settings.buffList[tostring(buffid)].circleIcon = toboolean(isChecked)
+  g.settings.buffList[tostring(buffid)].circleIcon = (control:IsChecked() == 1) and true or false
   MUTEKI2_UPDATE_CONTROL(buffid)
   MUTEKI2_SAVE_SETTINGS()
 end
@@ -247,13 +255,13 @@ end
 
 
 function MUTEKI2_CHANGE_NOTIFY(list,control,isChecked,buffid)
-  g.settings.buffList[tostring(buffid)].isNotNotify[g.user] = toboolean(isChecked)
+  g.settings.buffList[tostring(buffid)].isNotNotify[g.user] = (control:IsChecked() == 1) and true or false
   MUTEKI2_UPDATE_CONTROL(buffid)
   MUTEKI2_SAVE_SETTINGS()
 end
 
 function MUTEKI2_CHANGE_EFFECT(list,control,isChecked,buffid)
-  g.settings.buffList[tostring(buffid)].isEffect = toboolean(isChecked)
+  g.settings.buffList[tostring(buffid)].isEffect = (control:IsChecked() == 1) and true or false
   MUTEKI2_SAVE_SETTINGS()
 end
 
@@ -279,4 +287,20 @@ function MUTEKI2_UPDATE_CONTROL(buffid)
       MUTEKI2_ADD_GAUGE_BUFF(buff,g.gauge[buffid])
       end
     end
+end
+
+function MUTEKI2_CHANGE_MODE_BTN(frame,control,mode,argNum)
+  local thisMode = g.settings.mode
+  local beforeModeBtn = frame:GetChild(thisMode..'modeBtn')
+  beforeModeBtn:SetSkinName('textbutton')
+  control:SetSkinName('test_red_button')
+  MUTEKI2_CHANGE_MODE(mode)
+end
+
+function MUTEKI2_CHANGE_LOCK_BTN(frame,control,argStr,argNum)
+  MUTEKI2_TOGGLE_LOCK()
+  local isLock = g.settings.position.lock
+  local lockModeBtn = frame:GetChild('lockmodeBtn')
+  control:SetSkinName(isLock and 'test_cardtext_btn' or 'textbutton')
+  control:SetText(isLock and '{s20}ON' or '{s20}OFF')
 end

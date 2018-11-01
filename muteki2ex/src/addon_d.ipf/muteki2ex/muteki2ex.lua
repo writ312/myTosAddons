@@ -124,7 +124,18 @@ function MUTEKI2EX_ON_INIT(addon, frame)
   frame:SetOffset(g.settings.position.x, g.settings.position.y);
   
   g.user = GETMYPCNAME()
-  ReserveScript("MUTEKI2_CHANGE_MODE()", 1.0);
+  addon:RegisterMsg("GAME_START_3SEC","MUTEKI2_INIT")
+
+end
+
+function MUTEKI2_INIT()
+    local handle = session.GetMyHandle();
+    local buffCount = info.GetBuffCount(handle);
+    for i = 0, buffCount - 1 do
+        local buff = info.GetBuffIndexed(handle, i);
+        -- MUTEKI2_UPDATE_CONTROL(buff.buffID)
+    end
+    -- MUTEKI2_CHANGE_MODE()
 end
 
 
@@ -139,16 +150,24 @@ function MUTEKI2_CHANGE_MODE(mode)
     local handle = session.GetMyHandle();
     local actor = world.GetActor(handle)
     FRAME_AUTO_POS_TO_OBJ(frame, handle, - frame:GetWidth() / 2, -100, 3, 1);
-    MUTEKI2_INIT_FRAME(g.frame)
+    -- MUTEKI2_INIT_FRAME(g.frame)
   else
     --Moveではうまくいかないので、OffSetを使用する…
     frame:Move(0, 0);
     frame:SetOffset(g.settings.position.x, g.settings.position.y);
     frame:StopUpdateScript("_FRAME_AUTOPOS");
-    MUTEKI2_INIT_FRAME(g.frame)
+    -- MUTEKI2_INIT_FRAME(g.frame)
     mode = "fixed";
   end
-  
+
+  if g.settings.position.lock then
+    frame:SetSkinName("none");
+    frame:EnableHitTest(0);
+  else
+    frame:SetSkinName("shadow_box");
+    frame:EnableHitTest(1);
+  end
+
   g.settings.mode = mode;
   MUTEKI2_SAVE_SETTINGS();
   MUTEKI2_UPDATE_POSITIONS()
@@ -190,21 +209,16 @@ end
 
 function MUTEKI2_INIT_FRAME(frame)
   --フレーム初期化処理
-  frame:Resize(300,200)
-  frame:RemoveAllChild()
-  if g.settings.position.lock then
-    frame:SetSkinName("none");
-    frame:EnableHitTest(0);
-  else
-    frame:SetSkinName("shadow_box");
-    frame:EnableHitTest(1);
-  end
+--   frame:Resize(300,200)
+    frame:RemoveAllChild()
+    g.circle = {}
+    g.gauge = {}
   -- ゲージ生成はここ
   for buffid , buffSetting in pairs(g.settings.buffList) do
     local buffObj = GetClassByType('Buff',tonumber(buffid))
     if buffSetting.circleIcon then
         g.circle[buffid] = MUTEKI2_INIT_CIRCLE(frame,buffObj)
-    else
+    elseif buffObj then
         g.gauge[buffid] = MUTEKI2_INIT_GAUGE(frame,buffObj,buffSetting.color)
     end
   end
@@ -251,6 +265,7 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
 end
 
 function MUTEKI2_SET_POINT(gauge, curPoint, play)
+    print(play and 1 or 0)
   local maxPoint = gauge:GetMaxPoint();
   gauge:SetPoint(curPoint, maxPoint);
 
@@ -270,16 +285,20 @@ function MUTEKI2_START_GAUGE_DOWN(gauge, curPoint, maxPoint)
     curPoint = gauge:GetCurPoint();
     maxPoint = gauge:GetMaxPoint();
   end
-
+  print('cur'..curPoint)
+  print('max'..maxPoint)
   --ミリ秒単位で開始時間を計測
   local elapsedMS = (maxPoint - curPoint) * 1000;
   local startTime = imcTime.GetAppTimeMS() - elapsedMS;
   gauge:SetUserValue("STARTTIME", startTime);
   gauge:SetUserValue("PAUSE", 0);
   gauge:SetTotalTime(maxPoint);
---   gauge:SetSkinName(gauge:GetUserValue("SKINNAME"));
+  print(elapsedMS)
+  print(stat)
+  --   gauge:SetSkinName(gauge:GetUserValue("SKINNAME"));
   MUTEKI2_SET_POINT(gauge, maxPoint - curPoint, false);
   gauge:RunUpdateScript("MUTEKI2_UPDATE_GAUGE_DOWN");
+  print('run start')
 end
 
 --ゲージ更新処理
@@ -287,7 +306,7 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
   --経過時間
   local elapsedMS = imcTime.GetAppTimeMS() - gauge:GetUserIValue("STARTTIME");
   local pause = gauge:GetUserIValue("PAUSE");
-
+print(gauge:GetName()..pause)
   local maxPoint = gauge:GetMaxPoint();
   local curPoint =  elapsedMS ~= 0 and maxPoint - elapsedMS / 1000 or maxPoint
   gauge:SetPoint(curPoint, maxPoint)
@@ -296,15 +315,17 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
   local msec = math.floor((curPoint - sec) * 100);
   -- if sec < 0 or sec > hiddenBuffTime then
     if sec < 0  then
-      gauge:ShowWindow(0);
-    return 0;
-  end
-
+        print('sec under 0')
+        gauge:ShowWindow(0);
+      return 0;
+    end
+  
   local text = "{@st48}00.00{/}"
 
   if sec >= 0 then
     text = pause ~= 1 and string.format("{@st48}%02d.%02d{/}", sec, msec) or string.format("{@st48}{#00FF00}%02d.%02d{/}{/}", sec, msec);
-  end
+    print(text)
+end
 
   gauge:SetTextStat(0, text);
   
@@ -313,12 +334,11 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
     -- gauge:SetSkinName("muteki2_gauge_green");
     return 0;
   end
-
   if sec > g.settings.hiddenBuffTime then
     gauge:ShowWindow(0)
   else
     if not gauge:IsVisible() then
-      MUTEKI2_UPDATE_POSITIONS()
+        MUTEKI2_UPDATE_POSITIONS()
     end
     gauge:ShowWindow(1)
   end
@@ -378,7 +398,7 @@ function MUTEKI2_UPDATE_POSITIONS()
   for i = 0, buffCount - 1 do
     local buff = info.GetBuffIndexed(handle, i);    
     local buffSetting , buffObj = MUTEKI2_GET_BUFFS(buff.buffID)
-        local circle = g.circle[tostring(buff.buffID)]
+    local circle = g.circle[tostring(buff.buffID)]
     local gauge = g.gauge[tostring(buff.buffID)]
 
     if circle and not buffSetting.isNotNotify[g.user] then
@@ -422,7 +442,7 @@ function MUTEKI2_UPDATE_POSITIONS()
       ctrl:ShowWindow(1)
     end
   end
-  local height = circleIconHeight+(#gaugeList+math.floor(#noTimeBuffs/2))*offsetY
+  local height = circleIconHeight+(#gaugeList+math.floor(#noTimeBuffs/2))*offsetY + 20
   g.frame:Resize(300,(height < 200) and 200 or height + 20 )
 end
 
@@ -437,10 +457,12 @@ function MUTEKI2_ADD_GAUGE_BUFF(buff, frame)
   local time = math.floor(buff.time / 1000);
   local buffSetting = MUTEKI2_GET_BUFF_SETTING(buff.buffID)
   if time == 0 then
+    print('notime buff')
     buffSetting.isNoTimeBuff = true
   else
+    print('nomal buff')
     buffSetting.isNoTimeBuff = false
-    MUTEKI2_START_GAUGE_DOWN(gauge, time, time)
+    MUTEKI2_START_GAUGE_DOWN(gauge, time, time+1)
   end
   gauge:ShowWindow(1);
   MUTEKI2_UPDATE_POSITIONS()
@@ -448,6 +470,7 @@ end
 
 function MUTEKI2_REMOVE_GAUGE_BUFF(buff,frame)
   local gauge = frame;
+  print('stop '..gauge:GetName())
   gauge:ShowWindow(0);
   gauge:StopUpdateScript("MUTEKI2_UPDATE_GAUGE_DOWN")
   MUTEKI2_UPDATE_POSITIONS()
@@ -557,3 +580,4 @@ function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   list:GetChild('colorTonePic'):SetColorTone(newColor)
   MUTEKI2_SAVE_SETTINGS()
 end
+MUTEKI2_UPDATE_GAUGE_DOWN(g.gauge['100'])
