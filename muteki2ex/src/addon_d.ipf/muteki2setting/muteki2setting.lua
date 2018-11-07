@@ -1,5 +1,4 @@
 local function toboolean(str)
-  print(str)
   return str == 'true' and true or false
 end
 
@@ -75,14 +74,28 @@ function MUTEKI2_CREATE_SETTING_FRAME()
   local lockModeBtn = frame:GetChild('lockmodeBtn')
   lockModeBtn:SetSkinName(isLock and 'test_cardtext_btn' or  'textbutton')
   lockModeBtn:SetText(isLock and '{s20}ON' or '{s20}OFF')
+  lockModeBtn:SetOffset(380,30)
 
-  local buffTimeEdit = frame:CreateOrGetControl('edit','buffTimeEdit',430,0,70,25)
+  frame:GetChild('lockText'):SetOffset(330,30)
+
+  local buffTimeEdit = frame:CreateOrGetControl('edit','buffTimeEdit',440,-10,70,25)
   tolua.cast(buffTimeEdit,'ui::CEditControl')
   buffTimeEdit:SetNumberMode(1)
   buffTimeEdit:SetOffsetYForDraw(-5)
   buffTimeEdit:SetOffsetXForDraw(10)
   buffTimeEdit:SetText(g.settings.hiddenBuffTime or 0)
   buffTimeEdit:SetEventScript(ui.ENTERKEY  , 'MUTEKI2_SET_HIDDEN_BUFF_TIME')
+
+  local layerLvlTxt = frame:CreateOrGetControl('richtext','layerLvlTxt',470,25,50,25)
+  layerLvlTxt:SetText('{#000000}Layer{nl}Lavel')
+
+  local layerLvlEdit = frame:CreateOrGetControl('edit','layerLvlEdit',515,30,50,25)
+  tolua.cast(layerLvlEdit,'ui::CEditControl')
+  layerLvlEdit:SetNumberMode(1)
+  layerLvlEdit:SetOffsetYForDraw(-5)
+  layerLvlEdit:SetOffsetXForDraw(10)
+  layerLvlEdit:SetText(g.settings.layerLvl or 80)
+  layerLvlEdit:SetEventScript(ui.ENTERKEY  , 'MUTEKI2_SET_LAYER_LAVEL')
 
   local gbox = frame:GetChild('settingGbox')
   gbox:RemoveAllChild()
@@ -243,6 +256,13 @@ function MUTEKI2_SET_HIDDEN_BUFF_TIME(frame,control,argStr,argNum)
     -- MUTEKI2_UPDATE_GAUGE_POS()
     MUTEKI2_UPDATE_POSITIONS()
   end
+end
+
+function MUTEKI2_SET_LAYER_LAVEL(frame,control,argStr,argNum)
+  local layerLvl = tonumber(control:GetText())    
+  g.settings.layerLvl = layerLvl
+  g.frame:SetLayerLevel(layerLvl)
+  MUTEKI2_SAVE_SETTINGS()
 end
 
 function MUTEKI2_SET_BUFFICON_LBTNCLICK(frame,eventMsg)

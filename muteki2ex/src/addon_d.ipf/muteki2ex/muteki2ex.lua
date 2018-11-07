@@ -265,7 +265,6 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
 end
 
 function MUTEKI2_SET_POINT(gauge, curPoint, play)
-    print(play and 1 or 0)
   local maxPoint = gauge:GetMaxPoint();
   gauge:SetPoint(curPoint, maxPoint);
 
@@ -285,20 +284,15 @@ function MUTEKI2_START_GAUGE_DOWN(gauge, curPoint, maxPoint)
     curPoint = gauge:GetCurPoint();
     maxPoint = gauge:GetMaxPoint();
   end
-  print('cur'..curPoint)
-  print('max'..maxPoint)
   --ミリ秒単位で開始時間を計測
   local elapsedMS = (maxPoint - curPoint) * 1000;
   local startTime = imcTime.GetAppTimeMS() - elapsedMS;
   gauge:SetUserValue("STARTTIME", startTime);
   gauge:SetUserValue("PAUSE", 0);
   gauge:SetTotalTime(maxPoint);
-  print(elapsedMS)
-  print(stat)
   --   gauge:SetSkinName(gauge:GetUserValue("SKINNAME"));
   MUTEKI2_SET_POINT(gauge, maxPoint - curPoint, false);
   gauge:RunUpdateScript("MUTEKI2_UPDATE_GAUGE_DOWN");
-  print('run start')
 end
 
 --ゲージ更新処理
@@ -306,7 +300,6 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
   --経過時間
   local elapsedMS = imcTime.GetAppTimeMS() - gauge:GetUserIValue("STARTTIME");
   local pause = gauge:GetUserIValue("PAUSE");
-print(gauge:GetName()..pause)
   local maxPoint = gauge:GetMaxPoint();
   local curPoint =  elapsedMS ~= 0 and maxPoint - elapsedMS / 1000 or maxPoint
   gauge:SetPoint(curPoint, maxPoint)
@@ -315,7 +308,6 @@ print(gauge:GetName()..pause)
   local msec = math.floor((curPoint - sec) * 100);
   -- if sec < 0 or sec > hiddenBuffTime then
     if sec < 0  then
-        print('sec under 0')
         gauge:ShowWindow(0);
       return 0;
     end
@@ -324,7 +316,6 @@ print(gauge:GetName()..pause)
 
   if sec >= 0 then
     text = pause ~= 1 and string.format("{@st48}%02d.%02d{/}", sec, msec) or string.format("{@st48}{#00FF00}%02d.%02d{/}{/}", sec, msec);
-    print(text)
 end
 
   gauge:SetTextStat(0, text);
@@ -457,10 +448,8 @@ function MUTEKI2_ADD_GAUGE_BUFF(buff, frame)
   local time = math.floor(buff.time / 1000);
   local buffSetting = MUTEKI2_GET_BUFF_SETTING(buff.buffID)
   if time == 0 then
-    print('notime buff')
     buffSetting.isNoTimeBuff = true
   else
-    print('nomal buff')
     buffSetting.isNoTimeBuff = false
     MUTEKI2_START_GAUGE_DOWN(gauge, time, time+1)
   end
@@ -470,7 +459,6 @@ end
 
 function MUTEKI2_REMOVE_GAUGE_BUFF(buff,frame)
   local gauge = frame;
-  print('stop '..gauge:GetName())
   gauge:ShowWindow(0);
   gauge:StopUpdateScript("MUTEKI2_UPDATE_GAUGE_DOWN")
   MUTEKI2_UPDATE_POSITIONS()
@@ -580,4 +568,3 @@ function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   list:GetChild('colorTonePic'):SetColorTone(newColor)
   MUTEKI2_SAVE_SETTINGS()
 end
-MUTEKI2_UPDATE_GAUGE_DOWN(g.gauge['100'])
