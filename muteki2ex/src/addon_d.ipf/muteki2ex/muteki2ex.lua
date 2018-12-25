@@ -213,6 +213,10 @@ function MUTEKI2_INIT_FRAME(frame)
     frame:RemoveAllChild()
     g.circle = {}
     g.gauge = {}
+  
+  -- レイヤーの表示位置を再設定
+  frame:SetLayerLevel(g.settings.layerLvl)
+
   -- ゲージ生成はここ
   for buffid , buffSetting in pairs(g.settings.buffList) do
     local buffObj = GetClassByType('Buff',tonumber(buffid))
