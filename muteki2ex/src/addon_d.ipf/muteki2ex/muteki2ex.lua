@@ -475,7 +475,7 @@ function MUTEKI2_TOGGLE_LOCK()
   if g.settings.position.lock then
     --ロック
     g.frame:SetSkinName("none");
-    -- g.frame:EnableHitTest(0);
+    g.frame:EnableHitTest(0);
     for k, gauge in pairs(g.gauge) do
       gauge:ShowWindow(0);
     end
