@@ -217,11 +217,11 @@
 		"name" : "Muteki2ex",
 		"file" : "muteki2ex",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.4",
+		"fileVersion" : "v1.1.5",
 		"releaseTag" : "muteki2ex",
 		"unicode" : "⛄",
 		"description" : "Muteki2にを自分好みに追加できるぞ",
-		"updateInfo" :"v1.1.4 fix layer lavel not saved",
+		"updateInfo" :"v1.1.5 fix TraceMode & LayerLevel bugs",
 		"tags" : [
 			"ui","buff"
 		]
