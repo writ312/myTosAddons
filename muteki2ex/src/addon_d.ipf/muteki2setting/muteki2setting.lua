@@ -315,6 +315,10 @@ function MUTEKI2_CHANGE_MODE_BTN(frame,control,mode,argNum)
   beforeModeBtn:SetSkinName('textbutton')
   control:SetSkinName('test_red_button')
   MUTEKI2_CHANGE_MODE(mode)
+  local isLock = g.settings.position.lock
+  local lockModeBtn = frame:GetChild('lockmodeBtn')
+  lockModeBtn:SetSkinName(isLock and 'test_cardtext_btn' or  'textbutton')
+  lockModeBtn:SetText(isLock and '{s20}ON' or '{s20}OFF')
 end
 
 function MUTEKI2_CHANGE_LOCK_BTN(frame,control,argStr,argNum)
