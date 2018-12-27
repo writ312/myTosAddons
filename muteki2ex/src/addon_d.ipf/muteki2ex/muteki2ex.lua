@@ -44,9 +44,11 @@ if not g.loaded then
     {
    },
    hiddenBuffTime = 300,
-   version = 1.0
+   version = 1.0,
+   layerLvl = 80
   };
 end
+g.settings.layerLvl = g.settings.layerLvl or 80
 
 --lua読み込み時のメッセージ
 CHAT_SYSTEM(string.format("%s.lua is loaded", addonNameLower));
@@ -109,6 +111,7 @@ function MUTEKI2EX_ON_INIT(addon, frame)
   frame:SetEventScript(ui.LBUTTONUP, "MUTEKI2_END_DRAG");
 
   --フレーム初期化処理
+  MUTEKI2_CHANGE_MODE()
   MUTEKI2_INIT_FRAME(frame);
 
   --再表示処理
@@ -128,17 +131,6 @@ function MUTEKI2EX_ON_INIT(addon, frame)
 
 end
 
-function MUTEKI2_INIT()
-    local handle = session.GetMyHandle();
-    local buffCount = info.GetBuffCount(handle);
-    for i = 0, buffCount - 1 do
-        local buff = info.GetBuffIndexed(handle, i);
-        -- MUTEKI2_UPDATE_CONTROL(buff.buffID)
-    end
-    -- MUTEKI2_CHANGE_MODE()
-end
-
-
 function MUTEKI2_CHANGE_MODE(mode)
   local frame = g.frame;
   if not mode then
@@ -150,13 +142,12 @@ function MUTEKI2_CHANGE_MODE(mode)
     local handle = session.GetMyHandle();
     local actor = world.GetActor(handle)
     FRAME_AUTO_POS_TO_OBJ(frame, handle, - frame:GetWidth() / 2, -100, 3, 1);
-    -- MUTEKI2_INIT_FRAME(g.frame)
+    g.settings.position.lock = true
   else
     --Moveではうまくいかないので、OffSetを使用する…
     frame:Move(0, 0);
     frame:SetOffset(g.settings.position.x, g.settings.position.y);
     frame:StopUpdateScript("_FRAME_AUTOPOS");
-    -- MUTEKI2_INIT_FRAME(g.frame)
     mode = "fixed";
   end
 
@@ -171,8 +162,7 @@ function MUTEKI2_CHANGE_MODE(mode)
   g.settings.mode = mode;
   MUTEKI2_SAVE_SETTINGS();
   MUTEKI2_UPDATE_POSITIONS()
-  -- MUTEKI2_UPDATE_POSITIONS()
-  -- MUTEKI2_UPDATE_CIRCLE_POS()
+  MUTEKI2_CREATE_SETTING_FRAME()
 end
 
 --コンテキストメニュー表示処理
@@ -260,11 +250,6 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
   gauge:SetStatAlign(1, 'center', 'center');
   gauge:SetStatOffset(1, 0, -2);
 
-  if not g.settings.position.lock then
-    -- gauge:ShowWindow(1);
-    -- gauge:SetPoint(60, 60);
-  end
-
   return gauge;
 end
 
@@ -310,7 +295,6 @@ function MUTEKI2_UPDATE_GAUGE_DOWN(gauge)
 
   local sec = math.floor(curPoint);
   local msec = math.floor((curPoint - sec) * 100);
-  -- if sec < 0 or sec > hiddenBuffTime then
     if sec < 0  then
         gauge:ShowWindow(0);
       return 0;
@@ -325,8 +309,6 @@ end
   gauge:SetTextStat(0, text);
   
   if pause == 1 then
-    
-    -- gauge:SetSkinName("muteki2_gauge_green");
     return 0;
   end
   if sec > g.settings.hiddenBuffTime then
@@ -360,10 +342,7 @@ function MUTEKI2_UPDATE_BUFF(frame, msg, argStr, buffid)
         if buffSetting.isEffect then MUTEKI2_EXEC_EFFECT() end
         MUTEKI2_ADD_GAUGE_BUFF(buff,control)
       end
-      -- MUTEKI2_UPDATE_POSITIONS()
     end
-    -- MUTEKI2_UPDATE_POSITIONS()
-    -- MUTEKI2_UPDATE_CIRCLE_POS()
   end
   MUTEKI2_UPDATE_POSITIONS()
 end
@@ -372,7 +351,6 @@ function MUTEKI2_ADD_CIRCLE_BUFF(buff, frame)
   local image = frame;
   image:ShowWindow(1);
   image:SetAngleLoop(5);
-  -- MUTEKI2_UPDATE_CIRCLE_POS()
   MUTEKI2_UPDATE_POSITIONS()
 end
 
@@ -483,9 +461,6 @@ function MUTEKI2_TOGGLE_LOCK()
     --ロック解除（移動モード）
     g.frame:SetSkinName("shadow_box");
     g.frame:EnableHitTest(1);
-    for k, gauge in pairs(g.gauge) do
-      -- MUTEKI2_START_GAUGE_DOWN(gauge, 60, 60);
-    end
   end
 
   MUTEKI2_SAVE_SETTINGS();
@@ -556,7 +531,6 @@ function MUTEKI2_GET_CONTROL(buffid)
   buffid = tostring(buffid)
   return not  g.settings.buffList[buffid] and nil or  g.circle[buffid] or g.gauge[buffid]  
 end
--- MUTEKI2EX_ON_INIT(g.addon,g.frame)
 
 function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   local buffSetting =  g.settings.buffList[buffid]
