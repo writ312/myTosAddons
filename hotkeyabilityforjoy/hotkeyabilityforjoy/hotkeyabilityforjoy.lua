@@ -107,12 +107,11 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
     local abilID,abilName,abilClass = GetAbilityData(abilID)
     if not abilID then return end 
     
-    local icon = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key):GetIcon()
+    local icon = CreateIcon(ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key))
     icon:SetImage(abilClass.Icon);
     local status = abilClass.ActiveState
-    icon:SetColorTone(status == 1 and "FF222222" or "FFFFFFFF")
-
-    
+    icon:SetColorTone(status == 1 and "FFFFFFFF" or "FF222222")
+   
     -- insert tooltip
     local cid = info.GetCID(session.GetMyHandle())
     local pc = GetPCObjectByCID(cid)    
@@ -172,7 +171,7 @@ function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(frame, control, argStr, argNum)
         if(abilClass.AlwaysActive == 'YES') then return end
         icon:SetImage(abilClass.Icon)
         local status = abilClass.ActiveState
-        icon:SetColorTone(status and "FF222222" or "FFFFFFFF")
+        icon:SetColorTone(status == 1 and "FFFFFFFF" or "FF222222")
 
         g.setting[tostring(slot:GetSlotIndex()+1)] = {abilID,'Ability'}
     else
