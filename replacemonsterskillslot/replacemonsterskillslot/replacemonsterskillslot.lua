@@ -16,6 +16,10 @@ local function GetHotKeySetting(idx)
 	return obj
 end
 
+local function GetHotkeyFileName()
+	return session.config.IsMouseMode() and 'hotkey_mousemode.xml' or 'hotkey.xml'
+end
+
 function SaveHotKeySetting()
 	-- hoge foo あとで置換する
 	g.hoge = {}
@@ -29,7 +33,8 @@ function SaveHotKeySetting()
 	acutil.saveJSON('../addons/replacemonsterskillslot/setting.json',g.setting)
 end
 
-local function swapSlotItems(srcIndex,destIndex)
+--移動場所のスキルを一時保存し、変身解除が重なる部分のスキルで上書きする
+local function overrideSlotSkill(srcIndex,destIndex)
 	local frame= ui.GetFrame("quickslotnexpbar")
 	local srcSlot = GET_CHILD_RECURSIVELY(frame, "slot"..srcIndex, "ui::CSlot")
 	local destSlot = GET_CHILD_RECURSIVELY(frame, "slot"..destIndex, "ui::CSlot")
@@ -62,12 +67,7 @@ local function swapSlotItems(srcIndex,destIndex)
 	g.setting[g.user].dest = dest
 end
 
-function changeTransformingStatus()
-	g.setting[g.user].transforming = false
-	acutil.saveJSON('../addons/replacemonsterskillslot/setting.json',g.setting)
-end
-
-local function restoreQuickSlotItem()
+local function restoreOverridedSlotSkill()
 	local dest = g.setting[g.user].dest
 	local frame= ui.GetFrame("quickslotnexpbar")
 	local destSlot = GET_CHILD_RECURSIVELY(frame, "slot"..dest.index, "ui::CSlot")
@@ -75,6 +75,11 @@ local function restoreQuickSlotItem()
 
 	--キャラチェン対策(変更時に上記の処理が間に合わないため、フラグをOFFにさせない)
 	ReserveScript('changeTransformingStatus()',5.0)
+end
+
+function changeTransformingStatus()
+	g.setting[g.user].transforming = false
+	acutil.saveJSON('../addons/replacemonsterskillslot/setting.json',g.setting)
 end
 
 local function swapQuickslotPos(srcIndex,destIndex)
@@ -98,7 +103,7 @@ local function swapQuickslotPos(srcIndex,destIndex)
 end
 
 --あとで処理をまとめる
-local function swapHotkeySetting(obj_1,obj_2,isChangePos)
+local function swapHotkeyConfig(obj_1,obj_2,isChangePos)
 	local idx_1 = obj_1.idx
 	config.SetHotKeyElementAttributeForConfig(idx_1, "Key", obj_2.key);
 	config.SetHotKeyElementAttributeForConfig(idx_1, "UseAlt", obj_2.useAlt);
@@ -111,7 +116,7 @@ local function swapHotkeySetting(obj_1,obj_2,isChangePos)
 	config.SetHotKeyElementAttributeForConfig(idx_2, "UseCtrl", obj_1.useCtrl);
 	config.SetHotKeyElementAttributeForConfig(idx_2, "UseShift", obj_1.useShift);
 	
-	config.SaveHotKey('hotkey.xml')
+	config.SaveHotKey(GetHotkeyFileName())
 	local frame = ui.GetFrame('quickslotnexpbar')
 	QUICKSLOTNEXPBAR_UPDATE_HOTKEYNAME(frame);
 	frame:Invalidate()
@@ -133,7 +138,7 @@ local function restoreHotkeySetting(obj_1,obj_2,isChangePos)
 	config.SetHotKeyElementAttributeForConfig(idx_2, "UseCtrl", obj_2.useCtrl);
 	config.SetHotKeyElementAttributeForConfig(idx_2, "UseShift", obj_2.useShift);
 	
-	config.SaveHotKey('hotkey.xml')
+	config.SaveHotKey(GetHotkeyFileName())
 	local frame = ui.GetFrame('quickslotnexpbar')
 	QUICKSLOTNEXPBAR_UPDATE_HOTKEYNAME(frame);
 	frame:Invalidate()
@@ -155,10 +160,10 @@ end
 
 function REPLACEMONSTERSKILLSLOT_INIT()
 	local frame = ui.GetFrame('keyconfig')
-	KEYCONFIG_OPEN_CATEGORY(frame,'hotkey.xml','Battle')
+	KEYCONFIG_OPEN_CATEGORY(frame,GetHotkeyFileName(),'Battle')
 	g.setting[g.user] = g.setting[g.user] or {}
 	if g.setting[g.user].transforming then
-		restoreQuickSlotItem()
+		restoreOverridedSlotSkill()
 		restoreHotkeySetting(g.hoge[g.lastSlotNum],g.foo[g.lastSlotNum],false)
 		g.setting[g.user].transforming = false
 		acutil.saveJSON('../addons/replacemonsterskillslot/setting.json',g.setting)
@@ -186,7 +191,8 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
     local slotNum = g.setting.slotNum
 	if isOn == 1 then
         local monCls = GetClass("Monster", monName);
-		local list = GetMonsterSkillList(monCls.ClassID);
+    local list = GetMonsterSkillList(monCls.ClassID);
+    --通常スキルはSlotNumを変更するだけで動く。iの初期値を変更
 		for i = slotNum, slotNum + list:Count() - 1 do
 			local sklName = list:Get(i - slotNum);
 			local sklCls = GetClass("Skill", sklName);
@@ -213,7 +219,9 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 			SET_QUICKSLOT_OVERHEAT(slot);
 
 			slot:EnableDrag(0);
-		end
+    end
+
+    --変身解除部分
 		local lastSlot = GET_CHILD_RECURSIVELY(frame, "slot"..(list:Count() +1 ), "ui::CSlot");
 		local icon = lastSlot:GetIcon();
 		if icon ~= nil then
@@ -221,9 +229,14 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 			lastSlot:SetUserValue('ICON_CATEGORY', iconInfo.category);
 			lastSlot:SetUserValue('ICON_TYPE', iconInfo.type);
 
-		end
-		swapSlotItems(list:Count()+1,list:Count() +1 +slotNum)
-		CLEAR_SLOT_ITEM_INFO(lastSlot);
+    end
+    --変身解除のスロットスキルを設定した場所に上書きする
+		overrideSlotSkill(list:Count()+1,list:Count() +1 +slotNum)
+    --変身解除のスロットと設定したスロットのホットキーを入れ替える
+    swapHotkeyConfig(g.hoge[list:Count()+1],g.foo[list:Count()+1],true)
+
+    --元の処理　アイコン画像だけ変更して、処理は内部でごにょごにょするみたい
+    CLEAR_SLOT_ITEM_INFO(lastSlot);
 		local icon = CreateIcon(lastSlot);
 		local slotString 	= 'QuickSlotExecute'..(list:Count() +1 );
 		local text 			= hotKeyTable.GetHotKeyString(slotString);
@@ -231,17 +244,20 @@ function QUICKSLOTNEXPBAR_MY_MONSTER_SKILL_HOOK(isOn, monName, buffType)
 		icon:SetImage("druid_del_icon");		
 		lastSlot:EnableDrag(0);
 		SET_QUICKSLOT_OVERHEAT(lastSlot);
-		frame:SetUserValue('SKL_MAX_CNT',list:Count() + 1)
+    frame:SetUserValue('SKL_MAX_CNT',list:Count() + 1)
+    
+
 		g.setting[g.user].transforming = true
-		g.lastSlotNum = list:Count()+1
-		swapHotkeySetting(g.hoge[list:Count()+1],g.foo[list:Count()+1],true)
+    g.lastSlotNum = list:Count()+1
+    --変身解除と設定スロットの位置を入れ替えて、変身解除の場所が入れ替わったように装う
 		acutil.saveJSON('../addons/replacemonsterskillslot/setting.json',g.setting)
 		return;
 	end
 
+  --isOn == false 変身解除時　
 	local sklCnt = frame:GetUserIValue('SKL_MAX_CNT');
 	if g.setting[g.user].transforming then
-		restoreQuickSlotItem()
+		restoreOverridedSlotSkill()
 	end
 	restoreHotkeySetting(g.hoge[sklCnt],g.foo[sklCnt],true)
 	for i = 1 + slotNum, slotNum +  sklCnt do

@@ -230,11 +230,11 @@
 		"name" : "ReplaceMonsterSkillSlot",
 		"file" : "replacemonsterskillslot",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.0",
+		"fileVersion" : "v1.2.0",
 		"releaseTag" : "replacemonsterskillslot",
 		"unicode" : "⛄",
-		"description" : "You can change the position of monster skill like Druid's transformation. See the readme.",
-		"updateInfo" :"v1.1.0 変身解除の場所も変更できるように",
+		"description" : "You can change the position of monster skill like Druid's transformation. See the readme.\nThis addon only use Keyboard & Mousemode.",
+		"updateInfo" :"v1.2.0 マウスモードに対応\nEnable to use MouseMode",
 		"tags" : [
 			"quickslot","druid"
 		]
