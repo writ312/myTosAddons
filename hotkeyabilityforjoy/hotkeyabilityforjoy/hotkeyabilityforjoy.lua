@@ -18,6 +18,7 @@ function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
+    acutil.setupEvent(addon, 'QUICKSLOTNEXPBAR_SLOT_USE', 'HOTKEY_SLOT_USE')
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
@@ -33,7 +34,6 @@ function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
 end
 
 function HOTKEYABILITY_SET_ICON()
-    acutil.setupEvent(g.addon, 'JOYSTICK_QUICKSLOT_EXECUTE', 'JOYSTICK_QUICKSLOT_EXECUTE_EVENT')
     if  g.setting then
         local frame = ui.GetFrame('joystickquickslot')
         for k,v in pairs(g.setting) do
@@ -240,6 +240,27 @@ function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 	levelCtrl:SetText("Lv.".. abilLv);
 	--classCtrl:SetSkinName("test_skin_gary_01");
 	return classCtrl:GetY() + classCtrl:GetHeight() + 30;
+end
+--	QUICKSLOTNEXPBAR_SLOT_USE(quickSlotFrame, slot, 'None', 0);
+
+function HOTKEY_SLOT_USE(addonFrame,eventMsg)
+  local frame, slot = acutil.eventMsg(eventMsg)
+  local slot 	= tolua.cast(control, 'ui::CSlot');
+  local index = slot:GetSlotIndex()
+  local key = tostring(slotIndex + 1)
+  local value = g.setting[key]
+  if value then
+      if value[2] == 'Pose' then
+          local poseCls = GetClassByType('Pose', value[1]);
+          if poseCls ~= nil then
+              control.Pose(poseCls.ClassName);
+          end
+      elseif value[2] == 'Macro' then
+          EXEC_CHATMACRO(tonumber(value[1]))
+      else
+          HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
+      end
+  end
 end
 
 function JOYSTICK_QUICKSLOT_EXECUTE_EVENT(addonFrame, eventMsg)
