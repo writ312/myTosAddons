@@ -3,10 +3,11 @@
 		"name" : "Poison Auto Charge",
 		"file" : "poisonpotautocharge",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.1",
+		"fileVersion" : "v1.3.0",
 		"releaseTag" : "poisonpot",
 		"unicode" : "⛄",
-		"description" : "ポイズンシューターの毒液を自動で補充する.",
+		"updateInfo":"v1.3 fix bugs.autocharge 30sec",
+		"description" : "ポイズンシューターの毒液を自動で補充する./ppac 手動補充．30秒ごとに自動補充",
 		"tags" : [
 			"wugushi"
 		]
