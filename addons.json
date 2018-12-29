@@ -105,9 +105,10 @@
 		"name" : "Hotkey Ability For Joystick",
 		"file" : "hotkeyabilityforjoy",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.4",
+		"fileVersion" : "v1.2.5",
 		"releaseTag" : "hotkeyabilityforjoy",
 		"unicode" : "⛄",
+		"updateInfo":"v1.2.5 Fix Abilty Toggle Bug",
 		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",
 		"tags" : [
 			"ui","joystick","quiqslot","ability","pose"

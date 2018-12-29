@@ -92,12 +92,10 @@ end
 function HOTKEYABILITY_TOGGLE_ABILITIY(key,abilID)
     local abilID,abilName,abilClass = GetAbilityData(abilID)
     if not abilID then return end 
-
     local status = abilClass.ActiveState
-
     local icon  = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key):GetIcon()
-    icon:SetGrayStyle(status)
-
+    icon:SetColorTone(status == 1 and "FF222222" or "FFFFFFFF")
+    
     local topFrame = ui.GetFrame('skilltree');
 	topFrame:SetUserValue("CLICK_ABIL_ACTIVE_TIME",imcTime.GetAppTime()-10);
     local fn = _G['TOGGLE_ABILITY_ACTIVE']
@@ -112,7 +110,8 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
     local icon = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key):GetIcon()
     icon:SetImage(abilClass.Icon);
     local status = abilClass.ActiveState
-    icon:SetGrayStyle((status == 1) and 0 or 1)
+    icon:SetColorTone(status == 1 and "FF222222" or "FFFFFFFF")
+
     
     -- insert tooltip
     local cid = info.GetCID(session.GetMyHandle())
@@ -173,7 +172,8 @@ function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(frame, control, argStr, argNum)
         if(abilClass.AlwaysActive == 'YES') then return end
         icon:SetImage(abilClass.Icon)
         local status = abilClass.ActiveState
-        icon:SetGrayStyle((status == 1) and 0 or 1)
+        icon:SetColorTone(status and "FF222222" or "FFFFFFFF")
+
         g.setting[tostring(slot:GetSlotIndex()+1)] = {abilID,'Ability'}
     else
         JOYSTICK_QUICKSLOT_ON_DROP_OLD(frame, control, argStr, argNum)
