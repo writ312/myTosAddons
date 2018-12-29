@@ -37,15 +37,17 @@ function HOTKEYABILITY_SET_ICON()
     if  g.setting then
         local frame = ui.GetFrame('joystickquickslot')
         for k,v in pairs(g.setting) do
+            local slot = frame:GetChildRecursively('slot'..k)
             if v[2] == 'Pose' then
                 HOTKEYABILITY_SET_POSE_ICON(k,v[1])
             elseif v[2] == 'Macro' then
                 local imageNum = tonumber(v[1])%10
-                ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..k):GetIcon():SetImage('key'..imageNum)
+                slot:GetIcon():SetImage('key'..imageNum)
             else
                 HOTKEYABILITY_SET_ABIL_ICON(k,v[1])
             end         
-            frame:GetChildRecursively('slot'..k):SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
+            slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
+            slot:SetEventScript(ui.LBUTTONDBLCLICK ,'HOTKEYABILITY_LBTNDB_FUNC')
         end
     end
 end
@@ -178,7 +180,8 @@ function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(frame, control, argStr, argNum)
         JOYSTICK_QUICKSLOT_ON_DROP_OLD(frame, control, argStr, argNum)
         return
     end
-    slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');        
+    slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
+    slot:SetEventScript(ui.LBUTTONDBLCLICK ,'HOTKEYABILITY_LBTNDB_FUNC')
     acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
 end
 function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
@@ -321,6 +324,14 @@ function JOYSTICK_QUICKSLOT_EXECUTE_EVENT(addonFrame, eventMsg)
             HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
         end
     end
+end
+
+function HOTKEYABILITY_LBTNDB_FUNC(frame,control,argStr,argNum)
+  local slot 	= tolua.cast(control, 'ui::CSlot');
+  local index = slot:GetSlotIndex()
+  if g.setting[tostring(index + 1)] then
+    JOYSTICK_QUICKSLOT_EXECUTE(index)
+  end
 end
 
 function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
