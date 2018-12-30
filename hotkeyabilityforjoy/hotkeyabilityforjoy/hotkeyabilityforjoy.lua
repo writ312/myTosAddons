@@ -18,7 +18,13 @@ function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
-    acutil.setupEvent(addon, 'QUICKSLOTNEXPBAR_SLOT_USE', 'HOTKEY_SLOT_USE')
+    if _G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] == nil then
+		_G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] = _G["QUICKSLOTNEXPBAR_SLOT_USE"];
+		_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
+	else
+		_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
+	end
+
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
@@ -241,16 +247,16 @@ function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 	--classCtrl:SetSkinName("test_skin_gary_01");
 	return classCtrl:GetY() + classCtrl:GetHeight() + 30;
 end
---	QUICKSLOTNEXPBAR_SLOT_USE(quickSlotFrame, slot, 'None', 0);
 
-function HOTKEY_SLOT_USE(addonFrame,eventMsg)
-  local frame, slot = acutil.eventMsg(eventMsg)
-  local slot 	= tolua.cast(control, 'ui::CSlot');
-  local index = slot:GetSlotIndex()
-  local key = tostring(slotIndex + 1)
-  local value = g.setting[key]
-  if value then
-      if value[2] == 'Pose' then
+function HOTKEY_SLOT_USE(frame, slot, argStr, argNum)
+    OLD_QUICKSLOTNEXPBAR_SLOT_USE(frame, slot, argStr, argNum)
+    if (slot:GetTopParentFrame():GetName() ~= 'joystickquickslot') then  return end
+    local slot 	= tolua.cast(slot, 'ui::CSlot');
+    local index = slot:GetSlotIndex()
+    local key = tostring(index + 1)
+    local value = g.setting[key]
+    if value then
+        if value[2] == 'Pose' then
           local poseCls = GetClassByType('Pose', value[1]);
           if poseCls ~= nil then
               control.Pose(poseCls.ClassName);
@@ -261,90 +267,6 @@ function HOTKEY_SLOT_USE(addonFrame,eventMsg)
           HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
       end
   end
-end
-
-function JOYSTICK_QUICKSLOT_EXECUTE_EVENT(addonFrame, eventMsg)
-    local slotIndex = acutil.getEventArgs(eventMsg);
-	local quickFrame = ui.GetFrame('joystickquickslot')
-	local Set1 = GET_CHILD_RECURSIVELY(quickFrame,'Set1','ui::CGroupBox');
-	local Set2 = GET_CHILD_RECURSIVELY(quickFrame,'Set2','ui::CGroupBox');
-
-	local input_L1  = joystick.IsKeyPressed("JOY_BTN_5")
-	local input_R1  = joystick.IsKeyPressed("JOY_BTN_6")
-    local joystickextend = ui.GetFrame('joystickextender')
-    if joystickextend then
-        if Set2:IsGrayStyle() == 1 then
-	    	slotIndex = slotIndex + 20
-    	end
-	
-        if input_L1 == 1 and input_R1 == 1 then
-            if Set2:IsGrayStyle() == 0 then
-                if	slotIndex == 2  or slotIndex == 14 then
-                    slotIndex = 10
-                elseif	slotIndex == 0  or slotIndex == 12 then
-                    slotIndex = 8
-                elseif	slotIndex == 1  or slotIndex == 13 then
-                    slotIndex = 9
-                elseif	slotIndex == 3  or slotIndex == 15 then
-                    slotIndex = 11
-                end
-            else
-                if	slotIndex == 22  or slotIndex == 34 then
-                    slotIndex = 30
-                elseif	slotIndex == 20  or slotIndex == 32 then
-                    slotIndex = 28
-                elseif	slotIndex == 21  or slotIndex == 33 then
-                    slotIndex = 29
-                elseif	slotIndex == 23  or slotIndex == 35 then
-                    slotIndex = 31
-                end
-            end
-
-        end
-    else
-        if Set2:IsVisible() == 1 then
-                slotIndex = slotIndex + 20
-        end
-        if input_L1 == 1 and input_R1 == 1 then
-            if Set1:IsVisible() == 1 then
-                if	slotIndex == 2  or slotIndex == 14 then
-                    slotIndex = 10
-                elseif	slotIndex == 0  or slotIndex == 12 then
-                    slotIndex = 8
-                elseif	slotIndex == 1  or slotIndex == 13 then
-                    slotIndex = 9
-                elseif	slotIndex == 3  or slotIndex == 15 then
-                    slotIndex = 11
-                end
-            end	
-
-            if Set2:IsVisible() == 1 then
-                if	slotIndex == 22  or slotIndex == 34 then
-                    slotIndex = 30
-                elseif	slotIndex == 20  or slotIndex == 32 then
-                    slotIndex = 28
-                elseif	slotIndex == 21  or slotIndex == 33 then
-                    slotIndex = 29
-                elseif	slotIndex == 23  or slotIndex == 35 then
-                    slotIndex = 31
-                end
-            end
-        end
-    end
-    local key = tostring(slotIndex + 1)
-    local value = g.setting[key]
-    if value then
-        if value[2] == 'Pose' then
-            local poseCls = GetClassByType('Pose', value[1]);
-            if poseCls ~= nil then
-                control.Pose(poseCls.ClassName);
-            end
-        elseif value[2] == 'Macro' then
-            EXEC_CHATMACRO(tonumber(value[1]))
-        else
-            HOTKEYABILITY_TOGGLE_ABILITIY(key,value[1])
-        end
-    end
 end
 
 function HOTKEYABILITY_LBTNDB_FUNC(frame,control,argStr,argNum)
