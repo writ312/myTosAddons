@@ -118,7 +118,7 @@
 		"name" : "DoV Counter",
 		"file" : "dovcounter",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
+		"fileVersion" : "v1.0.3",
 		"releaseTag" : "dovcounter",
 		"unicode" : "⛄",
 		"description" : "DoVのスタックをコルセアのコンボのように表示する",
