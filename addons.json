@@ -115,17 +115,6 @@
 			"ui","joystick","quiqslot","ability","pose"
 		]
 	},{
-		"name" : "DoV Counter",
-		"file" : "dovcounter",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.3",
-		"releaseTag" : "dovcounter",
-		"unicode" : "⛄",
-		"description" : "DoVのスタックをコルセアのコンボのように表示する",
-		"tags" : [
-			"ui","DoV"
-		]
-	},{
 		"name" : "Market History",
 		"file" : "markethistory",
 		"extension" : "ipf",
