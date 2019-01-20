@@ -8,23 +8,32 @@ g.setting = {}
 g.settingPath = '../addons/hotkeyabilityforjoy/'
 
 CHAT_SYSTEM('on load hotkey')   
-
+local function _isAfterRebuild()
+    local isSuccess, result = xpcall(
+        function()
+            return GetClassByIndex("Item_Opt", 0).Rebuildchangeitem 
+        end
+        ,function() end
+    )
+   return isSuccess
+end
 function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
     g.addon = addon
     acutil.setupHook(MAKE_ABILITY_ICON_HOOK,'MAKE_ABILITY_ICON')
-    acutil.setupHook(JOYSTICK_QUICKSLOT_ON_DROP_HOOK,'JOYSTICK_QUICKSLOT_ON_DROP')
-    acutil.setupHook(LOAD_SESSION_CHAT_MACRO_HOOK,'LOAD_SESSION_CHAT_MACRO')
+    acutil.setupEvent(addon, 'CHATMACRO_OPEN', 'LOAD_SESSION_CHAT_MACRO_HOOK')
+    acutil.setupEvent(addon, 'JOYSTICK_QUICKSLOT_ON_DROP', 'JOYSTICK_QUICKSLOT_ON_DROP_HOOK')
+    acutil.setupEvent(addon, 'QUICKSLOTNEXPBAR_SLOT_USE', 'HOTKEY_SLOT_USE')
 
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
-    if _G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] == nil then
-		_G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] = _G["QUICKSLOTNEXPBAR_SLOT_USE"];
-		_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
-	else
-		_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
-	end
-
+    -- if _G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] == nil then
+	-- 	_G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] = _G["QUICKSLOTNEXPBAR_SLOT_USE"];
+	-- 	_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
+	-- else
+	-- 	_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
+	-- end
+    
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
@@ -48,7 +57,10 @@ function HOTKEYABILITY_SET_ICON()
                 HOTKEYABILITY_SET_POSE_ICON(k,v[1])
             elseif v[2] == 'Macro' then
                 local imageNum = tonumber(v[1])%10
-                slot:GetIcon():SetImage('key'..imageNum)
+                local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..k)
+                local icon = slot:GetIcon()
+                if not icon then icon = CreateIcon(slot) end
+                icon:SetImage('key'..imageNum)
             else
                 HOTKEYABILITY_SET_ABIL_ICON(k,v[1])
             end         
@@ -66,7 +78,7 @@ function HOTKEYABILITY_COMMAND(command)
         local slot = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..k)
         slot:ClearIcon()
         CreateIcon(slot)
-        acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+        acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
         return
     end
     
@@ -93,7 +105,7 @@ function HOTKEYABILITY_COMMAND(command)
         return;
     end
     g.setting[key] = {abilID}
-    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+    acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
     HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
 end
 
@@ -115,7 +127,9 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
     local abilID,abilName,abilClass = GetAbilityData(abilID)
     if not abilID then return end 
     
-    local icon = CreateIcon(ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key))
+    local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..key)
+    local icon = slot:GetIcon()
+    if not icon then icon = CreateIcon(slot) end
     icon:SetImage(abilClass.Icon);
     local status = abilClass.ActiveState
     icon:SetColorTone(status == 1 and "FFFFFFFF" or "FF222222")
@@ -132,12 +146,16 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
 end
 
 function HOTKEYABILITY_SET_POSE_ICON(k,poseID)
-    local icon = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..k):GetIcon()
+    local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..key)
+    local icon = slot:GetIcon()
+    if not icon then icon = CreateIcon(slot) end
     local cls = GetClassByType("Pose", poseID);
     local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
-    if cls.Premium == "YES" and isPremiumTokenState == false then
+    if isPremiumTokenState == false then
+        if (_isAfterRebuild() == true and cls.PoseType == "Premium") or cls.Premium == "YES" then
         g.setting[k] = nil
         return
+        end
     end
     icon:SetImage(cls.Icon)
 end
@@ -156,39 +174,45 @@ function GetAbilityData(abilID)
 end
 
 
-function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(frame, control, argStr, argNum)
-	local liftIcon 				= ui.GetLiftIcon();
-    local FromFrameName			= liftIcon:GetTopParentFrame():GetName();
-	local slot 					= tolua.cast(control, 'ui::CSlot');
-    local icon                  = slot:GetIcon()
+function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(addonFrame, eventMsg)
+    local frame, control, argStr, argNum = acutil.getEventArgs(eventMsg)
+    local liftIcon = ui.GetLiftIcon();
+    local FromFrameName	= liftIcon:GetTopParentFrame():GetName();
+	local slot = tolua.cast(control, 'ui::CSlot');
+    local icon = slot:GetIcon()
+    if not icon then icon = CreateIcon(slot) end
     if(FromFrameName == 'chatmacro') then
-        local poseID = liftIcon:GetUserValue('POSEID');
-        local macroID =  liftIcon:GetUserValue('MacroID')
-        if poseID ~='None' then
-            local cls = GetClassByType("Pose", poseID);
-            local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
-            if cls.Premium == "YES" and isPremiumTokenState == false then return end
-            icon:SetImage(cls.Icon)
-            g.setting[tostring(slot:GetSlotIndex()+1)] = {poseID,'Pose'}
-        elseif macroID ~= 'None'then
-            icon:SetImage('key'..tonumber(macroID)%10)
-            g.setting[tostring(slot:GetSlotIndex()+1)] = {macroID,'Macro'}
-        end
-    elseif(FromFrameName == 'skilltree' and liftIcon:GetUserValue('ABILID') ~= 'None') then
-        local abilID,abilName,abilClass = GetAbilityData(liftIcon:GetUserValue('ABILID'))
-        if(abilClass.AlwaysActive == 'YES') then return end
-        icon:SetImage(abilClass.Icon)
-        local status = abilClass.ActiveState
-        icon:SetColorTone(status == 1 and "FFFFFFFF" or "FF222222")
+    local poseID = liftIcon:GetUserValue('POSEID');
+      local macroID =  liftIcon:GetUserValue('MacroID')
+      if poseID ~='None' then
+          local cls = GetClassByType("Pose", poseID);
+          local isPremiumTokenState = session.loginInfo.IsPremiumState(ITEM_TOKEN);
+          if isPremiumTokenState == false then
+              if (_isAfterRebuild() == true and cls.PoseType == "Premium") or cls.Premium == "YES" then
+                  return
+              end
+          end
+          icon:SetImage(cls.Icon)
+          g.setting[tostring(slot:GetSlotIndex()+1)] = {poseID,'Pose'}
+      elseif macroID ~= 'None'then
+          icon:SetImage('key'..tonumber(macroID)%10)
+          g.setting[tostring(slot:GetSlotIndex()+1)] = {macroID,'Macro'}
+      end
+  elseif(FromFrameName == 'skilltree' and liftIcon:GetUserValue('ABILID') ~= 'None') then
+      local abilID,abilName,abilClass = GetAbilityData(liftIcon:GetUserValue('ABILID'))
+      if(abilClass.AlwaysActive == 'YES') then return end
+      icon:SetImage(abilClass.Icon)
+      local status = abilClass.ActiveState
+      icon:SetColorTone(status == 1 and "FFFFFFFF" or "FF222222")
 
-        g.setting[tostring(slot:GetSlotIndex()+1)] = {abilID,'Ability'}
-    else
-        JOYSTICK_QUICKSLOT_ON_DROP_OLD(frame, control, argStr, argNum)
-        return
-    end
-    slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
-    slot:SetEventScript(ui.LBUTTONDBLCLICK ,'HOTKEYABILITY_LBTNDB_FUNC')
-    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+      g.setting[tostring(slot:GetSlotIndex()+1)] = {abilID,'Ability'}
+  else
+      -- JOYSTICK_QUICKSLOT_ON_DROP_OLD(frame, control, argStr, argNum)
+      return
+  end
+  slot:SetEventScript(ui.RBUTTONUP, 'HOTKEYABILITY_RBTN_FUNC');
+  slot:SetEventScript(ui.LBUTTONDBLCLICK ,'HOTKEYABILITY_LBTNDB_FUNC')
+  acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
 end
 function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 
@@ -248,8 +272,9 @@ function MAKE_ABILITY_ICON_HOOK(frame, pc, detail, abilClass, posY, listindex)
 	return classCtrl:GetY() + classCtrl:GetHeight() + 30;
 end
 
-function HOTKEY_SLOT_USE(frame, slot, argStr, argNum)
-    OLD_QUICKSLOTNEXPBAR_SLOT_USE(frame, slot, argStr, argNum)
+function HOTKEY_SLOT_USE(addonFrame, eventMsg)
+    local frame, slot, argStr, argNum = acutil.getEventArgs(eventMsg)
+
     if (slot:GetTopParentFrame():GetName() ~= 'joystickquickslot') then  return end
     local slot 	= tolua.cast(slot, 'ui::CSlot');
     local index = slot:GetSlotIndex()
@@ -285,11 +310,11 @@ function HOTKEYABILITY_RBTN_FUNC(frame,control,str,num)
         slot:ClearIcon()
         CreateIcon(slot)
     end
-    acutil.saveJSON(g.settingPath..g.user..'.json',g.setting)
+    acutil.saveJSON(g.settingPath..GetMyName()..'.json',g.setting)
 end
 
-function LOAD_SESSION_CHAT_MACRO_HOOK(frame)
-
+function LOAD_SESSION_CHAT_MACRO_HOOK()
+    local frame = ui.GetFrame('chatmacro')
 	local macroGbox = frame:GetChild('macroGroupbox');
 	local clslist = GetClassList("Pose");
 	local list = session.GetChatMacroList();
