@@ -53,6 +53,18 @@ g.settings.layerLvl = g.settings.layerLvl or 80
 --lua読み込み時のメッセージ
 CHAT_SYSTEM(string.format("%s.lua is loaded", addonNameLower));
 
+local function _isAfterRebuild()
+  local isSuccess, result = xpcall(
+      function()
+          return GetClassByIndex("Item_Opt", 0).Rebuildchangeitem 
+      end
+      ,function() end
+  )
+ return isSuccess
+end
+
+local  isAfterRebuild = _isAfterRebuild()
+
 function MUTEKI2_SAVE_SETTINGS()
   acutil.saveJSON(g.settingsFileLoc, g.settings);
 end
@@ -243,11 +255,19 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
   --テキスト1 時間
   gauge:AddStat("");
   gauge:SetStatOffset(0, -10, -2);
-  gauge:SetStatAlign(0, 'right', 'center');
+  if isAfterRebuild then
+    gauge:SetStatAlign(0, ui.RIGHT, ui.CENTER_HORZ);
+  else
+    gauge:SetStatAlign(0, 'right', 'center');
+  end
 
   --テキスト2 技名
   gauge:AddStat("{@st62}"..buffObj.Name.."{/}");
-  gauge:SetStatAlign(1, 'center', 'center');
+  if isAfterRebuild then
+    gauge:SetStatAlign(0, ui.CENTER_HORZ, ui.CENTER_HORZ);
+  else
+    gauge:SetStatAlign(1, 'center', 'center');
+  end
   gauge:SetStatOffset(1, 0, -2);
 
   if not g.settings.position.lock then
