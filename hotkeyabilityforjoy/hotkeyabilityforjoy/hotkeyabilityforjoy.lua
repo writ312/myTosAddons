@@ -57,7 +57,6 @@ function HOTKEYABILITY_SET_ICON()
                 HOTKEYABILITY_SET_POSE_ICON(k,v[1])
             elseif v[2] == 'Macro' then
                 local imageNum = tonumber(v[1])%10
-                local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..k)
                 local icon = slot:GetIcon()
                 if not icon then icon = CreateIcon(slot) end
                 icon:SetImage('key'..imageNum)
@@ -127,7 +126,7 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
     local abilID,abilName,abilClass = GetAbilityData(abilID)
     if not abilID then return end 
     
-    local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..key)
+    local slot = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..key)
     local icon = slot:GetIcon()
     if not icon then icon = CreateIcon(slot) end
     icon:SetImage(abilClass.Icon);
@@ -146,7 +145,7 @@ function HOTKEYABILITY_SET_ABIL_ICON(key,abilID)
 end
 
 function HOTKEYABILITY_SET_POSE_ICON(k,poseID)
-    local slot = ui.GetFrame('joystickquickslot'):GetChild('slot'..key)
+    local slot = ui.GetFrame('joystickquickslot'):GetChildRecursively('slot'..k)
     local icon = slot:GetIcon()
     if not icon then icon = CreateIcon(slot) end
     local cls = GetClassByType("Pose", poseID);
@@ -178,7 +177,7 @@ function JOYSTICK_QUICKSLOT_ON_DROP_HOOK(addonFrame, eventMsg)
     local frame, control, argStr, argNum = acutil.getEventArgs(eventMsg)
     local liftIcon = ui.GetLiftIcon();
     local FromFrameName	= liftIcon:GetTopParentFrame():GetName();
-	local slot = tolua.cast(control, 'ui::CSlot');
+    local slot = tolua.cast(control, 'ui::CSlot');
     local icon = slot:GetIcon()
     if not icon then icon = CreateIcon(slot) end
     if(FromFrameName == 'chatmacro') then
