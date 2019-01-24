@@ -107,7 +107,7 @@
 		"name" : "Hotkey Ability For Joystick",
 		"file" : "hotkeyabilityforjoy",
 		"extension" : "ipf",
-		"fileVersion" : "v1.3.2",
+		"fileVersion" : "v1.3.3",
 		"releaseTag" : "hotkeyabilityforjoy",
 		"unicode" : "⛄",
 		"updateInfo":"v1.3.0 ReBulidに対応\nv1.2.7 enable to exec with LDoubleClick 左ダブクリで実行できるように",
