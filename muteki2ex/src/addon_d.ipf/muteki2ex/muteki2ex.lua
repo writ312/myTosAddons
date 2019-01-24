@@ -53,17 +53,13 @@ g.settings.layerLvl = g.settings.layerLvl or 80
 --lua読み込み時のメッセージ
 CHAT_SYSTEM(string.format("%s.lua is loaded", addonNameLower));
 
-local function _isAfterRebuild()
-  local isSuccess, result = xpcall(
-      function()
-          return GetClassByIndex("Item_Opt", 0).Rebuildchangeitem 
-      end
-      ,function() end
-  )
- return isSuccess
+local function isAfterRebuild()
+  if ui.GetFrame('skillability') then 
+      return true
+  else
+      return false
+  end
 end
-
-local  isAfterRebuild = _isAfterRebuild()
 
 function MUTEKI2_SAVE_SETTINGS()
   acutil.saveJSON(g.settingsFileLoc, g.settings);
