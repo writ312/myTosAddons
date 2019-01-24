@@ -8,32 +8,25 @@ g.setting = {}
 g.settingPath = '../addons/hotkeyabilityforjoy/'
 
 CHAT_SYSTEM('on load hotkey')   
-local function _isAfterRebuild()
-    local isSuccess, result = xpcall(
-        function()
-            return GetClassByIndex("Item_Opt", 0).Rebuildchangeitem 
-        end
-        ,function() end
-    )
-   return isSuccess
+local function  isAfterRebuild()
+    if ui.GetFrame('skillability') then 
+        return true
+    else
+        return false
+    end
 end
+
 function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
     g.addon = addon
     acutil.setupHook(MAKE_ABILITY_ICON_HOOK,'MAKE_ABILITY_ICON')
     acutil.setupEvent(addon, 'CHATMACRO_OPEN', 'LOAD_SESSION_CHAT_MACRO_HOOK')
     acutil.setupEvent(addon, 'JOYSTICK_QUICKSLOT_ON_DROP', 'JOYSTICK_QUICKSLOT_ON_DROP_HOOK')
     acutil.setupEvent(addon, 'QUICKSLOTNEXPBAR_SLOT_USE', 'HOTKEY_SLOT_USE')
-
+    acutil.setupEvent(addon,'JOYSTICK_QUICKSLOT_UPDATE_ALL_SLOT','HOTKEYABILITY_SET_ICON_DELAY')
     acutil.slashCommand('/hotkey', HOTKEYABILITY_COMMAND)
     
     addon:RegisterMsg('GAME_START_3SEC','HOTKEYABILITY_SET_ICON')
-    -- if _G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] == nil then
-	-- 	_G["OLD_QUICKSLOTNEXPBAR_SLOT_USE"] = _G["QUICKSLOTNEXPBAR_SLOT_USE"];
-	-- 	_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
-	-- else
-	-- 	_G["QUICKSLOTNEXPBAR_SLOT_USE"] = _G["HOTKEY_SLOT_USE"];
-	-- end
-    
+
     local user = GetMyName()
     if(g.user ~= user) then
         g.setting = {}
@@ -46,6 +39,10 @@ function HOTKEYABILITYFORJOY_ON_INIT(addon,frame)
         g.setting = {}
         return
     end    
+end
+
+function HOTKEYABILITY_SET_ICON_DELAY()
+    ReserveScript("HOTKEYABILITY_SET_ICON()",0.1)
 end
 
 function HOTKEYABILITY_SET_ICON()
