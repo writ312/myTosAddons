@@ -9,13 +9,11 @@ g.settingPath = '../addons/hotkeyability/'
 
 CHAT_SYSTEM('on load hotkey')   
 local function _isAfterRebuild()
-    local isSuccess, result = xpcall(
-        function()
-            return GetClassByIndex("Item_Opt", 0).Rebuildchangeitem 
-        end
-        ,function() end
-    )
-   return isSuccess
+    if ui.GetFrame('skillability') then 
+        return true
+    else
+        return false
+    end
 end
 function HOTKEYABILITY_ON_INIT(addon,frame)
     g.addon = addon

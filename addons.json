@@ -16,7 +16,7 @@
 		"name" : "HotKey Ability",
 		"file" : "hotkeyability",
 		"extension" : "ipf",
-		"fileVersion" : "v1.3.0",
+		"fileVersion" : "v1.3.1",
 		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
 		"updateInfo" : "v1.3.0 ReBuildに対応",
