@@ -1,16 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" ?>  
-<uiframe name="muteki2setting" x="0" y="0" width="600" height="900">
-	<frame fasthide="true" layout_gravity="left top"/>
-    <layer layerlevel="80"/>
-    <option closebutton="true"/>
-    <controls>
-        <richtext name="modeText" rect="0 0 50 30" margin="20 30 0 0"   layout_gravity="left top" caption="{#000000)Position Mode : " hittest="false"/>
-        <button name="tracemodeBtn" rect="0 0 70 30"  margin="170 30 0 0"  layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_MODE_BTN" LBtnUpArgStr="trace" MouseOffAnim="btn_mouseoff" caption="{s20}TRACE"  skin="textbutton"/>
-        <button name="fixedmodeBtn" rect="0 0 70 30"  margin="250 30 0 0"  layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_MODE_BTN" LBtnUpArgStr="fixed" MouseOffAnim="btn_mouseoff" caption="{s20}FIXED"  skin="textbutton"/>
-        <richtext name="lockText" rect="0 0 50 30" margin="380 30 0 0"   layout_gravity="left top" caption="{#000000)Lock : " hittest="false"/>
-        <button name="lockmodeBtn" rect="0 0 70 30"  margin="420 30 0 0"  layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_LOCK_BTN"  MouseOffAnim="btn_mouseoff" caption="{s20}ON"  skin="textbutton"/>
-       
-        <groupbox name="settingGbox"  rect="0 40 560 800" margin="20 25 0 0" layout_gravity="left top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true"/>
-       
-     </controls>
+<?xml version="1.0" encoding="UTF-8"?>
+<uiframe name="muteki2setting" x="0" y="0" width="600" height="900" version="2">
+  <frame fasthide="true" layout_gravity="left top"/>
+  <layer layerlevel="80"/>
+  <option closebutton="false"/>
+  <controls>
+    <button name="closeBtn" layout_gravity="right top" rect="0 0 35 35" margin="0 -70 0 0" image="testclose_button" resizebyresolution="true" stretch="true" hittest="true" MouseOnAnim="btn_mouseover" MouseOffAnim="btn_mouseoff" oversound="button_over" clicksound="button_click_big" LBtnUpScp="MUTEKI2_FRAME_OPEN"/>
+    <richtext name="buffTimeText" rect="0 0 30 25" margin="20 -10 0 0" layout_gravity="left top" hittest="false"/>
+    <richtext name="modeText" rect="0 0 50 30" margin="20 35 0 0" layout_gravity="left top" hittest="false"/>
+    <button name="tracemodeBtn" rect="0 0 70 30" margin="160 30 0 0" layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_MODE_BTN" LBtnUpArgStr="trace" MouseOffAnim="btn_mouseoff" caption="{s20}TRACE{/}" skin="textbutton"/>
+    <button name="fixedmodeBtn" rect="0 0 70 30" margin="240 30 0 0" layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_MODE_BTN" LBtnUpArgStr="fixed" MouseOffAnim="btn_mouseoff" caption="{s20}FIXED{/}" skin="textbutton"/>
+    <richtext name="lockText" rect="0 0 50 30" margin="330 35 0 0" layout_gravity="left top" hittest="false"/>
+    <button name="lockmodeBtn" rect="0 0 70 30" margin="370 30 0 0" layout_gravity="left top" LBtnUpScp="MUTEKI2_CHANGE_LOCK_BTN" MouseOffAnim="btn_mouseoff" caption="{s20}ON{/}" skin="textbutton"/>
+    <richtext name="layerLvlText" rect="0 0 50 25" margin="460 25 0 0" layout_gravity="left top" hittest="false"/>
+    <groupbox name="settingGbox" rect="0 40 560 820" margin="20 25 0 0" layout_gravity="left top" draw="true" hittestbox="false" resizebyparent="false" resizebyresolution="true" scrollbar="true" skin="bg"/>
+  </controls>
 </uiframe>
