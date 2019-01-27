@@ -209,11 +209,11 @@
 		"name" : "Muteki2ex",
 		"file" : "muteki2ex",
 		"extension" : "ipf",
-		"fileVersion" : "v1.2.5",
+		"fileVersion" : "v1.2.6",
 		"releaseTag" : "muteki2ex",
 		"unicode" : "⛄",
 		"description" : "Muteki2にを自分好みに追加できるぞ",
-		"updateInfo" :"v1.2.0 ReBuildに対応",
+		"updateInfo" :"v1.2.0 ReBuildに対応 v1.2.6\nJToSで表示が崩れた問題の修正",
 		"tags" : [
 			"ui","buff"
 		]

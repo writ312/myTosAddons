@@ -256,7 +256,7 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
   --テキスト1 時間
   gauge:AddStat("");
   gauge:SetStatOffset(0, -10, -2);
-  if isAfterRebuild then
+  if isAfterRebuild() then
     gauge:SetStatAlign(0, ui.RIGHT, ui.CENTER_HORZ);
   else
     gauge:SetStatAlign(0, 'right', 'center');
@@ -264,7 +264,7 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
 
   --テキスト2 技名
   gauge:AddStat("{@st62}"..buffObj.Name.."{/}");
-  if isAfterRebuild then
+  if isAfterRebuild() then
     gauge:SetStatAlign(0, ui.CENTER_HORZ, ui.CENTER_HORZ);
   else
     gauge:SetStatAlign(1, 'center', 'center');
@@ -573,8 +573,6 @@ function MUTEKI2_GET_CONTROL(buffid)
   buffid = tostring(buffid)
   return not  g.settings.buffList[buffid] and nil or  g.circle[buffid] or g.gauge[buffid]  
 end
--- MUTEKI2EX_ON_INIT(g.addon,g.frame)
-
 function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   local buffSetting =  g.settings.buffList[buffid]
   local newColor = tostring(control:GetText()) 

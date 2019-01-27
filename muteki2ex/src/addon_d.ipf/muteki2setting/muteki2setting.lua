@@ -74,8 +74,8 @@ end
 
 function MUTEKI2_FRAME_OPEN(cmd)
   if g.settingFrame:IsVisible() == 0 then
-    MUTEKI2_CREATE_SETTING_FRAME()
     g.settingFrame:ShowWindow(1)
+    MUTEKI2_CREATE_SETTING_FRAME()
   else
     g.settingFrame:ShowWindow(0)
   end
