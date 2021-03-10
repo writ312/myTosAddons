@@ -116,17 +116,6 @@
 			"ui","joystick","quiqslot","ability","pose"
 		]
 	},{
-		"name" : "Market History",
-		"file" : "markethistory",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "markethistory",
-		"unicode" : "⛄",
-		"description" : "マーケットの購入/出品履歴を保存し表示する。マーケットUIの4つ目のタブをクリック。",
-		"tags" : [
-			"ui","Market"
-		]
-	},{
 		"name" : "Ausrine Highlight",
 		"file" : "ausrinehighlight",
 		"extension" : "ipf",
@@ -160,28 +149,6 @@
 			"ui","item"
 		]
 	},{
-		"name" : "Status Extend(Equipment)",
-		"file" : "statusextend",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
-		"releaseTag" : "statusextend",
-		"unicode" : "⛄",
-		"description" : "ステータスの攻撃及び防御の値に()付けて装備の合計値を表示します。また、その内約をツールチップで表示します。",
-		"tags" : [
-			"ui","status"
-		]
-	},{
-		"name" : "ItemNotice",
-		"file" : "itemnotice",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.5",
-		"releaseTag" : "itemnotice",
-		"unicode" : "⛄",
-		"description" : "Notify me when I got the specified number of items.command is /itemnotice. 指定されたアイテムを指定数手に入れたときに通知する。/itemnotice",
-		"tags" : [
-			"ui","status"
-		]
-	},{
 		"name" : "Quick Menu",
 		"file" : "quickmenu",
 		"extension" : "ipf",
@@ -190,18 +157,6 @@
 		"releaseTag" : "quickmenu",
 		"unicode" : "⛄",
 		"description" : "チャットやチャットコマンドを登録し、選択できるメニューを表示する。詳細はREADMEに",
-		"tags" : [
-			"ui","Chat"
-		]
-	},{
-		"name" : "ExpCardCalculator fix(2017 summer ui patch)",
-		"file" : "expcardcalculatorfix",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.3",
-		"releaseTag" : "expcardcalculatorfix",
-		"unicode" : "⛄",
-		"description" : "fix(2017 Summer UI Patch).\n Automatically calculates your card level based on experience cards in your inventory.",
-		"updateInfo" :"v1.0.1 acutilのシステムメニュー関数に対応 システムメニューからaddonアイコンをクリック!!\nv1.0.0 夏の大型アップデートでの変更に対応",
 		"tags" : [
 			"ui","Chat"
 		]
