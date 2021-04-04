@@ -34,5 +34,51 @@
 		"tags" : [
 			"ui","buff"
 		]
+	},{
+		"name" : "HotKey Ability",
+		"file" : "hotkeyability",
+		"extension" : "ipf",
+		"fileVersion" : "v1.3.1",
+		"releaseTag" : "hotkeyability",
+		"unicode" : "⛄",
+		"updateInfo" : "v1.3.0 ReBuildに対応",
+		"description" : "ホットキーに特性、ポーズ、チャットマクロをドラック＆ドロップで設定可能にする",
+		"tags" : [
+			"ui"
+		]
+	},{
+		"name" : "money diff",
+		"file" : "moneydiff",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "moneydiff",
+		"unicode" : "⛄",
+		"description" : "マップで獲得したシルバーの合計を表示する.",
+		"tags" : [
+			"ui"
+		]
+	},{
+		"name" : "Hotkey Ability For Joystick",
+		"file" : "hotkeyabilityforjoy",
+		"extension" : "ipf",
+		"fileVersion" : "v1.3.3",
+		"releaseTag" : "hotkeyabilityforjoy",
+		"unicode" : "⛄",
+		"updateInfo":"v1.3.0 ReBulidに対応\nv1.2.7 enable to exec with LDoubleClick 左ダブクリで実行できるように",
+		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",
+		"tags" : [
+			"ui","joystick","quiqslot","ability","pose"
+		]
+	},{
+		"name" : "Exp Popup",
+		"file" : "exppopup",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.2",
+		"releaseTag" : "exppopup",
+		"unicode" : "⛄",
+		"description" : "手に入れた経験値をキャラ横に表示する。/exppopでモード切替",
+		"tags" : [
+			"exp"
+		]
 	}
 ]
