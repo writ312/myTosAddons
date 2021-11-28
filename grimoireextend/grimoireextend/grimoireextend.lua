@@ -154,8 +154,6 @@ function GRIMOIREEXTEND_UPDATE_UI()
 end
 
 function GRIMOIREEXTEND_COMMAND(command)
-    local number = tonumber(table.remove(command))
-    if 1 <= number and maxCardList <= number then
-        grimoireEquipCardSet(number)
-    end
+    local num = tonumber(table.remove(command,1))
+    grimoireEquipCardSet(num)
 end
