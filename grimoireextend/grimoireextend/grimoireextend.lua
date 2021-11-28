@@ -158,3 +158,9 @@ function GRIMOIREEXTEND_COMMAND(command)
     local num = tonumber(table.remove(command,1))
     grimoireEquipCardSet(num)
 end
+
+function GRIMOIREEXTEND_ON_INIT(addon, frame)
+    acutil.slashCommand('/ge',GRIMOIREEXTEND_COMMAND)
+    acutil.slashCommand('/grimoireextend',GRIMOIREEXTEND_COMMAND)
+	GRIMOIREEXTEND_UPDATE_UI()
+end
