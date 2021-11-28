@@ -31,6 +31,7 @@ local function grimoireEquipCardSet(i)
         
         _grimoireSetCard('2',cardSet[2])
     end
+    CHAT_SYSTEM(string.format( 'Change CardSet to %d',i))
 end
 
 function GRIMOIREEXTEND_EQUIP_CARD(frame,control,argStr,index)
@@ -154,8 +155,6 @@ function GRIMOIREEXTEND_UPDATE_UI()
 end
 
 function GRIMOIREEXTEND_COMMAND(command)
-    local number = tonumber(table.remove(command))
-    if 1 <= number and maxCardList <= number then
-        grimoireEquipCardSet(number)
-    end
+    local num = tonumber(table.remove(command,1))
+    grimoireEquipCardSet(num)
 end
