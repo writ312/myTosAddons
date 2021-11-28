@@ -31,6 +31,7 @@ local function grimoireEquipCardSet(i)
         
         _grimoireSetCard('2',cardSet[2])
     end
+    CHAT_SYSTEM(string.format( 'Change CardSet to %d',i))
 end
 
 function GRIMOIREEXTEND_EQUIP_CARD(frame,control,argStr,index)
