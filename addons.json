@@ -80,5 +80,16 @@
 		"tags" : [
 			"exp"
 		]
+	},{
+		"name" : "GrimoireExtend",
+		"file" : "grimoireextend",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "grimoireextend",
+		"unicode" : "⛄",
+		"description" : "グリモワールにセットリストを追加する",
+		"tags" : [
+			"exp"
+		]
 	}
 ]
