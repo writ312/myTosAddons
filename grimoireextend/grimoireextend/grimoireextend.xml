@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<uiframe name="grimoireextend" x="0" y="0" width="10" height="10">
+	<frame fasthide="true" layout_gravity="left top"/>
+    <layer layerlevel="80"/>
+    <option closebutton="true" hideable="false"/>
+    <controls>
+    </controls>
+</uiframe>
