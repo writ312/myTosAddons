@@ -12,8 +12,12 @@ end
 local function _grimoireSetCard(slotnumber,cardGUID)
     session.ResetItemList();
     session.AddItemID(cardGUID);
-    local resultlist = session.GetItemIDList();
-    item.DialogTransaction("SET_SORCERER_CARD", resultlist, string.format("%s %s", slotnumber, '1'));
+    local slotname = slotnumber == '1' and 'Sorcerer_bosscard1' or 'Sorcerer_bosscard2'
+    if slotnumber == '2' then
+        ReserveScript(string.format("SET_GRI_CARD_COMMIT('%s','Equip')",slotname),0.3)
+    else
+        SET_GRI_CARD_COMMIT(slotname,'Equip')
+    end
 end
 
 local function grimoireEquipCardSet(i)
@@ -24,6 +28,7 @@ local function grimoireEquipCardSet(i)
     end
 
     if cardSet[2] then
+        
         _grimoireSetCard('2',cardSet[2])
     end
 end
@@ -99,7 +104,7 @@ function GRIMOIREEXTEND_UPDATE_UI()
     frame:GetChild('bg'):SetGravity(0,0)
     frame:GetChild('grimoireGbox'):SetGravity(0,0)
     frame:GetChild('pip4'):SetGravity(0,0)
-    local cardSet = frame:CreateOrGetControl('groupbox','cardSetGbox',0,0,220,400)
+    local cardSet = frame:CreateOrGetControl('groupbox','cardSetGbox',0,0,220,600)
     cardSet:SetGravity(1,0)
     cardSet:SetSkinName('pip_simple_frame')
     cardSet:SetOffset(70,50)
@@ -153,10 +158,4 @@ function GRIMOIREEXTEND_COMMAND(command)
     if 1 <= number and maxCardList <= number then
         grimoireEquipCardSet(number)
     end
-end
-
-function GRIMOIREEXTEND_ON_INIT(addon, frame)
-    acutil.slashCommand('/ge',GRIMOIREEXTEND_COMMAND)
-    acutil.slashCommand('/grimoireextend',GRIMOIREEXTEND_COMMAND)
-	GRIMOIREEXTEND_UPDATE_UI()
 end
