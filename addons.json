@@ -87,7 +87,7 @@
 		"fileVersion" : "v1.0.0",
 		"releaseTag" : "grimoireextend",
 		"unicode" : "⛄",
-		"description" : "グリモワールにセットリストを追加する",
+		"description" : "Add Grimoire Card Macro. open grimoire and drop card from iten bag. click equip button or [/ge number],change set card.",
 		"tags" : [
 			"exp"
 		]

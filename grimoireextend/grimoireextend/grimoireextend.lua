@@ -2,6 +2,7 @@ _G['ADDONS'] = _G['ADDONS'] or {};
 _G['ADDONS']['GRIMOIREEXTEND'] = _G['ADDONS']['GRIMOIREEXTEND'] or {};
 local g = _G['ADDONS']['GRIMOIREEXTEND'] 
 local acutil = require('acutil');
+local maxCardList = 5
 g.setList ,e = acutil.loadJSON('../addons/grimoireextend/cardList.json',nil)
 if(e) then
     g.setList = {}
@@ -106,7 +107,7 @@ function GRIMOIREEXTEND_UPDATE_UI()
     local cardBox = {}
     local wid = 200
     local hei = 120
-    for i = 1 , 3 do
+    for i = 1 , maxCardList do
         g.setList[i] = g.setList[i] or {}
         cardBox[i] = cardSet:CreateOrGetControl('groupbox','cardBox'..i, 10,(i - 1)*hei + 20,wid,hei)
         cardBox[i]:SetSkinName('test_frame_low')
@@ -149,12 +150,13 @@ end
 
 function GRIMOIREEXTEND_COMMAND(command)
     local number = tonumber(table.remove(command))
-    if 1 <= number and 3 <= number then
+    if 1 <= number and maxCardList <= number then
         grimoireEquipCardSet(number)
     end
 end
 
 function GRIMOIREEXTEND_ON_INIT(addon, frame)
     acutil.slashCommand('/ge',GRIMOIREEXTEND_COMMAND)
+    acutil.slashCommand('/grimoireextend',GRIMOIREEXTEND_COMMAND)
 	GRIMOIREEXTEND_UPDATE_UI()
 end
