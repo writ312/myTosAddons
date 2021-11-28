@@ -1,0 +1,35 @@
+sudo: required
+dist: trusty
+language: go
+go:
+  - "1.8"
+addons:
+  apt:
+    packages:
+    - build-essential
+    - zlib1g-dev
+before_install:
+- . $HOME/.nvm/nvm.sh
+
+install:
+- go get -u github.com/tcnksm/ghr
+- git clone --depth 1 https://github.com/analysisjp/libipf
+- cd ./libipf
+- make
+- ls -l
+- export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`pwd`
+- echo $LD_LIBRARY_PATH
+- cd ..
+- curl https://raw.githubusercontent.com/writ312/ipf-auto-release/master/jsonDiffToCsv.js > jsonDiffToCsv.js
+- curl https://raw.githubusercontent.com/writ312/ipf-auto-release/master/release.sh > travis_auto_release.sh
+- chmod 755 travis_auto_release.sh
+- PRE_COMMIT=${TRAVIS_COMMIT_RANGE%...*}
+- git show ${PRE_COMMIT}:addons.json > old_addons.json
+
+script:
+- echo $LD_LIBRARY_PATH
+- bash travis_auto_release.sh
+
+branches:
+  only:
+  - master

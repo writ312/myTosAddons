@@ -1,52 +1,5 @@
 [
 	{
-		"name" : "Poison Auto Charge",
-		"file" : "poisonpotautocharge",
-		"extension" : "ipf",
-		"fileVersion" : "v1.2.1",
-		"releaseTag" : "poisonpot",
-		"unicode" : "⛄",
-		"description" : "ポイズンシューターの毒液を自動で補充する.",
-		"tags" : [
-			"wugushi"
-		]
-	},
-	{
-		"name" : "HotKey Ability",
-		"file" : "hotkeyability",
-		"extension" : "ipf",
-		"fileVersion" : "v1.2.2",
-		"releaseTag" : "hotkeyability",
-		"unicode" : "⛄",
-		"description" : "ホットキーに特性、ポーズ、チャットマクロをドラック＆ドロップで設定可能にする",
-		"tags" : [
-			"ui"
-		]
-	},
-	{
-		"name" : "money diff",
-		"file" : "moneydiff",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
-		"releaseTag" : "moneydiff",
-		"unicode" : "⛄",
-		"description" : "マップで獲得したシルバーの合計を表示する.",
-		"tags" : [
-			"ui"
-		]
-	},{
-		"name" : "Resource Manager Lite",
-		"file" : "resourcemanagerlite",
-		"extension" : "ipf",
-		"fileVersion" : "v1.2.0",
-		"releaseTag" : "resourcemanager",
-		"unicode" : "⛄",
-		"updateInfo":"v1.1.9 Fix. show titlebar frame issue",
-		"description" : "各職のスキルに必要なアイテムの残数を表示する.ToggleFrame : /rscm ,Resize : /rscm -r [s,m,l] ",
-		"tags" : [
-			"ui"
-		]
-	},{
 		"name" : "Map Fog Viewer Ex",
 		"file" : "mapfogviewerex",
 		"extension" : "ipf",
@@ -56,138 +9,6 @@
 		"description" : "Map Fog viewer + Mini Map Extra 干渉するので両方共消してください",
 		"tags" : [
 			"ui"
-		]
-	},{
-		"name" : "Skill Scroll Icon",
-		"file" : "skillscrollicon",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "skillscrollicon",
-		"unicode" : "⛄",
-		"description" : "クイックスロットに登録されているスキルスクロール(バリア、ダイノ)に小さなスキルアイコンを追加する",
-		"tags" : [
-			"ui","quiqslot","skill"
-		]
-	},{
-		"name" : "Joystick Extend",
-		"file" : "joystickextender",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.3",
-		"releaseTag" : "joystickextender",
-		"unicode" : "⛄",
-		"description" : "ジョイスティックのクイックスロットを分割表示する",
-		"tags" : [
-			"ui","quiqslot"
-		]
-	},{
-		"name" : "Barrack Itemlist",
-		"file" : "barrackitemlist",
-		"extension" : "ipf",
-		"fileVersion" : "v2.0.2",
-		"releaseTag" : "barrackitemlist",
-		"unicode" : "⛄",
-		"description" : "他のキャラのインベントリの中身を表示する。/ilで表示(一度そのキャラでログインする必要有り)",
-		"tags" : [
-			"ui","item"
-		]
-	},{
-		"name" : "Barrack Itemlist Lite",
-		"file" : "barrackitemlistlite",
-		"extension" : "ipf",
-		"fileVersion" : "v1.2.1",
-		"releaseTag" : "barrackitemlistlite",
-		"unicode" : "⛄",
-		"description" : "他のキャラのインベントリの中身を表示する(検索機のなしバージョン)。<br>/ilで表示(一度そのキャラでログインする必要有り)",
-		"tags" : [
-			"ui","item"
-		]
-	},{
-		"name" : "Hotkey Ability For Joystick",
-		"file" : "hotkeyabilityforjoy",
-		"extension" : "ipf",
-		"fileVersion" : "v1.2.4",
-		"releaseTag" : "hotkeyabilityforjoy",
-		"unicode" : "⛄",
-		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",
-		"tags" : [
-			"ui","joystick","quiqslot","ability","pose"
-		]
-	},{
-		"name" : "DoV Counter",
-		"file" : "dovcounter",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "dovcounter",
-		"unicode" : "⛄",
-		"description" : "DoVのスタックをコルセアのコンボのように表示する",
-		"tags" : [
-			"ui","DoV"
-		]
-	},{
-		"name" : "Market History",
-		"file" : "markethistory",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "markethistory",
-		"unicode" : "⛄",
-		"description" : "マーケットの購入/出品履歴を保存し表示する。マーケットUIの4つ目のタブをクリック。",
-		"tags" : [
-			"ui","Market"
-		]
-	},{
-		"name" : "Ausrine Highlight",
-		"file" : "ausrinehighlight",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.0",
-		"releaseTag" : "ausrinehighlight",
-		"unicode" : "⛄",
-		"description" : "アウシュリネ像を強調する。/ausで設定画面を表示。デバッグモードは全ての像にエフェクトを追加する。確認用にどうぞ。",
-		"tags" : [
-			"Ausrine"
-		]
-	},{
-		"name" : "Exp Popup",
-		"file" : "exppopup",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "exppopup",
-		"unicode" : "⛄",
-		"description" : "手に入れた経験値をキャラ横に表示する。/exppopでモード切替",
-		"tags" : [
-			"exp"
-		]
-	},{
-		"name" : "Barrack Item List English ver",
-		"file" : "barrackitemlist_eng",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.2",
-		"releaseTag" : "barrackitemlist_eng",
-		"unicode" : "⛄",
-		"description" : "Pleaseeinstall barrack item list once (not lite version) and unistanll it. barrack item list translat into English.If you install and remove Japanese ver,please remove Tos/addon/barrackitemlist/setting.json.",
-		"tags" : [
-			"ui","item"
-		]
-	},{
-		"name" : "Status Extend(Equipment)",
-		"file" : "statusextend",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
-		"releaseTag" : "statusextend",
-		"unicode" : "⛄",
-		"description" : "ステータスの攻撃及び防御の値に()付けて装備の合計値を表示します。また、その内約をツールチップで表示します。",
-		"tags" : [
-			"ui","status"
-		]
-	},{
-		"name" : "ItemNotice",
-		"file" : "itemnotice",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.5",
-		"releaseTag" : "itemnotice",
-		"unicode" : "⛄",
-		"description" : "Notify me when I got the specified number of items.command is /itemnotice. 指定されたアイテムを指定数手に入れたときに通知する。/itemnotice",
-		"tags" : [
-			"ui","status"
 		]
 	},{
 		"name" : "Quick Menu",
@@ -202,40 +23,62 @@
 			"ui","Chat"
 		]
 	},{
-		"name" : "ExpCardCalculator fix(2017 summer ui patch)",
-		"file" : "expcardcalculatorfix",
-		"extension" : "ipf",
-		"fileVersion" : "v1.0.3",
-		"releaseTag" : "expcardcalculatorfix",
-		"unicode" : "⛄",
-		"description" : "fix(2017 Summer UI Patch).\n Automatically calculates your card level based on experience cards in your inventory.",
-		"updateInfo" :"v1.0.1 acutilのシステムメニュー関数に対応 システムメニューからaddonアイコンをクリック!!\nv1.0.0 夏の大型アップデートでの変更に対応",
-		"tags" : [
-			"ui","Chat"
-		]
-	},{
 		"name" : "Muteki2ex",
 		"file" : "muteki2ex",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.4",
+		"fileVersion" : "v1.2.7",
 		"releaseTag" : "muteki2ex",
 		"unicode" : "⛄",
 		"description" : "Muteki2にを自分好みに追加できるぞ",
-		"updateInfo" :"v1.1.4 fix layer lavel not saved",
+		"updateInfo" :"v1.2.0 ReBuildに対応 v1.2.6\nJToSで表示が崩れた問題の修正",
 		"tags" : [
 			"ui","buff"
 		]
 	},{
-		"name" : "ReplaceMonsterSkillSlot",
-		"file" : "replacemonsterskillslot",
+		"name" : "HotKey Ability",
+		"file" : "hotkeyability",
 		"extension" : "ipf",
-		"fileVersion" : "v1.1.0",
-		"releaseTag" : "replacemonsterskillslot",
+		"fileVersion" : "v1.3.1",
+		"releaseTag" : "hotkeyability",
 		"unicode" : "⛄",
-		"description" : "You can change the position of monster skill like Druid's transformation. See the readme.",
-		"updateInfo" :"v1.1.0 変身解除の場所も変更できるように",
+		"updateInfo" : "v1.3.0 ReBuildに対応",
+		"description" : "ホットキーに特性、ポーズ、チャットマクロをドラック＆ドロップで設定可能にする",
 		"tags" : [
-			"quickslot","druid"
+			"ui"
+		]
+	},{
+		"name" : "money diff",
+		"file" : "moneydiff",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "moneydiff",
+		"unicode" : "⛄",
+		"description" : "マップで獲得したシルバーの合計を表示する.",
+		"tags" : [
+			"ui"
+		]
+	},{
+		"name" : "Hotkey Ability For Joystick",
+		"file" : "hotkeyabilityforjoy",
+		"extension" : "ipf",
+		"fileVersion" : "v1.3.3",
+		"releaseTag" : "hotkeyabilityforjoy",
+		"unicode" : "⛄",
+		"updateInfo":"v1.3.0 ReBulidに対応\nv1.2.7 enable to exec with LDoubleClick 左ダブクリで実行できるように",
+		"description" : "Hotkey Abilityのジョイスティック版。干渉するのでどちらか片方のみをご利用ください。",
+		"tags" : [
+			"ui","joystick","quiqslot","ability","pose"
+		]
+	},{
+		"name" : "Exp Popup",
+		"file" : "exppopup",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.2",
+		"releaseTag" : "exppopup",
+		"unicode" : "⛄",
+		"description" : "手に入れた経験値をキャラ横に表示する。/exppopでモード切替",
+		"tags" : [
+			"exp"
 		]
 	}
 ]

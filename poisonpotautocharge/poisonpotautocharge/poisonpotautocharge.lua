@@ -29,9 +29,8 @@ local function createPoisonSlotSet(frame)
 
 		local invItem = invItemList:Element(i);
 		local obj = GetIES(invItem:GetObject());
-		
 		if IS_USEABLEITEM_IN_POISONPOT(obj) == 1 then
-
+      local poisonObj = GetClass("item_poisonpot", obj.ClassName)
 			local slot = slotSet:GetSlotByIndex(slotindex)
 			
 			while slot == nil do 
@@ -40,7 +39,7 @@ local function createPoisonSlotSet(frame)
 			end
 
 			slot:SetMaxSelectCount(invItem.count);
-			
+			slot:CreateOrGetControl('richtext','txt'..slotindex,2,2,10,10):SetText("{s20}{#FFFF00}"..poisonObj.PoisonAmount)
 			local icon = CreateIcon(slot);
 			
 			icon:Set(obj.Icon, 'Item', invItem.type, i, invItem:GetIESID(), invItem.count);
@@ -55,7 +54,54 @@ local function createPoisonSlotSet(frame)
 		i = invItemList:Next(i);
 	end
 
+  for i = slotindex,slotindex+4 do
+    local ctrl = frame:GetChildRecursively('txt'..i)
+    if ctrl then ctrl:SetText("") end
+  end
+
+  -- update myFrame`s gauge
+  local myEtc = GetMyEtcObject();
+  local poisonAmount = myEtc['Wugushi_PoisonAmount'];
+  local poisonMaxAmount = myEtc['Wugushi_PoisonMaxAmount']
+  local emptyPoisonAmount = poisonMaxAmount - poisonAmount
+  tolua.cast(frame:GetChild('poisonAmountGauge'),'ui::CGauge'):SetPoint(poisonMaxAmount - emptyPoisonAmount, poisonMaxAmount);
+
 end
+
+function POISONPOTAUTOCHARGE_ON_INIT(addon, frame)
+  acutil.slashCommand('/ppac', POISONPOT_AUTO_CHARGE)
+  acutil.setupEvent(addon, 'POISONPOT_FRAME_OPEN', 'POISONPOTAUTOCHARGE_OPEN')
+  acutil.setupEvent(addon, 'POISONPOT_FRAME_CLOSE', 'POISONPOTAUTOCHARGE_CLOSE')
+  
+  g.frame = frame
+  POISONPOTAUTOCHARGE_INIT()
+end
+
+function POISONPOTAUTOCHARGE_INIT()
+  local frame = g.frame;
+  frame:SetPos(480,100)
+  local primaryGbox = frame:GetChild('primaryGbox')
+  local slotset = primaryGbox:GetChild('poisonslotset')
+  tolua.cast(slotset, "ui::CSlotSet")
+
+  for i = 1, 5 do
+      local slot = slotset:GetSlotByIndex(i - 1)
+  frame:CreateOrGetControl('richtext','text'..i,60*i - 40,100,20,20):SetText('{s15}{#000000}'..i)
+  if g.PoisonAmountList[i] then
+    local invitem = session.GetInvItemByName(g.PoisonAmountList[i])    
+    local poisonobj = GetClass("item_poisonpot", g.PoisonAmountList[i])
+    if invitem and poisonobj then 
+      local itemobj = GetIES(invitem:GetObject())
+      CreateIcon(slot):SetImage(itemobj.Icon)
+    end
+  end
+  end
+  createPoisonSlotSet(frame)
+  POISONPOT_AUTO_CHARGE()
+  POISONPOTAUTOCHARGE_AUTO_UPDATER()
+end
+
+
 
 function PPAC_DROP_SLOT(frame, control, argStr, argNum)
 	local liftIcon 					= ui.GetLiftIcon();
@@ -96,67 +142,34 @@ function POISONPOT_AUTO_CHARGE()
 	local poisonpot = GET_CHILD(frame, "poisonpot", "ui::CButton");
 	if not poisonpot then return end
     
-    local myEtc = GetMyEtcObject();
-    local poisonAmount = myEtc['Wugushi_PoisonAmount'];
-    local emptyPoisonAmount = 1000 - poisonAmount
-    session.ResetItemList()
-    for i = 1, 5 do
-		if g.PoisonAmountList[i] then
-			local invitem = session.GetInvItemByName(g.PoisonAmountList[i])    
-			local poisonobj = GetClass("item_poisonpot", g.PoisonAmountList[i])
-			if  invitem and  poisonobj then      
-				local cnt = math.floor( emptyPoisonAmount / poisonobj.PoisonAmount);
-				if cnt < invitem.count then
-					session.AddItemID(invitem:GetIESID(), cnt);    
-					emptyPoisonAmount = emptyPoisonAmount - (poisonobj.PoisonAmount * cnt)
-				else
-					session.AddItemID(invitem:GetIESID(), invitem.count)
-					emptyPoisonAmount = emptyPoisonAmount - (poisonobj.PoisonAmount * invitem.count)
-				end
-			end
-		end
+  local myEtc = GetMyEtcObject();
+  local poisonAmount = myEtc['Wugushi_PoisonAmount'];
+  local poisonMaxAmount = myEtc['Wugushi_PoisonMaxAmount']
+  local emptyPoisonAmount = poisonMaxAmount - poisonAmount
+  session.ResetItemList()
+  for i = 1, 5 do
+    if g.PoisonAmountList[i] then
+      local invitem = session.GetInvItemByName(g.PoisonAmountList[i])    
+      local poisonobj = GetClass("item_poisonpot", g.PoisonAmountList[i])
+      if  invitem and  poisonobj then      
+        local cnt = math.floor( emptyPoisonAmount / poisonobj.PoisonAmount);
+        if cnt < invitem.count then
+          session.AddItemID(invitem:GetIESID(), cnt);    
+          emptyPoisonAmount = emptyPoisonAmount - (poisonobj.PoisonAmount * cnt)
+        else
+          session.AddItemID(invitem:GetIESID(), invitem.count)
+          emptyPoisonAmount = emptyPoisonAmount - (poisonobj.PoisonAmount * invitem.count)
+        end
+      end
     end
+  end
   
-    EXECUTE_POISONPOT_COMMIT()
+  EXECUTE_POISONPOT_COMMIT()
 
-	local etc_pc = GetMyEtcObject();
-	local poisonMaxAmount = etc_pc['Wugushi_PoisonMaxAmount']
-
-	local poisonAmountGauge = GET_CHILD_RECURSIVELY(g.frame,"poisonAmountGauge","ui::CGauge")
-	poisonAmountGauge:SetPoint(poisonMaxAmount - emptyPoisonAmount, poisonMaxAmount);
-
-	-- local poisonAmountText = GET_CHILD_RECURSIVELY(g.frame,"poisonAmount")
-	-- poisonAmountText:ShowWindow(0)
-	-- poisonAmountText:SetTextByKey("amount",poisonAmount);
+  createPoisonSlotSet(g.frame)
 end
 
-function POISONPOTAUTOCHARGE_INIT()
-    local frame = ui.GetFrame('poisonpotautocharge');
-	frame:SetPos(480,100)
-	local primaryGbox = frame:GetChild('primaryGbox')
-    local slotset = primaryGbox:GetChild('poisonslotset')
-	tolua.cast(slotset, "ui::CSlotSet")
-
-    for i = 1, 5 do
-        local slot = slotset:GetSlotByIndex(i - 1)
-		frame:CreateOrGetControl('richtext','text'..i,60*i - 40,100,20,20):SetText('{s15}{#000000}'..i)
-		if g.PoisonAmountList[i] then
-			local invitem = session.GetInvItemByName(g.PoisonAmountList[i])    
-			local poisonobj = GetClass("item_poisonpot", g.PoisonAmountList[i])
-			if invitem and poisonobj then 
-				local itemobj = GetIES(invitem:GetObject())
-				CreateIcon(slot):SetImage(itemobj.Icon)
-			end
-		end
-    end
-	createPoisonSlotSet(frame)
-    POISONPOT_AUTO_CHARGE()
-end
-
-function POISONPOTAUTOCHARGE_ON_INIT(addon, frame)
-	acutil.slashCommand('/ppac', POISONPOTAUTOCHARGE_OPEN)
-
-    g.frame = frame
-
-	POISONPOTAUTOCHARGE_INIT()
+function POISONPOTAUTOCHARGE_AUTO_UPDATER()
+  POISONPOT_AUTO_CHARGE()
+  ReserveScript("POISONPOTAUTOCHARGE_AUTO_UPDATER()",30)
 end

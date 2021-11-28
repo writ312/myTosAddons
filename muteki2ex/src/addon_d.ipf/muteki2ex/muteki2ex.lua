@@ -44,12 +44,22 @@ if not g.loaded then
     {
    },
    hiddenBuffTime = 300,
-   version = 1.0
+   version = 1.0,
+   layerLvl = 80
   };
 end
+g.settings.layerLvl = g.settings.layerLvl or 80
 
 --lua読み込み時のメッセージ
 CHAT_SYSTEM(string.format("%s.lua is loaded", addonNameLower));
+
+local function isAfterRebuild()
+  if ui.GetFrame('skillability') then 
+      return true
+  else
+      return false
+  end
+end
 
 function MUTEKI2_SAVE_SETTINGS()
   acutil.saveJSON(g.settingsFileLoc, g.settings);
@@ -109,6 +119,7 @@ function MUTEKI2EX_ON_INIT(addon, frame)
   frame:SetEventScript(ui.LBUTTONUP, "MUTEKI2_END_DRAG");
 
   --フレーム初期化処理
+  MUTEKI2_CHANGE_MODE()
   MUTEKI2_INIT_FRAME(frame);
 
   --再表示処理
@@ -128,17 +139,6 @@ function MUTEKI2EX_ON_INIT(addon, frame)
 
 end
 
-function MUTEKI2_INIT()
-    local handle = session.GetMyHandle();
-    local buffCount = info.GetBuffCount(handle);
-    for i = 0, buffCount - 1 do
-        local buff = info.GetBuffIndexed(handle, i);
-        -- MUTEKI2_UPDATE_CONTROL(buff.buffID)
-    end
-    -- MUTEKI2_CHANGE_MODE()
-end
-
-
 function MUTEKI2_CHANGE_MODE(mode)
   local frame = g.frame;
   if not mode then
@@ -150,7 +150,7 @@ function MUTEKI2_CHANGE_MODE(mode)
     local handle = session.GetMyHandle();
     local actor = world.GetActor(handle)
     FRAME_AUTO_POS_TO_OBJ(frame, handle, - frame:GetWidth() / 2, -100, 3, 1);
-    -- MUTEKI2_INIT_FRAME(g.frame)
+    g.settings.position.lock = true
   else
     --Moveではうまくいかないので、OffSetを使用する…
     frame:Move(0, 0);
@@ -160,19 +160,21 @@ function MUTEKI2_CHANGE_MODE(mode)
     mode = "fixed";
   end
 
+  local txt = frame:CreateOrGetControl('richtext','disableAutoHide',0,0,1,1)
   if g.settings.position.lock then
-    frame:SetSkinName("none");
-    frame:EnableHitTest(0);
+    g.frame:SetSkinName("none");
+    g.frame:EnableHittestFrame(0);
+    txt:SetText(' ')
   else
-    frame:SetSkinName("shadow_box");
-    frame:EnableHitTest(1);
+    g.frame:SetSkinName("shadow_box");
+    g.frame:EnableHittestFrame(1);
+    g.frame:EnableMove(1)
+    txt:SetText('  ')
   end
 
   g.settings.mode = mode;
   MUTEKI2_SAVE_SETTINGS();
   MUTEKI2_UPDATE_POSITIONS()
-  -- MUTEKI2_UPDATE_POSITIONS()
-  -- MUTEKI2_UPDATE_CIRCLE_POS()
 end
 
 --コンテキストメニュー表示処理
@@ -211,6 +213,7 @@ function MUTEKI2_INIT_FRAME(frame)
   --フレーム初期化処理
 --   frame:Resize(300,200)
     frame:RemoveAllChild()
+    frame:CreateOrGetControl('richtext','disableAutoHide',0,0,1,1):SetText('   ')
     g.circle = {}
     g.gauge = {}
   
@@ -241,7 +244,7 @@ end
 
 function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
   --ゲージを生成
-  local gauge = frame:CreateOrGetControl("gauge", "gauge_"..buffObj.ClassName,0,0, 280, 20);
+  local gauge = frame:CreateOrGetControl("gauge", "gauge_"..buffObj.ClassName,0,0, 262, 20);
   tolua.cast(gauge, "ui::CGauge");
   gauge:SetSkinName('muteki2_gauge_white')
   gauge:SetColorTone(colorTone or 'FFFF0000')
@@ -253,11 +256,19 @@ function MUTEKI2_INIT_GAUGE(frame, buffObj, colorTone)
   --テキスト1 時間
   gauge:AddStat("");
   gauge:SetStatOffset(0, -10, -2);
-  gauge:SetStatAlign(0, 'right', 'center');
+  if isAfterRebuild() then
+    gauge:SetStatAlign(0, ui.RIGHT, ui.CENTER_HORZ);
+  else
+    gauge:SetStatAlign(0, 'right', 'center');
+  end
 
   --テキスト2 技名
   gauge:AddStat("{@st62}"..buffObj.Name.."{/}");
-  gauge:SetStatAlign(1, 'center', 'center');
+  if isAfterRebuild() then
+    gauge:SetStatAlign(0, ui.CENTER_HORZ, ui.CENTER_HORZ);
+  else
+    gauge:SetStatAlign(1, 'center', 'center');
+  end
   gauge:SetStatOffset(1, 0, -2);
 
   if not g.settings.position.lock then
@@ -325,7 +336,6 @@ end
   gauge:SetTextStat(0, text);
   
   if pause == 1 then
-    
     -- gauge:SetSkinName("muteki2_gauge_green");
     return 0;
   end
@@ -350,14 +360,18 @@ function MUTEKI2_UPDATE_BUFF(frame, msg, argStr, buffid)
       if msg == 'BUFF_REMOVE' then
         MUTEKI2_REMOVE_CIRCLE_BUFF(buff,control)
       elseif msg == 'BUFF_UPDATE' or msg == 'BUFF_ADD' then
-        if buffSetting.isEffect then MUTEKI2_EXEC_EFFECT() end
+        if buffSetting.isEffect then
+          MUTEKI2_EXEC_EFFECT()
+        end
         MUTEKI2_ADD_CIRCLE_BUFF(buff,control)
       end      
     else
       if msg == 'BUFF_REMOVE' then
           MUTEKI2_REMOVE_GAUGE_BUFF(buff,control)
       elseif msg == 'BUFF_UPDATE' or msg == 'BUFF_ADD' then
-        if buffSetting.isEffect then MUTEKI2_EXEC_EFFECT() end
+        if buffSetting.isEffect then
+          MUTEKI2_EXEC_EFFECT()
+        end
         MUTEKI2_ADD_GAUGE_BUFF(buff,control)
       end
       -- MUTEKI2_UPDATE_POSITIONS()
@@ -399,7 +413,7 @@ function MUTEKI2_UPDATE_POSITIONS()
     if circle and not buffSetting.isNotNotify[g.user] then
       table.insert(circleList,circle)
     elseif gauge and not buffSetting.isNotNotify[g.user] then
-      if  buff.time/1000 <= g.settings.hiddenBuffTime then
+      if buff.time/1000 <= g.settings.hiddenBuffTime then
         if buffSetting.isNoTimeBuff then
           table.insert(noTimeBuffs,gauge)
         else
@@ -421,7 +435,7 @@ function MUTEKI2_UPDATE_POSITIONS()
     table.sort(gaugeList,function(a,b) return (a.time < b.time) end)
     for i , obj in ipairs(gaugeList) do
       obj.gauge:ShowWindow(1)
-      obj.gauge:Resize(280,25)
+      obj.gauge:Resize(262,25)
       obj.gauge:SetGravity(ui.CENTER_HORZ, ui.TOP)      
       obj.gauge:SetOffset(0,(i-1)*offsetY + circleIconHeight)
     end
@@ -430,15 +444,15 @@ function MUTEKI2_UPDATE_POSITIONS()
   if #noTimeBuffs > 0 then
     local defaultOffsetY = #gaugeList*offsetY + circleIconHeight
     for i , ctrl in ipairs(noTimeBuffs) do
-      ctrl:Resize(140,25)
+      ctrl:Resize(131,25)
       ctrl:SetGravity(0,0)
-      ctrl:SetOffset(10+(i-1)%2*140,math.floor((i-1)/2)*(offsetY-5)+defaultOffsetY)
+      ctrl:SetOffset(19+(i-1)%2*131,math.floor((i-1)/2)*(offsetY-5)+defaultOffsetY)
       ctrl:SetPoint(60,60)
       ctrl:ShowWindow(1)
     end
   end
   local height = circleIconHeight+(#gaugeList+math.floor(#noTimeBuffs/2))*offsetY + 20
-  g.frame:Resize(300,(height < 200) and 200 or height + 20 )
+  g.frame:Resize(300,(height < 200) and 200 or height + 20)
 end
 
 function MUTEKI2_EXEC_EFFECT()
@@ -469,20 +483,23 @@ function MUTEKI2_REMOVE_GAUGE_BUFF(buff,frame)
 end
 
 function MUTEKI2_TOGGLE_LOCK()
-
+  local txt = g.frame:CreateOrGetControl('richtext','disableAutoHide',0,0,1,1)
   g.settings.position.lock = not g.settings.position.lock;
-
   if g.settings.position.lock then
     --ロック
     g.frame:SetSkinName("none");
-    g.frame:EnableHitTest(0);
+    g.frame:EnableHittestFrame(0);
+    -- g.frame:EnableMove(0)
+    txt:SetText(' ')
     for k, gauge in pairs(g.gauge) do
       gauge:ShowWindow(0);
     end
   else
     --ロック解除（移動モード）
     g.frame:SetSkinName("shadow_box");
-    g.frame:EnableHitTest(1);
+    g.frame:EnableHittestFrame(1);
+    g.frame:EnableMove(1)
+    txt:SetText('  ')
     for k, gauge in pairs(g.gauge) do
       -- MUTEKI2_START_GAUGE_DOWN(gauge, 60, 60);
     end
@@ -493,8 +510,8 @@ function MUTEKI2_TOGGLE_LOCK()
   if g.settings.position.lock then
     CHAT_SYSTEM(string.format("[%s] save position", addonName));
   end
-
 end
+
 
 --チャットコマンド処理（acutil使用時）
 function MUTEKI2_PROCESS_COMMAND(command)
@@ -556,13 +573,13 @@ function MUTEKI2_GET_CONTROL(buffid)
   buffid = tostring(buffid)
   return not  g.settings.buffList[buffid] and nil or  g.circle[buffid] or g.gauge[buffid]  
 end
--- MUTEKI2EX_ON_INIT(g.addon,g.frame)
-
 function MUTEKI2_CHANGE_COLORTONE(list,control,buffid,argNum)
   local buffSetting =  g.settings.buffList[buffid]
   local newColor = tostring(control:GetText()) 
   local oldColor = buffSetting.color
-  if #newColor ~= 8 or newColor == oldColor then return end
+  if #newColor ~= 8 or newColor == oldColor then
+    return
+  end
   buffSetting.color = newColor
   if not buffSetting.circleIcon then
     g.gauge[buffid]:SetSkinName('muteki2_gauge_white')
