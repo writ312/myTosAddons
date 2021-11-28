@@ -84,7 +84,7 @@
 		"name" : "GrimoireExtend",
 		"file" : "grimoireextend",
 		"extension" : "ipf",
-		"fileVersion" : "v1.0.1",
+		"fileVersion" : "v1.0.2",
 		"releaseTag" : "grimoireextend",
 		"unicode" : "⛄",
 		"description" : "Add Grimoire Card Macro. open grimoire and drop card from iten bag. click equip button or [/ge number],change set card.",
